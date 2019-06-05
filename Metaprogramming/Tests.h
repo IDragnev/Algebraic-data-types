@@ -2,9 +2,58 @@
 
 #include "List algorithms.h"
 #include "TypeList.h"
+#include "ValueList.h"
 
 namespace IDragnev::Meta
 {
+	static_assert(isEmpty<TypeList<>>);
+
+	static_assert(!isEmpty<TypeList<int>>);
+
+	static_assert(std::is_same_v<EmptyList<TypeList<int>>, TypeList<>>);
+
+	static_assert(std::is_same_v<Head<TypeList<int, float>>, int>);
+
+	static_assert(std::is_same_v<Tail<TypeList<int, float, char>>, TypeList<float, char>>);
+
+	static_assert(std::is_same_v<Tail<TypeList<int>>, TypeList<>>);
+
+	static_assert(std::is_same_v<InsertFront<TypeList<>, double>,
+		                         TypeList<double>>);
+
+	static_assert(std::is_same_v<InsertFront<TypeList<int>, double>,
+		                         TypeList<double, int>>);
+
+	static_assert(std::is_same_v<InsertBack<TypeList<>, double>,
+		                         TypeList<double>>);
+
+	static_assert(std::is_same_v<InsertBack<TypeList<int>, double>,
+		                         TypeList<int, double>>);
+
+	static_assert(isEmpty<ValueList<int>>);
+
+	static_assert(!isEmpty<ValueList<int, 1>>);
+
+	static_assert(std::is_same_v<EmptyList<ValueList<int, 1, 2>>, ValueList<int>>);
+
+	static_assert(std::is_same_v<Head<ValueList<int, 1, 2>>, CTValue<int, 1>>);
+
+	static_assert(std::is_same_v<Tail<ValueList<int, 1, 2, 3>>, ValueList<int, 2, 3>>);
+
+	static_assert(std::is_same_v<Tail<ValueList<int, 1>>, ValueList<int>>);
+
+	static_assert(std::is_same_v<InsertFront<ValueList<int>, CTValue<int, 1>>,
+		                         ValueList<int, 1>>);
+
+	static_assert(std::is_same_v<InsertFront<ValueList<int, 1, 2>, CTValue<int, 0>>,
+		                         ValueList<int, 0, 1, 2>>);
+
+	static_assert(std::is_same_v<InsertBack<ValueList<int>, CTValue<int, 1>>,
+		                         ValueList<int, 1>>);
+
+	static_assert(std::is_same_v<InsertBack<ValueList<int, 1, 2>, CTValue<int, 3>>,
+		                         ValueList<int, 1, 2, 3>>);
+
 	static_assert(std::is_same_v<ListRef<TypeList<int, double>, 1>,
 		                         double>);
 	
