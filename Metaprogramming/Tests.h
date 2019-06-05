@@ -55,6 +55,15 @@ namespace IDragnev::Meta
 	static_assert(std::is_same_v<FoldLeft<LargerT, char, TypeList<short, long, long double>>,
 		                         long double>);
 
+	static_assert(std::is_same_v<Drop<0, TypeList<int, float, double, char>>,
+		                              TypeList<int, float, double, char>>);
+
 	static_assert(std::is_same_v<Drop<3, TypeList<int, float, double, char>>,
 		                         TypeList<char>>);
+
+	static_assert(std::is_same_v<Take<3, TypeList<int, float, double, char>>,
+		                         TypeList<int, float, double>>);
+
+	static_assert(std::is_same_v<Take<0, TypeList<int, float, double, char>>,
+		                         TypeList<>>);
 }

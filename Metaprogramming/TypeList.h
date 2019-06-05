@@ -33,4 +33,10 @@ namespace IDragnev::Meta
 	{
 		using type = TypeList<Elems..., Ts...>;
 	};
+
+	template <typename... Elems>
+	struct EmptyListT<TypeList<Elems...>>
+	{
+		using type = TypeList<>;
+	};
 }

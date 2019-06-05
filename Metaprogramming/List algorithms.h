@@ -169,4 +169,20 @@ namespace IDragnev::Meta
 
 	template <unsigned N, typename List>
 	using Drop = typename DropT<N, List>::type;
+
+	template <unsigned N, typename List>
+	struct TakeT
+	{
+		using type = InsertFront<typename TakeT<N - 1, Tail<List>>::type, 
+			                     Head<List>>;
+	};
+
+	template <typename List>
+	struct TakeT<0, List>
+	{
+		using type = EmptyList<List>;
+	};
+
+	template <unsigned N, typename List>
+	using Take = typename TakeT<N, List>::type;
 }

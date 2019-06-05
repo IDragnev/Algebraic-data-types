@@ -33,4 +33,10 @@ namespace IDragnev::Meta
 
 	template <typename List, typename... Ts>
 	using InsertBack = typename InsertBackT<List, Ts...>::type;
+
+	template <typename List>
+	struct EmptyListT;
+
+	template <typename List>
+	using EmptyList = typename EmptyListT<List>::type;
 }
