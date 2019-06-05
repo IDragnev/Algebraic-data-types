@@ -25,6 +25,14 @@ namespace IDragnev::Meta
 	}
 
 	template <typename Head, typename... Tail>
+	template <typename VHead, typename... VTail, typename>
+	Tuple<Head, Tail...>::Tuple(Tuple<VHead, VTail...>&& source) :
+		HeadElement(std::move(source.getHead())),
+		TailTuple(std::move(source.getTail()))
+	{
+	}
+
+	template <typename Head, typename... Tail>
 	inline Head& Tuple<Head, Tail...>::getHead() noexcept
 	{
 		return static_cast<HeadElement&>(*this).get();

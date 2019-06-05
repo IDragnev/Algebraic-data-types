@@ -77,8 +77,13 @@ namespace IDragnev::Meta
 			     typename = EnableIfMatchesTailLength<VTail>>
 		Tuple(const Tuple<VHead, VTail...>& source);
 
-		Tuple& operator=(const Tuple& rhs) = default;
+		template<typename VHead,
+			     typename... VTail,
+			     typename = EnableIfMatchesTailLength<VTail>>
+		Tuple(Tuple<VHead, VTail...>&& source);
+
 		Tuple& operator=(Tuple&& rhs) = default;
+		Tuple& operator=(const Tuple& rhs) = default;
 
 		Head& getHead() noexcept;
 		const Head& getHead() const noexcept;
