@@ -2,13 +2,6 @@
 namespace IDragnev::Meta
 {
 	template <typename Head, typename... Tail>
-	Tuple<Head, Tail...>::Tuple(const Head& head, const Tuple<Tail...>& tail) :
-		HeadElement(head),
-		Tuple<Tail...>(tail)
-	{
-	}
-
-	template <typename Head, typename... Tail>
 	template <typename VHead, typename... VTail, typename>
 	Tuple<Head, Tail...>::Tuple(VHead&& head, VTail&&... tail) :
 		HeadElement(std::forward<VHead>(head)),
@@ -54,5 +47,26 @@ namespace IDragnev::Meta
 	inline const Tuple<Tail...>& Tuple<Head, Tail...>::getTail() const noexcept
 	{
 		return *this;
+	}
+
+	template <typename... Types>
+	inline auto makeTuple(Types&&... args)
+	{
+		using T = Tuple<std::decay_t<Types>...>;
+		return T(std::forward<Types>(args)...);
+	}
+
+	template <typename H1, typename... Tail1,
+		      typename H2, typename... Tail2,
+		      typename>
+	bool operator==(const Tuple<H1, Tail1...>& lhs, const Tuple<H2, Tail2...>& rhs)
+	{
+		return lhs.getHead() == rhs.getHead() &&
+			   lhs.getTail() == rhs.getTail();
+	}
+	
+	inline bool operator==(const Tuple<>&, const Tuple<>&) noexcept
+	{
+		return true;
 	}
 }

@@ -64,22 +64,21 @@ namespace IDragnev::Meta
 		Tuple() = default;
 		Tuple(Tuple&& source) = default;
 		Tuple(const Tuple& source) = default;
-		Tuple(const Head& head, const Tuple<Tail...>& tail);
 		~Tuple() = default;
 
 		template<typename VHead,
 			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail>>
+			     typename = EnableIfMatchesTailLength<VTail...>>
 		Tuple(VHead&& head, VTail&&... tail);
 
 		template<typename VHead,
 			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail>>
+			     typename = EnableIfMatchesTailLength<VTail...>>
 		Tuple(const Tuple<VHead, VTail...>& source);
 
 		template<typename VHead,
 			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail>>
+			     typename = EnableIfMatchesTailLength<VTail...>>
 		Tuple(Tuple<VHead, VTail...>&& source);
 
 		Tuple& operator=(Tuple&& rhs) = default;
@@ -91,6 +90,15 @@ namespace IDragnev::Meta
 		Tuple<Tail...>& getTail() noexcept;
 		const Tuple<Tail...>& getTail() const noexcept;
 	};
+
+	template <typename... Types>
+	auto makeTuple(Types&&... args);
+
+	bool operator==(const Tuple<>&, const Tuple<>&) noexcept;
+	template <typename H1, typename... Tail1,
+		      typename H2, typename... Tail2,
+		      typename = std::enable_if_t<sizeof...(Tail1) == sizeof...(Tail2)>>
+	bool operator==(const Tuple<H1, Tail1...>& lhs, const Tuple<H2, Tail2...>& rhs);
 }
 
 #include "TupleImpl.hpp"
