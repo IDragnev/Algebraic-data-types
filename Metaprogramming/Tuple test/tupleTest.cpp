@@ -102,5 +102,26 @@ namespace Tupletest
 			Assert::IsTrue(lhs == expectedLhs, L"Moved-in object has invalid contents");
 			Assert::IsTrue(rhs == expectedRhs, L"Moved-from object has invalid contents");
 		}
+
+		TEST_METHOD(conversionCopyAssignment)
+		{
+			auto lhs = makeTuple(0l, 1.0);
+			auto rhs = makeTuple(1, 2.f);
+			
+			lhs = rhs;
+
+			Assert::IsTrue(lhs == makeTuple(1l, 2.0));
+		}
+
+		TEST_METHOD(conversionMoveAssignment)
+		{
+			auto lhs = makeTuple(0l, ""s);
+			auto rhs = makeTuple(1, "str"s);
+
+			lhs = std::move(rhs);
+
+			Assert::IsTrue(lhs == makeTuple(1l, "str"s), L"Moved-in object has invalid contents");
+			Assert::IsTrue(rhs == makeTuple(1, ""s), L"Moved-from object has invalid contents");
+		}
 	};
 }

@@ -26,6 +26,26 @@ namespace IDragnev::Meta
 	}
 
 	template <typename Head, typename... Tail>
+	template<typename VHead, typename... VTail, typename>
+	auto Tuple<Head, Tail...>::operator=(const Tuple<VHead, VTail...>& rhs) -> Tuple&
+	{
+		getHead() = rhs.getHead();
+		getTail() = rhs.getTail();
+
+		return *this;
+	}
+
+	template <typename Head, typename... Tail>
+	template<typename VHead, typename... VTail, typename>
+	auto Tuple<Head, Tail...>::operator=(Tuple<VHead, VTail...>&& rhs) -> Tuple&
+	{
+		getHead() = std::move(rhs.getHead());
+		getTail() = std::move(rhs.getTail());
+
+		return *this;
+	}
+
+	template <typename Head, typename... Tail>
 	inline Head& Tuple<Head, Tail...>::getHead() noexcept
 	{
 		return static_cast<HeadElement&>(*this).get();
