@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Lists">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Tuples">
+      <UniqueIdentifier>{d4f2d79c-858a-4fa2-b27b-be81fc86ff75}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Lists\List algorithms.h">
+      <Filter>Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="Lists\ListInterface.h">
+      <Filter>Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="Lists\Pair.h">
+      <Filter>Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="Lists\TypeList.h">
+      <Filter>Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="Lists\ValueList.h">
+      <Filter>Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="Lists\Tests.h">
+      <Filter>Lists</Filter>
+    </ClInclude>
+    <ClInclude Include="Tuples\Tuple.h">
+      <Filter>Tuples</Filter>
+    </ClInclude>
+    <ClInclude Include="Tuples\TupleImpl.hpp">
+      <Filter>Tuples</Filter>
+    </ClInclude>
+    <ClInclude Include="Tuples\TupleElement.h">
+      <Filter>Tuples</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

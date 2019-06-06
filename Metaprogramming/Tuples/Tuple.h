@@ -1,49 +1,31 @@
 #pragma once
 
-#include <type_traits>
+#include "TupleElement.h"
+#include "Lists\ValueList.h"
 
 namespace IDragnev::Meta
 {
+	template <typename... Types>
+	class Tuple;
+
 	namespace Detail
 	{
 		template <typename T>
-		inline constexpr auto canBeInherited = std::is_class_v<T> && !std::is_final_v<T>;
+		struct TupleSize { };
 
-		template <unsigned Height, 
-			      typename T,
-			      bool = canBeInherited<T>
-		> class TupleElement;
+		template <typename... Types>
+		struct TupleSize<Tuple<Types...>> : CTValue<unsigned, sizeof...(Types)> { };
 
-		template <unsigned Height, typename T>
-		class TupleElement<Height, T, false>
-		{
-		public:
-			TupleElement() = default;
-			template<typename U>
-			TupleElement(U&& value) : value(std::forward<U>(value)) { }
-
-			T& get() noexcept { return value; }
-			const T& get() const noexcept { return value; }
-			
-		private:
-			T value;
-		};
-
-		template<unsigned Height, typename T>
-		class TupleElement<Height, T, true> : private T
-		{
-		public:
-			TupleElement() = default;
-			template<typename U>
-			TupleElement(U&& value) : T(std::forward<U>(value)) { }
-
-			T& get() noexcept { return *this; }
-			const T& get() const noexcept { return *this; }
-		};
+		template <typename T>
+		inline constexpr unsigned tupleSize = TupleSize<T>::value;
 	}
 
-	template <typename... Types>
-	class Tuple;
+	template <unsigned I, typename TupleT, 
+		      unsigned Size = Detail::tupleSize<std::remove_const_t<TupleT>>>
+	inline decltype(auto) get(TupleT& tuple) noexcept
+	{
+		return Detail::extractValue<Size - I - 1>(tuple);
+	}
 
 	template <>
 	class Tuple<> { };
@@ -83,7 +65,7 @@ namespace IDragnev::Meta
 
 		Tuple& operator=(Tuple&& rhs) = default;
 		Tuple& operator=(const Tuple& rhs) = default;
-
+		 
 		template<typename VHead,
 			     typename... VTail,
 			     typename = EnableIfMatchesTailLength<VTail...>>
@@ -99,12 +81,16 @@ namespace IDragnev::Meta
 
 		Tuple<Tail...>& getTail() noexcept;
 		const Tuple<Tail...>& getTail() const noexcept;
+	
+		template <unsigned I, typename TupleT, unsigned Size>
+		friend decltype(auto) get(TupleT& tuple) noexcept;
 	};
 
 	template <typename... Types>
 	auto makeTuple(Types&&... args);
 
 	bool operator==(const Tuple<>&, const Tuple<>&) noexcept;
+
 	template <typename H1, typename... Tail1,
 		      typename H2, typename... Tail2,
 		      typename = std::enable_if_t<sizeof...(Tail1) == sizeof...(Tail2)>>

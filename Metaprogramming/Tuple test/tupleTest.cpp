@@ -123,5 +123,18 @@ namespace Tupletest
 			Assert::IsTrue(lhs == makeTuple(1l, "str"s), L"Moved-in object has invalid contents");
 			Assert::IsTrue(rhs == makeTuple(1, ""s), L"Moved-from object has invalid contents");
 		}
+
+		TEST_METHOD(extractingValues)
+		{
+			using IDragnev::Meta::get;
+
+			const auto tuple = makeTuple(1, 2, 3);
+
+			auto x = get<0>(tuple);
+			auto y = get<1>(tuple);
+
+			Assert::AreEqual(x, 1);
+			Assert::AreEqual(y, 2);
+		}
 	};
 }
