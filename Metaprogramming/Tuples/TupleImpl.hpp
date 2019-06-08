@@ -2,6 +2,13 @@
 namespace IDragnev::Meta
 {
 	template <typename Head, typename... Tail>
+	Tuple<Head, Tail...>::Tuple(const Head& h, const Tuple<Tail...>& tail) :
+		HeadElement(h),
+		TailTuple(tail)
+	{
+	}
+
+	template <typename Head, typename... Tail>
 	template <typename VHead, typename... VTail, typename>
 	Tuple<Head, Tail...>::Tuple(VHead&& head, VTail&&... tail) :
 		HeadElement(std::forward<VHead>(head)),

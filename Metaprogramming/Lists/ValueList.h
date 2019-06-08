@@ -11,7 +11,7 @@ namespace IDragnev::Meta
 	};
 
 	template <typename T, T... values>
-	struct ValueList;
+	struct ValueList { };
 
 	template <typename T, T... values>
 	struct IsEmpty<ValueList<T, values...>> : std::bool_constant<sizeof...(values) == 0> { };

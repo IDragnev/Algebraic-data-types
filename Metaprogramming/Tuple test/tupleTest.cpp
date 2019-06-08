@@ -1,9 +1,9 @@
-#include "Tuples\Tuple.h"
 #include "CppUnitTest.h"
+#include "Tuples\Tuple.h"
+#include "Tuples\TupleAlgorithms.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-using IDragnev::Meta::Tuple;
-using IDragnev::Meta::makeTuple;
+using namespace IDragnev::Meta;
 using namespace std::string_literals;
 
 namespace Tupletest
@@ -80,6 +80,15 @@ namespace Tupletest
 			Assert::IsTrue(source == makeTuple(1, ""s), L"Moved-from object has invalid constents");
 		}
 
+		TEST_METHOD(headAndTailConstructor)
+		{
+			const auto source = makeTuple(1, 2);
+			
+			auto destination = Tuple<int,int>(source.getHead(), source.getTail());
+
+			Assert::IsTrue(source == destination);
+		}
+
 		TEST_METHOD(copyAssignment)
 		{
 			auto rhs = makeTuple(1, 2u);
@@ -126,8 +135,6 @@ namespace Tupletest
 
 		TEST_METHOD(extractingValues)
 		{
-			using IDragnev::Meta::get;
-
 			const auto tuple = makeTuple(1, 2, 3);
 
 			auto x = get<0>(tuple);
@@ -135,6 +142,52 @@ namespace Tupletest
 
 			Assert::AreEqual(x, 1);
 			Assert::AreEqual(y, 2);
+		}
+
+		TEST_METHOD(insertingBack)
+		{
+			auto tuple = insertBack(makeTuple(1, 2), 3);
+
+			Assert::IsTrue(tuple == makeTuple(1, 2, 3));
+		}
+
+		TEST_METHOD(insertingFront)
+		{
+			auto tuple = insertFront(makeTuple(1, 2), 0);
+
+			Assert::IsTrue(tuple == makeTuple(0, 1, 2));
+		}
+
+		TEST_METHOD(droppingTheTail)
+		{
+			auto tuple = dropTail(makeTuple(0, 1));
+
+			Assert::IsTrue(tuple == makeTuple(0));
+		}
+
+		TEST_METHOD(droppingTheHead)
+		{
+			auto tuple = dropHead(makeTuple(0, 1, 2));
+
+			Assert::IsTrue(tuple == makeTuple(1, 2));
+		}
+
+		TEST_METHOD(selectingElements)
+		{
+			auto source = makeTuple(2, 5, 4, 7, 8);
+
+			auto odds = select<1, 3>(source);
+
+			Assert::IsTrue(odds == makeTuple(5, 7));
+		}
+
+		TEST_METHOD(reversingATuple)
+		{
+			auto source = makeTuple(0, 1, 2, 3);
+			
+			auto result = reverse(source);
+
+			Assert::IsTrue(result == makeTuple(3, 2, 1, 0));
 		}
 	};
 }

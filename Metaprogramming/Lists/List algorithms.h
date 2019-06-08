@@ -3,6 +3,7 @@
 #include "ListInterface.h"
 #include "Pair.h"
 #include "TypeList.h"
+#include "ValueList.h"
 
 namespace IDragnev::Meta
 {
@@ -185,4 +186,16 @@ namespace IDragnev::Meta
 
 	template <unsigned N, typename List>
 	using Take = typename TakeT<N, List>::type;
+
+	template <unsigned N, typename Result = ValueList<unsigned>>
+	struct MakeIndexListT : MakeIndexListT<N - 1, InsertFront<Result, CTValue<unsigned, N - 1>>> { };
+
+	template <typename Result>
+	struct MakeIndexListT<0, Result>
+	{
+		using type = Result;
+	};
+
+	template <unsigned N>
+	using MakeIndexList = typename MakeIndexListT<N>::type;
 }
