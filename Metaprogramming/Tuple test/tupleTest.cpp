@@ -198,5 +198,23 @@ namespace Tupletest
 
 			Assert::IsTrue(result == makeTuple(1, 1, 1, 1));
 		}
+
+		TEST_METHOD(takingATuplePrefix)
+		{
+			auto source = makeTuple(0, 1, 2, 3, 4);
+
+			auto result = take<2>(source);
+
+			Assert::IsTrue(result == makeTuple(0, 1));
+		}
+
+		TEST_METHOD(takingATupleSuffix)
+		{
+			auto source = makeTuple(0, 1, 2, 3, 4);
+
+			auto result = drop<2>(source);
+
+			Assert::IsTrue(result == makeTuple(2, 3, 4));
+		}
 	};
 }

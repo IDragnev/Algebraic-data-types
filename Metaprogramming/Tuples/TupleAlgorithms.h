@@ -103,4 +103,18 @@ namespace IDragnev::Meta
 	{
 		return Detail::select(t, ReplicateValue<Index, N>{});
 	}
+
+	template <unsigned N, typename... Elements>
+	inline auto take(const Tuple<Elements...>& t)
+	{
+		using Indices = Take<N, MakeIndexList<sizeof...(Elements)>>;
+		return Detail::select(t, Indices{});
+	}
+
+	template <unsigned N, typename... Elements>
+	inline auto drop(const Tuple<Elements...>& t)
+	{
+		using Indices = Drop<N, MakeIndexList<sizeof...(Elements)>>;
+		return Detail::select(t, Indices{});
+	}
 }
