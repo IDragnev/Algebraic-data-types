@@ -217,7 +217,7 @@ namespace Tupletest
 			Assert::IsTrue(result == makeTuple(2, 3, 4));
 		}
 
-		TEST_METHOD(sortingATupleBySizeType)
+		TEST_METHOD(sortingATupleByType)
 		{
 			auto tuple = makeTuple(2, '1', 3.0);
 
