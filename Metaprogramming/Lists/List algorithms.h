@@ -213,4 +213,61 @@ namespace IDragnev::Meta
 
 	template <auto V, unsigned N>
 	using ReplicateValue = typename ReplicateValueT<V, N>::type;
+
+	template <typename T,
+		      typename List,
+		      template <typename U, typename V> typename Compare,
+		      bool = isEmpty<List>
+	> struct InsertInSortedT;
+
+	template <typename T,
+		      typename List,
+		      template <typename U, typename V> typename Compare>
+	using InsertInSorted = typename InsertInSortedT<T, List, Compare>::type;
+
+	template <typename List,
+		      template <typename U, typename V> typename Compare,
+		      bool = isEmpty<List>
+	> struct InsertionSortT;
+
+	template <typename List,
+		      template <typename U, typename V> typename Compare> 
+	using InsertionSort = typename InsertionSortT<List, Compare>::type;
+
+	template <typename List,
+		      template <typename U, typename V> typename Compare
+    > struct InsertionSortT<List, Compare, true>
+	{
+		using type = List;
+	};
+
+	template <typename List,
+		      template <typename U, typename V> typename Compare
+	> struct InsertionSortT<List, Compare, false> : 
+		InsertInSortedT<Head<List>, InsertionSort<Tail<List>, Compare>, Compare> { };
+
+	template <typename T,
+		      typename List,
+		      template <typename U, typename V> typename Compare
+	> struct InsertInSortedT<T, List, Compare, true> : InsertFrontT<List, T> { };
+
+	template <typename T,
+		      typename List,
+		      template <typename U, typename V> typename Compare
+	> struct InsertInSortedT<T, List, Compare, false>
+	{
+	private:
+		using NewTailT = std::conditional_t<Compare<T, Head<List>>::value,
+			                                IdentityT<List>,
+			                                InsertInSortedT<T, Tail<List>, Compare>>;
+		using NewTail = typename NewTailT::type;
+		using NewHead = std::conditional_t<Compare<T, Head<List>>::value,
+			                               T,
+			                               Head<List>>;
+	public:
+		using type = InsertFront<NewTail, NewHead>;
+	};
+
+	template <typename U, typename V>
+	struct IsSmallerT : std::bool_constant<(sizeof(U) < sizeof(V))> { };
 }

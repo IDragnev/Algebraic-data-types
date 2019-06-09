@@ -123,4 +123,16 @@ namespace IDragnev::Meta
 	static_assert(std::is_same_v<ReplicateValue<10, 0>, ValueList<int>>);
 
 	static_assert(std::is_same_v<ReplicateValue<10u, 2>, ValueList<unsigned, 10u, 10u>>);
+
+	static_assert(std::is_same_v<InsertInSorted<int, TypeList<>, IsSmallerT>,
+		                         TypeList<int>>);
+
+	static_assert(std::is_same_v<InsertInSorted<int, TypeList<char, double>, IsSmallerT>,
+		                         TypeList<char, int, double>>);
+
+	static_assert(std::is_same_v<InsertionSort<TypeList<>, IsSmallerT>,
+		                         TypeList<>>);
+
+	static_assert(std::is_same_v<InsertionSort<TypeList<long, short, char, double>, IsSmallerT>,
+		                         TypeList<char, short, long, double>>);
 }
