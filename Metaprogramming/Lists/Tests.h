@@ -119,4 +119,8 @@ namespace IDragnev::Meta
 	static_assert(std::is_same_v<MakeIndexList<0>, ValueList<unsigned>>);
 
 	static_assert(std::is_same_v<MakeIndexList<4>, ValueList<unsigned, 0, 1, 2, 3>>);
+
+	static_assert(std::is_same_v<ReplicateValue<10, 0>, ValueList<int>>);
+
+	static_assert(std::is_same_v<ReplicateValue<10u, 2>, ValueList<unsigned, 10u, 10u>>);
 }

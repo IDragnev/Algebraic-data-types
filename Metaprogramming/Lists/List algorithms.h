@@ -198,4 +198,19 @@ namespace IDragnev::Meta
 
 	template <unsigned N>
 	using MakeIndexList = typename MakeIndexListT<N>::type;
+
+	template <auto Value,
+		      unsigned N,
+		      typename Result = ValueList<decltype(Value)>
+	> struct ReplicateValueT : 
+		ReplicateValueT<Value, N - 1, InsertFront<Result, CTValue<decltype(Value), Value>>> { };
+
+	template <auto Value, typename Result>
+	struct ReplicateValueT<Value, 0, Result>
+	{
+		using type = Result;
+	};
+
+	template <auto V, unsigned N>
+	using ReplicateValue = typename ReplicateValueT<V, N>::type;
 }
