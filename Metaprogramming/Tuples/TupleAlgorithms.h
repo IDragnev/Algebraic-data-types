@@ -117,4 +117,13 @@ namespace IDragnev::Meta
 		using Indices = Drop<N, MakeIndexList<sizeof...(Elements)>>;
 		return Detail::select(t, Indices{});
 	}
+
+	template <template <typename U, typename V> typename CompareFn,
+		      typename... Elements>
+	inline auto sortByType(const Tuple<Elements...>& t)
+	{
+		using Indices = InsertionSort<MakeIndexList<sizeof...(Elements)>,
+			                          MakeIndexedCompareT<Tuple<Elements...>, CompareFn>::template Compare>;
+		return Detail::select(t, Indices{});
+	}
 }

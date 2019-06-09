@@ -216,5 +216,14 @@ namespace Tupletest
 
 			Assert::IsTrue(result == makeTuple(2, 3, 4));
 		}
+
+		TEST_METHOD(sortingATupleBySizeType)
+		{
+			auto tuple = makeTuple(2, '1', 3.0);
+
+			auto result = sortByType<IsSmallerT>(tuple);
+		
+			Assert::IsTrue(result == makeTuple('1', 2, 3.0));
+		}
 	};
 }

@@ -270,4 +270,15 @@ namespace IDragnev::Meta
 
 	template <typename U, typename V>
 	struct IsSmallerT : std::bool_constant<(sizeof(U) < sizeof(V))> { };
+
+	template <typename List,
+		      template <typename U, typename V> typename CompareFn
+	> struct MakeIndexedCompareT
+	{
+		template <typename T, typename F> struct Compare;
+
+		template <unsigned I, unsigned J>
+		struct Compare<CTValue<unsigned, I>, CTValue<unsigned, J>> : 
+			CompareFn<ListRef<List, I>, ListRef<List, J>> { };
+	};
 }

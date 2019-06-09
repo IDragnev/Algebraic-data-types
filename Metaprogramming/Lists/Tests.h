@@ -135,4 +135,8 @@ namespace IDragnev::Meta
 
 	static_assert(std::is_same_v<InsertionSort<TypeList<long, short, char, double>, IsSmallerT>,
 		                         TypeList<char, short, long, double>>);
+
+	static_assert(std::is_same_v<InsertionSort<ValueList<unsigned, 0, 1, 2>,
+		                                       MakeIndexedCompareT<TypeList<double, char, int>, IsSmallerT>::template Compare>,
+		                         ValueList<unsigned, 1, 2, 0>>);
 }
