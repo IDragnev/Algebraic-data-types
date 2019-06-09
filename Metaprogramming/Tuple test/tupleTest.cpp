@@ -189,5 +189,14 @@ namespace Tupletest
 
 			Assert::IsTrue(result == makeTuple(3, 2, 1, 0));
 		}
+
+		TEST_METHOD(replicatingASingleValue)
+		{
+			auto source = makeTuple(0, 1, 2);
+
+			auto result = replicate<1, 4>(source);
+
+			Assert::IsTrue(result == makeTuple(1, 1, 1, 1));
+		}
 	};
 }

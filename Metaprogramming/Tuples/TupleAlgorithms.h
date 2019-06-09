@@ -79,22 +79,28 @@ namespace IDragnev::Meta
 	namespace Detail
 	{
 		template <typename... Elements, unsigned... Indices>
-		auto select(const Tuple<Elements...>& tuple, ValueList<unsigned, Indices...>)
+		inline auto select(const Tuple<Elements...>& tuple, ValueList<unsigned, Indices...>)
 		{
 			return makeTuple(get<Indices>(tuple)...);
 		}
 	}
 
 	template <unsigned... Indices, typename... Elements>
-	auto select(const Tuple<Elements...>& tuple)
+	inline auto select(const Tuple<Elements...>& tuple)
 	{
 		return Detail::select(tuple, ValueList<unsigned, Indices...>{});
 	}
 
 	template <typename... Elements>
-	auto reverse(const Tuple<Elements...>& tuple)
+	inline auto reverse(const Tuple<Elements...>& tuple)
 	{
 		using Indices = Reverse<MakeIndexList<sizeof...(Elements)>>;
 		return Detail::select(tuple, Indices{});
+	}
+
+	template <unsigned Index, unsigned N, typename... Elements>
+	inline auto replicate(const Tuple<Elements...>& t)
+	{
+		return Detail::select(t, ReplicateValue<Index, N>{});
 	}
 }
