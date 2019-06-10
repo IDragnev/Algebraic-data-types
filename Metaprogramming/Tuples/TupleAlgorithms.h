@@ -101,7 +101,8 @@ namespace IDragnev::Meta
 	template <unsigned Index, unsigned N, typename... Elements>
 	inline auto replicate(const Tuple<Elements...>& t)
 	{
-		return Detail::select(t, ReplicateValue<Index, N>{});
+		using Indices = ReplicateValue<Index, N>;
+		return Detail::select(t, Indices{});
 	}
 
 	template <unsigned N, typename... Elements>
