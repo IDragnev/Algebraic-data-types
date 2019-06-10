@@ -281,4 +281,37 @@ namespace IDragnev::Meta
 		struct Compare<CTValue<unsigned, I>, CTValue<unsigned, J>> : 
 			CompareFn<ListRef<List, I>, ListRef<List, J>> { };
 	};
+
+	template <template <typename T> typename Predicate,
+		      typename List,
+		      bool = isEmpty<List>
+	> struct AllOfT;
+
+	template <template <typename T> typename Predicate,
+		      typename List>
+	inline constexpr bool allOf = AllOfT<Predicate, List>::value;
+
+	template <template <typename T> typename Predicate,
+		      typename List>
+	struct AllOfT<Predicate, List, true> : std::true_type { };
+
+	template <template <typename T> typename Predicate,
+		      typename List> 
+	struct AllOfT<Predicate, List, false> : 
+		std::bool_constant<Predicate<Head<List>>::value && allOf<Predicate, Tail<List>>> { };
+
+	template <template <typename... Args> typename Predicate>
+	struct Inverse
+	{
+		template <typename... Args>
+		struct Result : std::bool_constant<!Predicate<Args...>::value> { };
+	};
+
+	template <template <typename T> typename Predicate,
+		      typename List
+	> struct NoneOfT : AllOfT<Inverse<Predicate>::template Result, List> { };
+
+	template <template <typename T> typename Predicate,
+		      typename List>
+	inline constexpr bool noneOf = NoneOfT<Predicate, List>::value;
 }
