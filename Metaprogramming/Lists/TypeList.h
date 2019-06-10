@@ -13,6 +13,9 @@ namespace IDragnev::Meta
 		using type = H;
 	};
 
+	template <>
+	struct HeadT<TypeList<>> { };
+
 	template <typename T, typename... Ts>
 	struct TailT<TypeList<T, Ts...>>
 	{

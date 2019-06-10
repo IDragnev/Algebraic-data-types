@@ -9,7 +9,7 @@ namespace IDragnev::Meta
 	}
 
 	template <typename Head, typename... Tail>
-	template <typename VHead, typename... VTail, typename>
+	template <typename VHead, typename... VTail, typename, typename>
 	Tuple<Head, Tail...>::Tuple(VHead&& head, VTail&&... tail) :
 		HeadElement(std::forward<VHead>(head)),
 		TailTuple(std::forward<VTail>(tail)...)

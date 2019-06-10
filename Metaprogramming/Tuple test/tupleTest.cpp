@@ -82,7 +82,7 @@ namespace Tupletest
 
 		TEST_METHOD(headAndTailConstructor)
 		{
-			const auto source = makeTuple(1, 2);
+			auto source = makeTuple(1, 2);
 			
 			auto destination = Tuple<int,int>(source.getHead(), source.getTail());
 
