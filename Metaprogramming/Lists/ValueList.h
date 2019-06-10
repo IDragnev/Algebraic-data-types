@@ -23,6 +23,9 @@ namespace IDragnev::Meta
 		static constexpr T value = head;
 	};
 
+	template <typename T>
+	struct HeadT<ValueList<T>> { };
+
 	template <typename T, T head, T... tail>
 	struct TailT<ValueList<T, head, tail...>>
 	{

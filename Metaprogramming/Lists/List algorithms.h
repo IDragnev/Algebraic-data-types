@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ListInterface.h"
-#include "Pair.h"
+#include "TypeFunctionsAndPredicates.h"
 #include "TypeList.h"
 #include "ValueList.h"
 
@@ -81,18 +80,6 @@ namespace IDragnev::Meta
 		      typename List>
 	using Map = typename MapT<F, List>::type;
 
-	template <typename T>
-	struct IdentityT
-	{
-		using type = T;
-	};
-
-	template <typename T>
-	struct CloneT
-	{
-		using type = Pair<T, T>;
-	};
-
 	template <template <typename Res, typename Current> typename Op,
 		      typename Initial,
 		      typename List,
@@ -111,12 +98,6 @@ namespace IDragnev::Meta
 		      typename Initial,
 		      typename List>
 	using FoldLeft = typename FoldLeftT<Op, Initial, List>::type;
-
-	template <typename T, typename F>
-	struct LargerT
-	{
-		using type = std::conditional_t<sizeof(T) >= sizeof(F), T, F>;
-	};
 
 	template <typename List>
 	struct LargestTypeT : FoldLeftT<LargerT, Head<List>, Tail<List>> { };
@@ -268,9 +249,6 @@ namespace IDragnev::Meta
 		using type = InsertFront<NewTail, NewHead>;
 	};
 
-	template <typename U, typename V>
-	struct IsSmallerT : std::bool_constant<(sizeof(U) < sizeof(V))> { };
-
 	template <typename List,
 		      template <typename U, typename V> typename CompareFn
 	> struct MakeIndexedCompareT
@@ -299,13 +277,6 @@ namespace IDragnev::Meta
 		      typename List> 
 	struct AllOfT<Predicate, List, false> : 
 		std::bool_constant<Predicate<Head<List>>::value && allOf<Predicate, Tail<List>>> { };
-
-	template <template <typename... Args> typename Predicate>
-	struct Inverse
-	{
-		template <typename... Args>
-		struct Result : std::bool_constant<!Predicate<Args...>::value> { };
-	};
 
 	template <template <typename T> typename Predicate,
 		      typename List
