@@ -12,11 +12,17 @@ namespace IDragnev::Meta
 		using type = H;
 	};
 
+	template <>
+	struct HeadT<Tuple<>> { };
+
 	template <typename T, typename... Ts>
 	struct TailT<Tuple<T, Ts...>>
 	{
 		using type = Tuple<Ts...>;
 	};
+
+	template <>
+	struct TailT<Tuple<>> { };
 
 	template <typename... Elems, typename... Ts>
 	struct InsertFrontT<Tuple<Elems...>, Ts...>

@@ -32,6 +32,9 @@ namespace IDragnev::Meta
 		using type = ValueList<T, tail...>;
 	};
 
+	template <typename T>
+	struct TailT<ValueList<T>> { };
+
 	template <typename T, T... elems, T value>
 	struct InsertFrontT<ValueList<T, elems...>, CTValue<T, value>>
 	{
