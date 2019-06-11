@@ -285,4 +285,12 @@ namespace IDragnev::Meta
 	template <template <typename T> typename Predicate,
 		      typename List>
 	inline constexpr bool noneOf = NoneOfT<Predicate, List>::value;
+
+	template <template <typename T> typename Predicate,
+		      typename List
+	> struct AnyOfT : std::bool_constant<!allOf<Inverse<Predicate>::template Result, List>> { };
+
+	template <template <typename T> typename Predicate,
+		      typename List>
+	inline constexpr bool anyOf = AnyOfT<Predicate, List>::value;
 }
