@@ -66,15 +66,11 @@ namespace IDragnev::Meta
 			          insertBack(tuple.getTail(), value));
 	}
 
-	void dropHead(const Tuple<>&) = delete;
-
 	template <typename H, typename... Elements>
 	inline auto dropHead(const Tuple<H, Elements...>& tuple)
 	{
 		return tuple.getTail();
 	}
-
-	void dropTail(const Tuple<>&) = delete;
 
 	template <typename H, typename... Elements>
 	inline auto dropTail(const Tuple<H, Elements...>& tuple)
