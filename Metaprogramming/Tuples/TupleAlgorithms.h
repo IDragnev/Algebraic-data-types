@@ -129,4 +129,44 @@ namespace IDragnev::Meta
 			                          MakeIndexedCompareT<Tuple<Elements...>, CompareFn>::template Compare>;
 		return Detail::select(t, Indices{});
 	}
+
+	namespace Detail
+	{
+		template <typename Callable, typename... Args>
+		void forEachArg(Callable f, Args&&... args)
+		{
+			(f(std::forward<Args>(args)), ...);
+		}
+
+		template <typename Callable, typename... Elements, unsigned... Indices>
+		inline void forEach(const Tuple<Elements...>& tuple, Callable f, ValueList<unsigned, Indices...>)
+		{
+			forEachArg(f, get<Indices>(tuple)...);
+		}
+	}
+
+	template <typename Callable, typename... Elements>
+	inline void forEach(const Tuple<Elements...>& tuple, Callable f)
+	{
+		using Indices = MakeIndexList<sizeof...(Elements)>;
+		Detail::forEach(tuple, f, Indices{});
+	}
+
+	namespace Detail
+	{
+		template <typename Callable, typename... Elements, unsigned... Indices>
+		inline decltype(auto)
+		apply(Callable f, const Tuple<Elements...>& tuple, ValueList<unsigned, Indices...>)
+		{
+			return f(get<Indices>(tuple)...);
+		}
+	}
+
+	template <typename Callable, typename... Elements>
+	inline decltype(auto)
+	apply(Callable f, const Tuple<Elements...>& tuple)
+	{
+		using Indices = MakeIndexList<sizeof...(Elements)>;
+		return Detail::apply(f, tuple, Indices{});
+	}
 }
