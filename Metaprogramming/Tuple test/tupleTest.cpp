@@ -228,23 +228,20 @@ namespace Tupletest
 
 		TEST_METHOD(applyingAFunctionForEachElementOfATuple)
 		{
-			auto tuple = makeTuple(1, 2, 3);
-			auto sum = 0;
-			auto addToSum = [&sum](auto x) { sum += x; };
+			auto tuple = makeTuple(1, 2);
+			auto plusOne = [](auto& x) { x += 1; };
 
-			forEach(tuple, addToSum);
+			forEach(tuple, plusOne);
 
-			Assert::AreEqual(sum, 6);
+			Assert::IsTrue(tuple == makeTuple(2, 3));
 		}
 
 		TEST_METHOD(applyingAFunctionToTheElementsOfATuple)
 		{
-			auto tuple = makeTuple(1, 2, 3);
-			auto sum = [](auto x, auto y, auto z) { return x + y + z; };
+			auto tuple = makeTuple(1, 2);
+			auto areEqual = [](auto x, auto y) { return x == y; };
 
-			auto result = apply(sum, tuple);
-
-			Assert::AreEqual(result, 6);
+			Assert::IsFalse(apply(areEqual, tuple));
 		}
 	};
 }
