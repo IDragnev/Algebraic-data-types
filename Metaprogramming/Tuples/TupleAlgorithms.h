@@ -164,18 +164,18 @@ namespace IDragnev::Meta
 	{
 		template <typename Callable, typename TupleT, unsigned... Indices>
 		inline decltype(auto)
-		apply(Callable f, TupleT& tuple, ValueList<unsigned, Indices...>)
+		apply(Callable f, TupleT&& tuple, ValueList<unsigned, Indices...>)
 		{
-			return f(get<Indices>(tuple)...);
+			return f(get<Indices>(std::forward<TupleT>(tuple))...);
 		}
 	}
 
 	template <typename Callable,
 		      typename TupleT,
 		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
-	inline decltype(auto) apply(Callable f, TupleT& tuple)
+	inline decltype(auto) apply(Callable f, TupleT&& tuple)
 	{
 		using Indices = MakeIndexList<Size>;
-		return Detail::apply(f, tuple, Indices{});
+		return Detail::apply(f, std::forward<TupleT>(tuple), Indices{});
 	}
 }

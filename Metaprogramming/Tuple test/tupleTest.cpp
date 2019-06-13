@@ -257,7 +257,7 @@ namespace Tupletest
 			Assert::IsTrue(tuple == makeTuple(2, 3));
 		}
 
-		TEST_METHOD(forEachUsesPerfectForwarding)
+		TEST_METHOD(forEachTakesValueCategoryIntoAccount)
 		{
 			using Strings = std::vector<std::string>;
 
@@ -277,6 +277,20 @@ namespace Tupletest
 			auto areEqual = [](auto x, auto y) { return x == y; };
 
 			Assert::IsFalse(apply(areEqual, tuple));
+		}
+
+		TEST_METHOD(applyTakesValueCategoryIntoAccount)
+		{
+			auto tuple = makeTuple("a"s, "b"s);
+			auto sum = [](auto& x, auto&& y)
+			{
+				return x + std::forward<decltype(y)>(y);
+			};
+
+			auto result = IDragnev::Meta::apply(sum, std::move(tuple));
+
+			Assert::IsTrue(result == "ab"s);
+			Assert::IsTrue(tuple == makeTuple("a"s, ""s));
 		}
 	};
 }
