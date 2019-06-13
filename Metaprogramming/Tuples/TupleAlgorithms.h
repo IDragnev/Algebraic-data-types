@@ -80,17 +80,23 @@ namespace IDragnev::Meta
 
 	namespace Detail
 	{
-		template <typename... Elements, unsigned... Indices>
-		inline auto select(const Tuple<Elements...>& tuple, ValueList<unsigned, Indices...>)
+		template <typename TupleT, unsigned... Indices>
+		inline auto select(TupleT&& tuple, ValueList<unsigned, Indices...>)
 		{
-			return makeTuple(get<Indices>(tuple)...);
+			return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...);
 		}
+
+		template <typename T>
+		using EnableIfTuple = std::enable_if_t<isTuple<std::decay_t<T>>>;
 	}
 
-	template <unsigned... Indices, typename... Elements>
-	inline auto select(const Tuple<Elements...>& tuple)
+	template <unsigned... Indices, 
+		      typename TupleT,
+		      typename = Detail::EnableIfTuple<TupleT>>
+	inline auto select(TupleT&& tuple)
 	{
-		return Detail::select(tuple, ValueList<unsigned, Indices...>{});
+		using IndicesT = ValueList<unsigned, Indices...>;
+		return Detail::select(std::forward<TupleT>(tuple), IndicesT{});
 	}
 
 	template <typename... Elements>

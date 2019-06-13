@@ -191,6 +191,16 @@ namespace Tupletest
 			Assert::IsTrue(odds == makeTuple(5, 7));
 		}
 
+		TEST_METHOD(movingSubtuplesWithSelect)
+		{
+			auto source = makeTuple(2, "a"s, "b"s);
+
+			auto destination = select<1, 2>(std::move(source));
+
+			Assert::IsTrue(source == makeTuple(2, ""s, ""s));
+			Assert::IsTrue(destination == makeTuple("a"s, "b"s));
+		}
+
 		TEST_METHOD(reversingATuple)
 		{
 			auto source = makeTuple(0, 1, 2, 3);

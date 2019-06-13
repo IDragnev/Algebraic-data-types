@@ -20,6 +20,15 @@ namespace IDragnev::Meta
 		template <typename T>
 		inline constexpr unsigned tupleSize = TupleSize<T>::value;
 
+		template <typename T, typename = std::void_t<>>
+		struct IsTuple : std::false_type { };
+
+		template <typename T>
+		struct IsTuple<T, std::void_t<decltype(TupleSize<std::decay_t<T>>::value)>> : std::true_type { };
+
+		template <typename T>
+		inline constexpr bool isTuple = IsTuple<T>::value;
+
 		template <typename List, typename T, bool = isEmpty<List>>
 		struct MatchesHeadOf : std::false_type { };
 
