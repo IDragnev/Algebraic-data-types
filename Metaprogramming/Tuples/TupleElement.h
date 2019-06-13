@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <utility>
 
 namespace IDragnev::Meta::Detail
 {
@@ -20,8 +21,10 @@ namespace IDragnev::Meta::Detail
 		template<typename U>
 		TupleElement(U&& value) : value(std::forward<U>(value)) { }
 
-		T& get() noexcept { return value; }
-		const T& get() const noexcept { return value; }
+		T&& get() && noexcept { return std::move(value); }
+		const T&& get() const && noexcept { return std::move(value); }
+		T& get() & noexcept { return value; }
+		const T& get() const & noexcept { return value; }
 
 	private:
 		T value;
@@ -35,20 +38,33 @@ namespace IDragnev::Meta::Detail
 		template<typename U>
 		TupleElement(U&& value) : T(std::forward<U>(value)) { }
 
-		T& get() noexcept { return *this; }
-		const T& get() const noexcept { return *this; }
+		T&& get() && noexcept { return std::move(*this); }
+		const T&& get() const && noexcept { return std::move(*this); }
+		T& get() & noexcept { return *this; }
+		const T& get() const & noexcept { return *this; }
 	};
 
 	template <unsigned Height, typename T>
-	T& extractValue(TupleElement<Height, T>& e) noexcept
+	inline const T& extractValue(const TupleElement<Height, T>& e) noexcept
 	{
-		const auto& element = e;
-		return const_cast<T&>(extractValue(element));
+		return e.get();
 	}
 
 	template <unsigned Height, typename T>
-	const T& extractValue(const TupleElement<Height, T>& e) noexcept
+	inline T& extractValue(TupleElement<Height, T>& e) noexcept
 	{
-		return e.get();
+		return const_cast<T&>(extractValue(std::as_const(e)));
+	}
+
+	template <unsigned Height, typename T>
+	inline const T&& extractValue(const TupleElement<Height, T>&& e) noexcept
+	{
+		return std::move(extractValue(e));
+	}
+
+	template <unsigned Height, typename T>
+	inline T&& extractValue(TupleElement<Height, T>&& e) noexcept
+	{
+		return std::move(e).get();
 	}
 }

@@ -133,7 +133,7 @@ namespace Tupletest
 			Assert::IsTrue(rhs == makeTuple(1, ""s), L"Moved-from object has invalid contents");
 		}
 
-		TEST_METHOD(extractingValues)
+		TEST_METHOD(extractingValuesWithGet)
 		{
 			const auto tuple = makeTuple(1, 2, 3);
 
@@ -142,6 +142,16 @@ namespace Tupletest
 
 			Assert::AreEqual(x, 1);
 			Assert::AreEqual(y, 2);
+		}
+
+		TEST_METHOD(getTakesValueCategoryIntoAccount)
+		{
+			auto tuple = makeTuple("a"s);
+
+			auto str = get<0>(std::move(tuple));
+
+			Assert::IsTrue(str == "a"s);
+			Assert::IsTrue(tuple.getHead() == ""s);
 		}
 
 		TEST_METHOD(insertingBack)

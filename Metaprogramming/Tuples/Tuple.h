@@ -31,10 +31,10 @@ namespace IDragnev::Meta
 	}
 
 	template <unsigned I, typename TupleT, 
-		      unsigned Size = Detail::tupleSize<std::remove_const_t<TupleT>>>
-	inline decltype(auto) get(TupleT& tuple) noexcept
+		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
+	inline decltype(auto) get(TupleT&& tuple) noexcept
 	{
-		return Detail::extractValue<Size - I - 1>(tuple);
+		return Detail::extractValue<Size - I - 1>(std::forward<TupleT>(tuple));
 	}
 
 	template <>
@@ -99,7 +99,7 @@ namespace IDragnev::Meta
 		const Tuple<Tail...>& getTail() const noexcept;
 	
 		template <unsigned I, typename TupleT, unsigned Size>
-		friend decltype(auto) get(TupleT& tuple) noexcept;
+		friend decltype(auto) get(TupleT&& tuple) noexcept;
 	};
 
 	template <typename... Types>
