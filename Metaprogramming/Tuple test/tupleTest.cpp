@@ -1,6 +1,7 @@
 #include "CppUnitTest.h"
 #include "Tuples\Tuple.h"
 #include "Tuples\TupleAlgorithms.h"
+#include <vector>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace IDragnev::Meta;
@@ -254,6 +255,20 @@ namespace Tupletest
 			forEach(tuple, plusOne);
 
 			Assert::IsTrue(tuple == makeTuple(2, 3));
+		}
+
+		TEST_METHOD(forEachUsesPerfectForwarding)
+		{
+			using Strings = std::vector<std::string>;
+
+			auto result = Strings{};
+			auto tuple = makeTuple("a"s, "b"s, "c"s);
+			auto moveToResult = [&result](std::string&& x) { result.push_back(std::move(x)); };
+			
+			forEach(std::move(tuple), moveToResult);
+
+			Assert::IsTrue(tuple == makeTuple(""s, ""s, ""s));
+			Assert::IsTrue(result == Strings{ "a", "b", "c" });
 		}
 
 		TEST_METHOD(applyingAFunctionToTheElementsOfATuple)

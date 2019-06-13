@@ -145,19 +145,19 @@ namespace IDragnev::Meta
 		}
 
 		template <typename Callable, typename TupleT, unsigned... Indices>
-		inline void forEach(TupleT& tuple, Callable f, ValueList<unsigned, Indices...>)
+		inline void forEach(TupleT&& tuple, Callable f, ValueList<unsigned, Indices...>)
 		{
-			forEachArg(f, get<Indices>(tuple)...);
+			forEachArg(f, get<Indices>(std::forward<TupleT>(tuple))...);
 		}
 	}
 
 	template <typename Callable, 
 		      typename TupleT,
 	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
-	inline void forEach(TupleT& tuple, Callable f)
+	inline void forEach(TupleT&& tuple, Callable f)
 	{
 		using Indices = MakeIndexList<Size>;
-		Detail::forEach(tuple, f, Indices{});
+		Detail::forEach(std::forward<TupleT>(tuple), f, Indices{});
 	}
 
 	namespace Detail
