@@ -211,6 +211,16 @@ namespace Tupletest
 			Assert::IsTrue(result == makeTuple(3, 2, 1, 0));
 		}
 
+		TEST_METHOD(reverseTakesValueCategoryIntoAccount)
+		{
+			auto source = makeTuple(1, "a"s);
+
+			auto result = reverse(std::move(source));
+
+			Assert::IsTrue(source == makeTuple(1, ""s));
+			Assert::IsTrue(result == makeTuple("a"s, 1));
+		}
+
 		TEST_METHOD(replicatingASingleValue)
 		{
 			auto source = makeTuple(0, 1, 2);
@@ -282,7 +292,7 @@ namespace Tupletest
 		TEST_METHOD(applyTakesValueCategoryIntoAccount)
 		{
 			auto tuple = makeTuple("a"s, "b"s);
-			auto sum = [](auto& x, auto&& y)
+			auto sum = [](const auto& x, auto&& y)
 			{
 				return x + std::forward<decltype(y)>(y);
 			};

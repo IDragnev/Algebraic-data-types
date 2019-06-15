@@ -99,11 +99,12 @@ namespace IDragnev::Meta
 		return Detail::select(std::forward<TupleT>(tuple), IndicesT{});
 	}
 
-	template <typename... Elements>
-	inline auto reverse(const Tuple<Elements...>& tuple)
+	template <typename TupleT,
+	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
+	inline auto reverse(TupleT&& tuple)
 	{
-		using Indices = Reverse<MakeIndexList<sizeof...(Elements)>>;
-		return Detail::select(tuple, Indices{});
+		using Indices = Reverse<MakeIndexList<Size>>;
+		return Detail::select(std::forward<TupleT>(tuple), Indices{});
 	}
 
 	template <unsigned Index, unsigned N, typename... Elements>
