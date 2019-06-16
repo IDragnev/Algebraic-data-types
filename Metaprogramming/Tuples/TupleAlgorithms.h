@@ -193,6 +193,9 @@ namespace IDragnev::Meta
 			return makeTuple(get<UIndices>(std::forward<UTuple>(u))...,
 				             get<VIndices>(std::forward<VTuple>(v))...);
 		}
+
+		template <typename... Types>
+		inline constexpr bool areAllTuples = allOf<IsTuple, TypeList<std::decay_t<Types>...>>;
 	}
 
 	template <typename UTuple,
@@ -208,5 +211,16 @@ namespace IDragnev::Meta
 								   std::forward<VTuple>(v),
 			                       UIndices{},
 			                       VIndices{});
+	}
+
+	template <typename UTuple,
+		      typename VTuple,
+		      typename... Tuples,
+		      typename = std::enable_if_t<Detail::areAllTuples<UTuple, VTuple, Tuples...>>
+	> auto concatenate(UTuple&& u, VTuple&& v, Tuples&&... rest)
+	{
+		return concatenate(concatenate(std::forward<UTuple>(u), 
+			                           std::forward<VTuple>(v)),
+			               rest...);
 	}
 }

@@ -324,6 +324,17 @@ namespace Tupletest
 			Assert::IsTrue(result == makeTuple(1, 2, 3, 4, "a"s));
 		}
 
+		TEST_METHOD(concatenateTakesAnyNumberOfTuplesGreaterThanOne)
+		{
+			auto first = makeTuple(1, 2);
+			auto second = makeTuple(3, 4, 5);
+			auto third = makeTuple(6);
+			
+			auto result = concatenate(first, second, third);
+			
+			Assert::IsTrue(result == makeTuple(1, 2, 3, 4, 5, 6));
+		}
+
 		TEST_METHOD(tupleEquality)
 		{
 			Assert::IsTrue(makeTuple(1, 2) == makeTuple(1, 2));
