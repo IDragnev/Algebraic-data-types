@@ -18,7 +18,8 @@ namespace IDragnev::Meta
 		using EnableIfHaveSameLength = std::enable_if_t<haveSameLength<U, V>>;
 
 		template <typename CompareFn>
-		inline bool compareWith(CompareFn, const Tuple<>&, const Tuple<>&)
+		inline constexpr
+		bool compareWith(CompareFn, const Tuple<>&, const Tuple<>&)
 		{
 			return true;
 		}
@@ -26,7 +27,8 @@ namespace IDragnev::Meta
 		template <typename CompareFn, 
 			      typename UHead, typename... UTail, 
 			      typename VHead, typename... VTail
-		> bool compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
+		> bool constexpr
+		compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
 		{
 			return compare(u.getHead(), v.getHead()) &&
 				   compareWith(compare, u.getTail(), v.getTail());
@@ -34,7 +36,8 @@ namespace IDragnev::Meta
 	}
 
 	template <typename... Types>
-	inline auto makeTuple(Types&&... args)
+	inline constexpr
+	auto makeTuple(Types&&... args)
 	{
 		using T = Tuple<std::decay_t<Types>...>;
 		return T(std::forward<Types>(args)...);
@@ -43,7 +46,8 @@ namespace IDragnev::Meta
 	template <typename... Us, 
 		      typename... Vs,
 		      typename = Detail::EnableIfHaveSameLength<TypeList<Us...>, TypeList<Vs...>>
-	> inline bool operator==(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+	> inline constexpr
+	bool operator==(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return Detail::compareWith(std::equal_to{}, u, v);
 	}
@@ -51,7 +55,8 @@ namespace IDragnev::Meta
 	template <typename... Us,
 		      typename... Vs,
 		      typename = Detail::EnableIfHaveSameLength<TypeList<Us...>, TypeList<Vs...>>
-	> inline bool operator!=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+	> inline constexpr
+	bool operator!=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return !(u == v);
 	}
@@ -59,7 +64,8 @@ namespace IDragnev::Meta
 	template <typename... Us,
 		      typename... Vs,
 		      typename = Detail::EnableIfHaveSameLength<TypeList<Us...>, TypeList<Vs...>>
-	> inline bool operator<(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+	> inline constexpr
+	bool operator<(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return Detail::compareWith(std::less{}, u, v);
 	}
@@ -67,7 +73,8 @@ namespace IDragnev::Meta
 	template <typename... Us,
 		      typename... Vs,
 		      typename = Detail::EnableIfHaveSameLength<TypeList<Us...>, TypeList<Vs...>>
-	> inline bool operator>(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+	> inline constexpr
+	bool operator>(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return v < u;
 	}
@@ -75,7 +82,8 @@ namespace IDragnev::Meta
 	template <typename... Us,
 		      typename... Vs,
 		      typename = Detail::EnableIfHaveSameLength<TypeList<Us...>, TypeList<Vs...>>
-	> inline bool operator>=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+	> inline constexpr
+	bool operator>=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return Detail::compareWith(std::greater_equal{}, u, v);
 	}
@@ -83,7 +91,8 @@ namespace IDragnev::Meta
 	template <typename... Us,
 		      typename... Vs,
 		      typename = Detail::EnableIfHaveSameLength<TypeList<Us...>, TypeList<Vs...>>
-	> inline bool operator<=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+	> inline constexpr
+	bool operator<=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return Detail::compareWith(std::less_equal{}, u, v);
 	}

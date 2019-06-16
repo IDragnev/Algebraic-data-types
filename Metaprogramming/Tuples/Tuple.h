@@ -41,7 +41,8 @@ namespace IDragnev::Meta
 
 	template <unsigned I, typename TupleT, 
 		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
-	inline decltype(auto) get(TupleT&& tuple) noexcept
+	inline constexpr
+	decltype(auto) get(TupleT&& tuple) noexcept
 	{
 		return Detail::extractValue<Size - I - 1>(std::forward<TupleT>(tuple));
 	}
@@ -70,23 +71,23 @@ namespace IDragnev::Meta
 		Tuple(const Tuple& source) = default;
 		~Tuple() = default;
 
-		Tuple(const Head& h, const Tuple<Tail...>& tail);
+		constexpr Tuple(const Head& h, const Tuple<Tail...>& tail);
 
 		template<typename VHead,
 			     typename... VTail,
 			     typename = EnableIfMatchesTailLength<VTail...>,
 		         typename = EnableIfNotTailTuple<VTail...>>
-		Tuple(VHead&& head, VTail&&... tail);
+		constexpr Tuple(VHead&& head, VTail&&... tail);
 
 		template<typename VHead,
 			     typename... VTail,
 			     typename = EnableIfMatchesTailLength<VTail...>>
-		Tuple(const Tuple<VHead, VTail...>& source);
+		constexpr Tuple(const Tuple<VHead, VTail...>& source);
 
 		template<typename VHead,
 			     typename... VTail,
 			     typename = EnableIfMatchesTailLength<VTail...>>
-		Tuple(Tuple<VHead, VTail...>&& source);
+		constexpr Tuple(Tuple<VHead, VTail...>&& source);
 
 		Tuple& operator=(Tuple&& rhs) = default;
 		Tuple& operator=(const Tuple& rhs) = default;
@@ -94,21 +95,21 @@ namespace IDragnev::Meta
 		template<typename VHead,
 			     typename... VTail,
 			     typename = EnableIfMatchesTailLength<VTail...>>
-		Tuple& operator=(const Tuple<VHead, VTail...>& source);
+		constexpr Tuple& operator=(const Tuple<VHead, VTail...>& source);
 
 		template<typename VHead,
 			     typename... VTail,
 			     typename = EnableIfMatchesTailLength<VTail...>>
-		Tuple& operator=(Tuple<VHead, VTail...>&& source);
+		constexpr Tuple& operator=(Tuple<VHead, VTail...>&& source);
 
-		Head& getHead() noexcept;
-		const Head& getHead() const noexcept;
+		constexpr Head& getHead() noexcept;
+		constexpr const Head& getHead() const noexcept;
 
-		Tuple<Tail...>& getTail() noexcept;
-		const Tuple<Tail...>& getTail() const noexcept;
+		constexpr Tuple<Tail...>& getTail() noexcept;
+		constexpr const Tuple<Tail...>& getTail() const noexcept;
 	
 		template <unsigned I, typename TupleT, unsigned Size>
-		friend decltype(auto) get(TupleT&& tuple) noexcept;
+		friend constexpr decltype(auto) get(TupleT&& tuple) noexcept;
 	};
 }
 

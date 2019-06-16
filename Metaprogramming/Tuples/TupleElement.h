@@ -19,12 +19,12 @@ namespace IDragnev::Meta::Detail
 	public:
 		TupleElement() = default;
 		template<typename U>
-		TupleElement(U&& value) : value(std::forward<U>(value)) { }
+		constexpr TupleElement(U&& value) : value(std::forward<U>(value)) { }
 
-		T&& get() && noexcept { return std::move(value); }
-		const T&& get() const && noexcept { return std::move(value); }
-		T& get() & noexcept { return value; }
-		const T& get() const & noexcept { return value; }
+		constexpr T&& get() && noexcept { return std::move(value); }
+		constexpr const T&& get() const && noexcept { return std::move(value); }
+		constexpr T& get() & noexcept { return value; }
+		constexpr const T& get() const & noexcept { return value; }
 
 	private:
 		T value;
@@ -36,34 +36,38 @@ namespace IDragnev::Meta::Detail
 	public:
 		TupleElement() = default;
 		template<typename U>
-		TupleElement(U&& value) : T(std::forward<U>(value)) { }
+		constexpr TupleElement(U&& value) : T(std::forward<U>(value)) { }
 
-		T&& get() && noexcept { return std::move(*this); }
-		const T&& get() const && noexcept { return std::move(*this); }
-		T& get() & noexcept { return *this; }
-		const T& get() const & noexcept { return *this; }
+		constexpr T&& get() && noexcept { return std::move(*this); }
+		constexpr const T&& get() const && noexcept { return std::move(*this); }
+		constexpr T& get() & noexcept { return *this; }
+		constexpr const T& get() const & noexcept { return *this; }
 	};
 
 	template <unsigned Height, typename T>
-	inline const T& extractValue(const TupleElement<Height, T>& e) noexcept
+	inline constexpr 
+	const T& extractValue(const TupleElement<Height, T>& e) noexcept
 	{
 		return e.get();
 	}
 
 	template <unsigned Height, typename T>
-	inline T& extractValue(TupleElement<Height, T>& e) noexcept
+	inline constexpr
+	T& extractValue(TupleElement<Height, T>& e) noexcept
 	{
 		return const_cast<T&>(extractValue(std::as_const(e)));
 	}
 
 	template <unsigned Height, typename T>
-	inline const T&& extractValue(const TupleElement<Height, T>&& e) noexcept
+	inline constexpr 
+	const T&& extractValue(const TupleElement<Height, T>&& e) noexcept
 	{
 		return std::move(extractValue(e));
 	}
 
 	template <unsigned Height, typename T>
-	inline T&& extractValue(TupleElement<Height, T>&& e) noexcept
+	inline constexpr
+	T&& extractValue(TupleElement<Height, T>&& e) noexcept
 	{
 		return std::move(e).get();
 	}

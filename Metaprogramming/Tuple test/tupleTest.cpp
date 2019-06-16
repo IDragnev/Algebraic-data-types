@@ -14,12 +14,12 @@ namespace Tupletest
 	public:
 		TEST_METHOD(defaultConstructor)
 		{
-			auto tuple = Tuple<int>{};
+			constexpr auto tuple = Tuple<int>{};
 
-			Assert::AreEqual(tuple.getHead(), 0);
+			static_assert(get<0>(tuple) == 0);
 		}
 
-		TEST_METHOD(variadicConstructorUsesPerfectForwarding)
+		TEST_METHOD(variadicConstructorAndMakeTupleUsePerfectForwarding)
 		{
 			const auto x = 1;
 			auto str = "str"s;
@@ -27,18 +27,24 @@ namespace Tupletest
 			auto tuple = makeTuple(x, std::move(str));
 
 			Assert::IsTrue(str == "", L"Argument is not moved");
-			Assert::AreEqual(tuple.getHead(), x, L"Invalid head value");
-			Assert::IsTrue(tuple.getTail().getHead() == "str", L"Invalid tail value");
+			Assert::AreEqual(get<0>(tuple), x, L"Invalid head value");
+			Assert::IsTrue(get<1>(tuple) == "str", L"Invalid tail value");
 		}
 
+		TEST_METHOD(variadicConstructorAndMakeTupleCanComputeAtCompileTime)
+		{
+			constexpr auto tuple = makeTuple(1, 2);
+			
+			static_assert(get<0>(tuple) == 1);
+		}
 		TEST_METHOD(conversionConstructorFromLValue)
 		{
-			using Dest = Tuple<long, unsigned long>;
-			const auto source = makeTuple(1, 2u);
+			using Dest = Tuple<long, unsigned long>;		
+			constexpr auto source = makeTuple(1, 2u);
 			
-			auto tuple = Dest(source);
+			constexpr auto tuple = Dest(source);
 
-			Assert::IsTrue(tuple == makeTuple(1l, 2ul));
+			static_assert(tuple == makeTuple(1l, 2ul));
 		}
 
 		TEST_METHOD(conversionConstructorFromRvalue)
@@ -62,12 +68,19 @@ namespace Tupletest
 			Assert::IsTrue(destination == makeTuple(1l, A("str"s)), L"Moved-in object has invalid contents");
 		}
 
+		TEST_METHOD(conversionConstructorFromRvalueCanComputeAtCompileTime)
+		{
+			constexpr auto x = Tuple<long, double>(makeTuple(2, 2.f));
+
+			static_assert(x == makeTuple(2l, 2.0));
+		}
+
 		TEST_METHOD(copyConstructor)
 		{
-			auto source = makeTuple(1, 2u);
-			auto destination = source;
+			constexpr auto source = makeTuple(1, 2u);
+			constexpr auto destination = source;
 
-			Assert::IsTrue(source == destination);
+			static_assert(source == destination);
 		}
 
 		TEST_METHOD(moveConstructor)
@@ -136,13 +149,10 @@ namespace Tupletest
 
 		TEST_METHOD(extractingValuesWithGet)
 		{
-			const auto tuple = makeTuple(1, 2, 3);
+			constexpr auto tuple = makeTuple(1, 2);
 
-			auto x = get<0>(tuple);
-			auto y = get<1>(tuple);
-
-			Assert::AreEqual(x, 1);
-			Assert::AreEqual(y, 2);
+			static_assert(get<0>(tuple) == 1);
+			static_assert(get<1>(tuple) == 2);
 		}
 
 		TEST_METHOD(getTakesValueCategoryIntoAccount)
@@ -337,31 +347,31 @@ namespace Tupletest
 
 		TEST_METHOD(tupleEquality)
 		{
-			Assert::IsTrue(makeTuple(1, 2) == makeTuple(1, 2));
-			Assert::IsFalse(makeTuple(1, 2) != makeTuple(1, 2));
+			static_assert(makeTuple(1, 2) == makeTuple(1, 2));
+			static_assert(!(makeTuple(1, 2) != makeTuple(1, 2)));
 		}
 
 		TEST_METHOD(tupleGreaterThan)
 		{
-			Assert::IsTrue(makeTuple(3, 4) > makeTuple(2, 3));
-			Assert::IsFalse(makeTuple(3, 4) > makeTuple(3, 1));
+			static_assert(makeTuple(3, 4) > makeTuple(2, 3));
+			static_assert(!(makeTuple(3, 4) > makeTuple(3, 1)));
 		}
 
 		TEST_METHOD(tupleLessThan)
 		{
-			Assert::IsTrue(makeTuple(1, 4) < makeTuple(2, 5));
-			Assert::IsFalse(makeTuple(3, 4) < makeTuple(3, 10));
+			static_assert(makeTuple(1, 4) < makeTuple(2, 5));
+			static_assert(!(makeTuple(3, 4) < makeTuple(3, 10)));
 		}
 		TEST_METHOD(tupleGreaterOrEqual)
 		{
-			Assert::IsTrue(makeTuple(3, 4) >= makeTuple(2, 4));
-			Assert::IsFalse(makeTuple(3, 4) >= makeTuple(2, 5));
+			static_assert(makeTuple(3, 4) >= makeTuple(2, 4));
+			static_assert(!(makeTuple(3, 4) >= makeTuple(2, 5)));
 		}
 
 		TEST_METHOD(tupleLessOrEqual)
 		{
-			Assert::IsTrue(makeTuple(3, 4) <= makeTuple(3, 5));
-			Assert::IsFalse(makeTuple(3, 4) <= makeTuple(4, 3));
+			static_assert(makeTuple(3, 4) <= makeTuple(3, 5));
+			static_assert(!(makeTuple(3, 4) <= makeTuple(4, 3)));
 		}
 	};
 }
