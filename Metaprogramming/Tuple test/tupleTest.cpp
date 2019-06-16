@@ -37,6 +37,14 @@ namespace Tupletest
 			
 			static_assert(get<0>(tuple) == 1);
 		}
+
+		TEST_METHOD(extractingValuesWithGet)
+		{
+			constexpr auto tuple = makeTuple(1, 2);
+
+			static_assert(get<0>(tuple) == 1);
+			static_assert(get<1>(tuple) == 2);
+		}
 		TEST_METHOD(conversionConstructorFromLValue)
 		{
 			using Dest = Tuple<long, unsigned long>;		
@@ -96,11 +104,11 @@ namespace Tupletest
 
 		TEST_METHOD(headAndTailConstructor)
 		{
-			auto source = makeTuple(1, 2);
+			constexpr auto source = makeTuple(1, 2);
 			
-			auto destination = Tuple<int,int>(source.getHead(), source.getTail());
+			constexpr auto destination = Tuple<int,int>(source.getHead(), source.getTail());
 
-			Assert::IsTrue(source == destination);
+			static_assert(source == destination);
 		}
 
 		TEST_METHOD(copyAssignment)
@@ -147,14 +155,6 @@ namespace Tupletest
 			Assert::IsTrue(rhs == makeTuple(1, ""s), L"Moved-from object has invalid contents");
 		}
 
-		TEST_METHOD(extractingValuesWithGet)
-		{
-			constexpr auto tuple = makeTuple(1, 2);
-
-			static_assert(get<0>(tuple) == 1);
-			static_assert(get<1>(tuple) == 2);
-		}
-
 		TEST_METHOD(getTakesValueCategoryIntoAccount)
 		{
 			auto tuple = makeTuple("a"s);
@@ -167,39 +167,39 @@ namespace Tupletest
 
 		TEST_METHOD(insertingBack)
 		{
-			auto tuple = insertBack(makeTuple(1, 2), 3);
+			constexpr auto tuple = insertBack(makeTuple(1, 2), 3);
 
-			Assert::IsTrue(tuple == makeTuple(1, 2, 3));
+			static_assert(tuple == makeTuple(1, 2, 3));
 		}
 
 		TEST_METHOD(insertingFront)
 		{
-			auto tuple = insertFront(makeTuple(1, 2), 0);
+			constexpr auto tuple = insertFront(makeTuple(1, 2), 0);
 
-			Assert::IsTrue(tuple == makeTuple(0, 1, 2));
+			static_assert(tuple == makeTuple(0, 1, 2));
 		}
 
 		TEST_METHOD(droppingTheTail)
 		{
-			auto tuple = dropTail(makeTuple(0, 1));
+			constexpr auto tuple = dropTail(makeTuple(0, 1));
 
-			Assert::IsTrue(tuple == makeTuple(0));
+			static_assert(tuple == makeTuple(0));
 		}
 
 		TEST_METHOD(droppingTheHead)
 		{
-			auto tuple = dropHead(makeTuple(0, 1, 2));
+			constexpr auto tuple = dropHead(makeTuple(0, 1, 2));
 
-			Assert::IsTrue(tuple == makeTuple(1, 2));
+			static_assert(tuple == makeTuple(1, 2));
 		}
 
 		TEST_METHOD(selectingElements)
 		{
-			auto source = makeTuple(2, 5, 4, 7, 8);
+			constexpr auto source = makeTuple(2, 5, 4, 7, 8);
 
-			auto odds = select<1, 3>(source);
+			constexpr auto odds = select<1, 3>(source);
 
-			Assert::IsTrue(odds == makeTuple(5, 7));
+			static_assert(odds == makeTuple(5, 7));
 		}
 
 		TEST_METHOD(movingSubtuplesWithSelect)
@@ -214,11 +214,11 @@ namespace Tupletest
 
 		TEST_METHOD(reversingATuple)
 		{
-			auto source = makeTuple(0, 1, 2, 3);
+			constexpr auto source = makeTuple(0, 1, 2, 3);
 			
-			auto result = reverse(source);
+			constexpr auto result = reverse(source);
 
-			Assert::IsTrue(result == makeTuple(3, 2, 1, 0));
+			static_assert(result == makeTuple(3, 2, 1, 0));
 		}
 
 		TEST_METHOD(reverseTakesValueCategoryIntoAccount)
@@ -233,38 +233,38 @@ namespace Tupletest
 
 		TEST_METHOD(replicatingASingleValue)
 		{
-			auto source = makeTuple(0, 1, 2);
+			constexpr auto source = makeTuple(0, 1, 2);
 
-			auto result = replicate<1, 4>(source);
+			constexpr auto result = replicate<1, 4>(source);
 
-			Assert::IsTrue(result == makeTuple(1, 1, 1, 1));
+			static_assert(result == makeTuple(1, 1, 1, 1));
 		}
 
 		TEST_METHOD(takingATuplePrefix)
 		{
-			auto source = makeTuple(0, 1, 2, 3, 4);
+			constexpr auto source = makeTuple(0, 1, 2, 3, 4);
 
-			auto result = take<2>(source);
+			constexpr auto result = take<2>(source);
 
-			Assert::IsTrue(result == makeTuple(0, 1));
+			static_assert(result == makeTuple(0, 1));
 		}
 
 		TEST_METHOD(takingATupleSuffix)
 		{
-			auto source = makeTuple(0, 1, 2, 3, 4);
+			constexpr auto source = makeTuple(0, 1, 2, 3, 4);
 
-			auto result = drop<2>(source);
+			constexpr auto result = drop<2>(source);
 
-			Assert::IsTrue(result == makeTuple(2, 3, 4));
+			static_assert(result == makeTuple(2, 3, 4));
 		}
 
 		TEST_METHOD(sortingATupleByType)
 		{
-			auto tuple = makeTuple(2, '1', 3.0);
+			constexpr auto tuple = makeTuple(2, '1', 3.0);
 
-			auto result = sortByType<IsSmallerT>(tuple);
+			constexpr auto result = sortByType<IsSmallerT>(tuple);
 		
-			Assert::IsTrue(result == makeTuple('1', 2, 3.0));
+			static_assert(result == makeTuple('1', 2, 3.0));
 		}
 
 		TEST_METHOD(applyingAFunctionForEachElementOfATuple)
@@ -293,10 +293,10 @@ namespace Tupletest
 
 		TEST_METHOD(applyingAFunctionToTheElementsOfATuple)
 		{
-			auto tuple = makeTuple(1, 2);
-			auto areEqual = [](auto x, auto y) { return x == y; };
+			constexpr auto tuple = makeTuple(1, 2);
+			constexpr auto areEqual = [](auto x, auto y) constexpr { return x == y; };
 
-			Assert::IsFalse(apply(areEqual, tuple));
+			static_assert(!apply(areEqual, tuple));
 		}
 
 		TEST_METHOD(applyTakesValueCategoryIntoAccount)
@@ -315,12 +315,12 @@ namespace Tupletest
 
 		TEST_METHOD(concatenatingTuples)
 		{
-			auto lhs = makeTuple(1, 2, 3);
-			auto rhs = makeTuple(4, 5);
+			constexpr auto lhs = makeTuple(1, 2, 3);
+			constexpr auto rhs = makeTuple(4, 5);
 
-			auto result = concatenate(lhs, rhs);
+			constexpr auto result = concatenate(lhs, rhs);
 
-			Assert::IsTrue(result == makeTuple(1, 2, 3, 4, 5));
+			static_assert(result == makeTuple(1, 2, 3, 4, 5));
 		}
 
 		TEST_METHOD(concatenateTakesValueCategoryIntoAccount)
@@ -336,13 +336,13 @@ namespace Tupletest
 
 		TEST_METHOD(concatenateTakesAnyNumberOfTuplesGreaterThanOne)
 		{
-			auto first = makeTuple(1, 2);
-			auto second = makeTuple(3, 4, 5);
-			auto third = makeTuple(6);
+			constexpr auto first = makeTuple(1, 2);
+			constexpr auto second = makeTuple(3, 4, 5);
+			constexpr auto third = makeTuple(6);
 			
-			auto result = concatenate(first, second, third);
-			
-			Assert::IsTrue(result == makeTuple(1, 2, 3, 4, 5, 6));
+			constexpr auto result = concatenate(first, second, third);
+
+			static_assert(result == makeTuple(1, 2, 3, 4, 5, 6));
 		}
 
 		TEST_METHOD(tupleEquality)
