@@ -302,5 +302,26 @@ namespace Tupletest
 			Assert::IsTrue(result == "ab"s);
 			Assert::IsTrue(tuple == makeTuple("a"s, ""s));
 		}
+
+		TEST_METHOD(concatenatingTuples)
+		{
+			auto lhs = makeTuple(1, 2, 3);
+			auto rhs = makeTuple(4, 5);
+
+			auto result = concatenate(lhs, rhs);
+
+			Assert::IsTrue(result == makeTuple(1, 2, 3, 4, 5));
+		}
+
+		TEST_METHOD(concatenateTakesValueCategoryIntoAccount)
+		{
+			const auto lhs = makeTuple(1, 2, 3);
+			auto rhs = makeTuple(4, "a"s);
+
+			auto result = concatenate(lhs, std::move(rhs));
+
+			Assert::IsTrue(rhs == makeTuple(4, ""s));
+			Assert::IsTrue(result == makeTuple(1, 2, 3, 4, "a"s));
+		}
 	};
 }

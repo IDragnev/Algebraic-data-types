@@ -179,4 +179,34 @@ namespace IDragnev::Meta
 		using Indices = MakeIndexList<Size>;
 		return Detail::apply(f, std::forward<TupleT>(tuple), Indices{});
 	}
+
+	namespace Detail
+	{
+		template <typename UTuple,
+			      typename VTuple,
+				  unsigned... UIndices,
+			      unsigned... VIndices
+		> auto concatenate(UTuple&& u, VTuple&& v, 
+			               ValueList<unsigned, UIndices...>,
+			               ValueList<unsigned, VIndices...>)
+		{
+			return makeTuple(get<UIndices>(std::forward<UTuple>(u))...,
+				             get<VIndices>(std::forward<VTuple>(v))...);
+		}
+	}
+
+	template <typename UTuple,
+		      typename VTuple,
+		      unsigned USize = Detail::tupleSize<std::decay_t<UTuple>>,
+		      unsigned VSize = Detail::tupleSize<std::decay_t<VTuple>>
+	> auto concatenate(UTuple&& u, VTuple&& v)
+	{
+		using UIndices = MakeIndexList<USize>;
+		using VIndices = MakeIndexList<VSize>;
+
+		return Detail::concatenate(std::forward<UTuple>(u), 
+								   std::forward<VTuple>(v),
+			                       UIndices{},
+			                       VIndices{});
+	}
 }
