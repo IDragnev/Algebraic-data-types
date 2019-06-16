@@ -110,16 +110,7 @@ namespace IDragnev::Meta
 		template <unsigned I, typename TupleT, unsigned Size>
 		friend decltype(auto) get(TupleT&& tuple) noexcept;
 	};
-
-	template <typename... Types>
-	auto makeTuple(Types&&... args);
-
-	bool operator==(const Tuple<>&, const Tuple<>&) noexcept;
-
-	template <typename H1, typename... Tail1,
-		      typename H2, typename... Tail2,
-		      typename = std::enable_if_t<sizeof...(Tail1) == sizeof...(Tail2)>>
-	bool operator==(const Tuple<H1, Tail1...>& lhs, const Tuple<H2, Tail2...>& rhs);
 }
 
 #include "TupleImpl.hpp"
+#include "TupleUtilities.h"

@@ -75,25 +75,4 @@ namespace IDragnev::Meta
 	{
 		return *this;
 	}
-
-	template <typename... Types>
-	inline auto makeTuple(Types&&... args)
-	{
-		using T = Tuple<std::decay_t<Types>...>;
-		return T(std::forward<Types>(args)...);
-	}
-
-	template <typename H1, typename... Tail1,
-		      typename H2, typename... Tail2,
-		      typename>
-	bool operator==(const Tuple<H1, Tail1...>& lhs, const Tuple<H2, Tail2...>& rhs)
-	{
-		return lhs.getHead() == rhs.getHead() &&
-			   lhs.getTail() == rhs.getTail();
-	}
-	
-	inline bool operator==(const Tuple<>&, const Tuple<>&) noexcept
-	{
-		return true;
-	}
 }

@@ -323,5 +323,34 @@ namespace Tupletest
 			Assert::IsTrue(rhs == makeTuple(4, ""s));
 			Assert::IsTrue(result == makeTuple(1, 2, 3, 4, "a"s));
 		}
+
+		TEST_METHOD(tupleEquality)
+		{
+			Assert::IsTrue(makeTuple(1, 2) == makeTuple(1, 2));
+			Assert::IsFalse(makeTuple(1, 2) != makeTuple(1, 2));
+		}
+
+		TEST_METHOD(tupleGreaterThan)
+		{
+			Assert::IsTrue(makeTuple(3, 4) > makeTuple(2, 3));
+			Assert::IsFalse(makeTuple(3, 4) > makeTuple(3, 1));
+		}
+
+		TEST_METHOD(tupleLessThan)
+		{
+			Assert::IsTrue(makeTuple(1, 4) < makeTuple(2, 5));
+			Assert::IsFalse(makeTuple(3, 4) < makeTuple(3, 10));
+		}
+		TEST_METHOD(tupleGreaterOrEqual)
+		{
+			Assert::IsTrue(makeTuple(3, 4) >= makeTuple(2, 4));
+			Assert::IsFalse(makeTuple(3, 4) >= makeTuple(2, 5));
+		}
+
+		TEST_METHOD(tupleLessOrEqual)
+		{
+			Assert::IsTrue(makeTuple(3, 4) <= makeTuple(3, 5));
+			Assert::IsFalse(makeTuple(3, 4) <= makeTuple(4, 3));
+		}
 	};
 }
