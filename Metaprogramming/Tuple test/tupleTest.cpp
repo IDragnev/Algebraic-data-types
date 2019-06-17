@@ -45,6 +45,17 @@ namespace Tupletest
 			static_assert(get<0>(tuple) == 1);
 			static_assert(get<1>(tuple) == 2);
 		}
+
+		TEST_METHOD(getTakesValueCategoryIntoAccount)
+		{
+			auto tuple = makeTuple("a"s);
+
+			auto str = get<0>(std::move(tuple));
+
+			Assert::IsTrue(str == "a"s);
+			Assert::IsTrue(tuple.getHead() == ""s);
+		}
+
 		TEST_METHOD(conversionConstructorFromLValue)
 		{
 			using Dest = Tuple<long, unsigned long>;		
@@ -78,7 +89,8 @@ namespace Tupletest
 
 		TEST_METHOD(conversionConstructorFromRvalueCanComputeAtCompileTime)
 		{
-			constexpr auto x = Tuple<long, double>(makeTuple(2, 2.f));
+			using Dest = Tuple<long, double>;
+			constexpr auto x = Dest(makeTuple(2, 2.f));
 
 			static_assert(x == makeTuple(2l, 2.0));
 		}
@@ -153,16 +165,6 @@ namespace Tupletest
 
 			Assert::IsTrue(lhs == makeTuple(1l, "str"s), L"Moved-in object has invalid contents");
 			Assert::IsTrue(rhs == makeTuple(1, ""s), L"Moved-from object has invalid contents");
-		}
-
-		TEST_METHOD(getTakesValueCategoryIntoAccount)
-		{
-			auto tuple = makeTuple("a"s);
-
-			auto str = get<0>(std::move(tuple));
-
-			Assert::IsTrue(str == "a"s);
-			Assert::IsTrue(tuple.getHead() == ""s);
 		}
 
 		TEST_METHOD(insertingBack)
