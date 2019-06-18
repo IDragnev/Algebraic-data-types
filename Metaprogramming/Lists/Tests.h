@@ -116,6 +116,18 @@ namespace IDragnev::Meta
 	static_assert(std::is_same_v<Take<0, TypeList<int, float, double, char>>,
 		                         TypeList<>>);
 
+	static_assert(std::is_same_v<First<SplitAt<0, TypeList<int>>>,
+		                         TypeList<>>);
+
+	static_assert(std::is_same_v<Second<SplitAt<0, TypeList<int>>>,
+		                         TypeList<int>>);
+
+	static_assert(std::is_same_v<First<SplitAt<1, TypeList<int, float, double>>>, 
+		                         TypeList<int>>);
+
+	static_assert(std::is_same_v<Second<SplitAt<1, TypeList<int, float, double>>>,
+		                         TypeList<float, double>>);
+
 	static_assert(std::is_same_v<MakeIndexList<0>, ValueList<unsigned>>);
 
 	static_assert(std::is_same_v<MakeIndexList<4>, ValueList<unsigned, 0, 1, 2, 3>>);

@@ -3,6 +3,7 @@
 #include "TypeFunctionsAndPredicates.h"
 #include "TypeList.h"
 #include "ValueList.h"
+#include "Pair.h"
 
 namespace IDragnev::Meta
 {
@@ -167,6 +168,12 @@ namespace IDragnev::Meta
 
 	template <unsigned N, typename List>
 	using Take = typename TakeT<N, List>::type;
+
+	template <unsigned I, typename List>
+	struct SplitAtT : MakePairT<Take<I, List>, Drop<I, List>> { };
+
+	template <unsigned I, typename List>
+	using SplitAt = typename SplitAtT<I, List>::type;
 
 	template <unsigned N, typename Result = ValueList<unsigned>>
 	struct MakeIndexListT : MakeIndexListT<N - 1, InsertFront<Result, CTValue<unsigned, N - 1>>> { };
