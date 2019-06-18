@@ -165,4 +165,8 @@ namespace IDragnev::Meta
 	static_assert(!anyOf<std::is_const, TypeList<>>);
 
 	static_assert(anyOf<std::is_const, TypeList<int, const double>>);
+
+	static_assert(isMember<int, TypeList<double, int>>);
+
+	static_assert(!isMember<int, TypeList<>>);
 }

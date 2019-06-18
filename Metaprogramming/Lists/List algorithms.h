@@ -300,4 +300,26 @@ namespace IDragnev::Meta
 	template <template <typename T> typename Predicate,
 		      typename List>
 	inline constexpr bool anyOf = AnyOfT<Predicate, List>::value;
+
+	template <typename T,
+		      typename List,
+		      bool = isEmpty<List>
+	> struct IsMemberT;
+
+	template <typename T, typename List>
+	inline constexpr bool isMember = IsMemberT<T, List>::value;
+
+	template <typename T, typename List> 
+	struct IsMemberT<T, List, true> : std::false_type { };
+
+	template <typename T, typename List>
+	struct IsMemberT<T, List, false> 
+	{
+	private:
+		using ValueT = std::conditional_t<std::is_same_v<T, Head<List>>,
+										  std::true_type,
+										  IsMemberT<T, Tail<List>>>;
+	public:
+		static inline constexpr value = ValueT::value;
+	};
 }
