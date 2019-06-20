@@ -320,6 +320,6 @@ namespace IDragnev::Meta
 										  std::true_type,
 										  IsMemberT<T, Tail<List>>>;
 	public:
-		static inline constexpr value = ValueT::value;
+		static inline constexpr bool value = ValueT::value;
 	};
 }

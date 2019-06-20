@@ -235,6 +235,6 @@ namespace IDragnev::Meta
 	{
 		return concatenate(concatenate(std::forward<UTuple>(u), 
 			                           std::forward<VTuple>(v)),
-			               rest...);
+			               std::forward<Tuples>(rest)...);
 	}
 }
