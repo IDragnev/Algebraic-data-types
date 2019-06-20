@@ -169,4 +169,13 @@ namespace IDragnev::Meta
 	static_assert(isMember<int, TypeList<double, int>>);
 
 	static_assert(!isMember<int, TypeList<>>);
+
+	static_assert(std::is_same_v<MakeSet<ValueList<unsigned>>,
+								 ValueList<unsigned>>);
+
+	static_assert(std::is_same_v<MakeSet<TypeList<int, double, int>>,
+		                         TypeList<double, int>>);
+
+	static_assert(std::is_same_v<MakeSet<ValueList<int, 1, 2, 3, 2, 1>>,
+		                         ValueList<int, 3, 2, 1>>);
 }

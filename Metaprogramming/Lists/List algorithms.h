@@ -322,4 +322,25 @@ namespace IDragnev::Meta
 	public:
 		static inline constexpr bool value = ValueT::value;
 	};
+
+	template <typename List, bool = isEmpty<List>>
+	struct MakeSetT
+	{
+		using type = List;
+	};
+
+	template <typename List>
+	struct MakeSetT<List, false>
+	{
+	private:
+		using TailSet = typename MakeSetT<Tail<List>>::type;	
+		using Result = std::conditional_t<isMember<Head<List>, Tail<List>>,
+										  IdentityT<TailSet>,
+						                  InsertFrontT<TailSet, Head<List>>>;
+	public:
+		using type = typename Result::type;
+	 };
+
+	template <typename List>
+	using MakeSet = typename MakeSetT<List>::type;
 }
