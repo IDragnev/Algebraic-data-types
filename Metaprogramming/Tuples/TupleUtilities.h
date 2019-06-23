@@ -96,4 +96,23 @@ namespace IDragnev::Meta
 	{
 		return Detail::compareWith(std::less_equal{}, u, v);
 	}
+
+	namespace Detail
+	{
+		struct IgnoreT
+		{
+			template <typename T>
+			constexpr 
+			const IgnoreT& operator=(const T&) const noexcept { return *this; }
+		};
+	}
+
+	inline constexpr Detail::IgnoreT ignore{};
+
+	template <typename... Types>
+	constexpr inline
+	auto tie(Types&... args) noexcept
+	{
+		return Tuple<Types&...>(args...);
+	}
 }

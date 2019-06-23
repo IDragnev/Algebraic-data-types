@@ -394,5 +394,17 @@ namespace Tupletest
 			static_assert(makeTuple(3, 4) <= makeTuple(3, 5));
 			static_assert(!(makeTuple(3, 4) <= makeTuple(4, 3)));
 		}
+
+		TEST_METHOD(unpackingATuple)
+		{
+			auto x = 0;
+			auto y = 0.0;
+			const auto tuple = makeTuple(1, 2.0, "a"s);
+			
+			tie(x, y, ignore) = tuple;
+
+			Assert::AreEqual(x, 1);
+			Assert::AreEqual(y, 2.0);
+		}
 	};
 }
