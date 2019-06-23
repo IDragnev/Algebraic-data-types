@@ -251,6 +251,15 @@ namespace Tupletest
 			static_assert(result == makeTuple(0, 1));
 		}
 
+		TEST_METHOD(takeTakesValueCategoryIntoAccount)
+		{
+			auto source = makeTuple("a"s, "b"s, "c"s);
+
+			auto result = take<2>(std::move(source));
+
+			Assert::IsTrue(source == makeTuple(""s, ""s, "c"s));
+			Assert::IsTrue(result == makeTuple("a"s, "b"s));
+		}
 		TEST_METHOD(takingATupleSuffix)
 		{
 			constexpr auto source = makeTuple(0, 1, 2, 3, 4);
