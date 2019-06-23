@@ -132,12 +132,14 @@ namespace IDragnev::Meta
 		return Detail::select(std::forward<TupleT>(t), Indices{});
 	}
 
-	template <unsigned N, typename... Elements>
-	inline constexpr 
-	auto drop(const Tuple<Elements...>& t)
+	template <unsigned N,
+	          typename TupleT,
+	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr 
+	auto drop(TupleT&& t)
 	{
-		using Indices = Drop<N, MakeIndexList<sizeof...(Elements)>>;
-		return Detail::select(t, Indices{});
+		using Indices = Drop<N, MakeIndexList<Size>>;
+		return Detail::select(std::forward<TupleT>(t), Indices{});
 	}
 
 	template <template <typename U, typename V> typename CompareFn,
