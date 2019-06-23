@@ -160,8 +160,10 @@ namespace IDragnev::Meta
 			(f(std::forward<Args>(args)), ...);
 		}
 
-		template <typename Callable, typename TupleT, unsigned... Indices>
-		inline constexpr
+		template <typename Callable, 
+			      typename TupleT,
+			      unsigned... Indices
+		> inline constexpr
 		void forEach(TupleT&& tuple, Callable f, ValueList<unsigned, Indices...>)
 		{
 			forEachArg(f, get<Indices>(std::forward<TupleT>(tuple))...);
@@ -170,8 +172,8 @@ namespace IDragnev::Meta
 
 	template <typename Callable, 
 		      typename TupleT,
-	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
-	inline constexpr
+	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr
 	void forEach(TupleT&& tuple, Callable f)
 	{
 		using Indices = MakeIndexList<Size>;
@@ -180,8 +182,10 @@ namespace IDragnev::Meta
 
 	namespace Detail
 	{
-		template <typename Callable, typename TupleT, unsigned... Indices>
-		inline constexpr 
+		template <typename Callable, 
+			      typename TupleT, 
+			      unsigned... Indices
+		> inline constexpr 
 		decltype(auto) apply(Callable f, TupleT&& tuple, ValueList<unsigned, Indices...>)
 		{
 			return f(get<Indices>(std::forward<TupleT>(tuple))...);
@@ -190,8 +194,8 @@ namespace IDragnev::Meta
 
 	template <typename Callable,
 		      typename TupleT,
-		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
-	inline constexpr
+		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr
 	decltype(auto) apply(Callable f, TupleT&& tuple)
 	{
 		using Indices = MakeIndexList<Size>;
