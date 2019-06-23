@@ -29,24 +29,19 @@ namespace IDragnev::Meta
 	using Concat = typename ConcatT<Lhs, Rhs>::type;
 
 	template <typename List, bool = isEmpty<List>>
-	struct ReverseT
-	{
-	private:
-		using ReversedTail = typename ReverseT<Tail<List>>::type;
-		using Head = Head<List>;
+	struct ReverseT;
 
-	public:
-		using type = InsertBack<ReversedTail, Head>;
-	};
+	template <typename List>
+	using Reverse = typename ReverseT<List>::type;
+
+	template <typename List>
+	struct ReverseT<List, false> : InsertBackT<Reverse<Tail<List>>, Head<List>> { };
 
 	template<typename List>
 	struct ReverseT<List, true>
 	{
 		using type = List;
 	};
-
-	template <typename List>
-	using Reverse = typename ReverseT<List>::type;
 
 	template <template <typename, typename> typename F,
 		      typename L1,
