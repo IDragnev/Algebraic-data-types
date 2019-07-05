@@ -43,7 +43,7 @@ namespace IDragnev::Meta
 		using type = List;
 	};
 
-	template <template <typename, typename> typename F,
+	template <template <typename U, typename V> typename F,
 		      typename L1,
 		      typename L2>
 	struct ZipT;
@@ -66,10 +66,10 @@ namespace IDragnev::Meta
 	struct MapT;
 
 	template <template <typename> typename F,
-		      typename... Vals>
-	struct MapT<F, TypeList<Vals...>>
+		      typename... Ts>
+	struct MapT<F, TypeList<Ts...>>
 	{
-		using type = TypeList<typename F<Vals>::type...>;
+		using type = TypeList<typename F<Ts>::type...>;
 	};
 
 	template <template <typename> typename F,
@@ -104,20 +104,28 @@ namespace IDragnev::Meta
 	template <typename List>
 	using LargestType = typename LargestTypeT<List>::type;
 
-	template <typename L>
-	using AccReverse = FoldLeft<InsertFrontT, TypeList<>, L>;
+	template <typename List>
+	using FReverse = FoldLeft<InsertFrontT, EmptyList<List>, List>;
 
 	template <typename Lhs, typename Rhs>
-	using AccConcat = FoldLeft<InsertBackT, Lhs, Rhs>;
+	using FConcat = FoldLeft<InsertBackT, Lhs, Rhs>;
 
 	template <template <typename> typename Predicate,
 		      typename List,
-	          bool = isEmpty<List>>
-	struct FilterT
+		      bool = isEmpty<List>
+	> struct FilterT;
+
+	template <template <typename> typename Predicate,
+		      typename List>
+	using Filter = typename FilterT<Predicate, List>::type;
+
+	template <template <typename> typename Predicate,
+		      typename List>
+	struct FilterT<Predicate, List, false>
 	{
 	private:
 		using H = Head<List>;
-		using FilteredTail = typename FilterT<Predicate, Tail<List>>::type;
+		using FilteredTail = Filter<Predicate, Tail<List>>;
 		using Result = std::conditional_t<Predicate<H>::value,
 			                              InsertFrontT<FilteredTail, H>,
 			                              IdentityT<FilteredTail>>;
@@ -132,10 +140,6 @@ namespace IDragnev::Meta
 		using type = List;
 	};
 
-	template <template <typename> typename Predicate,
-		      typename List>
-	using Filter = typename FilterT<Predicate, List>::type;
-
 	template <unsigned N, typename List>
 	struct DropT : DropT<N - 1, Tail<List>> { };
 
@@ -149,19 +153,19 @@ namespace IDragnev::Meta
 	using Drop = typename DropT<N, List>::type;
 
 	template <unsigned N, typename List>
+	struct TakeT;
+
+	template <unsigned N, typename List>
+	using Take = typename TakeT<N, List>::type;
+
+	template <unsigned N, typename List>
 	struct TakeT : 
-		InsertFrontT<typename TakeT<N - 1, Tail<List>>::type, 
+		InsertFrontT<Take<N - 1, Tail<List>>, 
 			         Head<List>>
 	{ };
 
 	template <typename List>
-	struct TakeT<0, List>
-	{
-		using type = EmptyList<List>;
-	};
-
-	template <unsigned N, typename List>
-	using Take = typename TakeT<N, List>::type;
+	struct TakeT<0, List> : EmptyListT<List> { };
 
 	template <unsigned I, typename List>
 	struct SplitAtT : MakePairT<Take<I, List>, Drop<I, List>> { };
@@ -169,8 +173,11 @@ namespace IDragnev::Meta
 	template <unsigned I, typename List>
 	using SplitAt = typename SplitAtT<I, List>::type;
 
-	template <unsigned N, typename Result = ValueList<unsigned>>
-	struct MakeIndexListT : MakeIndexListT<N - 1, InsertFront<Result, CTValue<unsigned, N - 1>>> { };
+	template <unsigned Size, typename Result = ValueList<unsigned>>
+	struct MakeIndexListT : 
+		MakeIndexListT<Size - 1, 
+		               InsertFront<Result, CTValue<unsigned, Size - 1>>> 
+	{ };
 
 	template <typename Result>
 	struct MakeIndexListT<0, Result>
@@ -182,10 +189,13 @@ namespace IDragnev::Meta
 	using MakeIndexList = typename MakeIndexListT<N>::type;
 
 	template <auto Value,
-		      unsigned N,
+		      unsigned Count,
 		      typename Result = ValueList<decltype(Value)>
 	> struct ReplicateValueT : 
-		ReplicateValueT<Value, N - 1, InsertFront<Result, CTValue<decltype(Value), Value>>> { };
+		ReplicateValueT<Value, 
+					    Count - 1, 
+			            InsertFront<Result, CTValue<decltype(Value), Value>>> 
+	{ };
 
 	template <auto Value, typename Result>
 	struct ReplicateValueT<Value, 0, Result>
@@ -193,8 +203,8 @@ namespace IDragnev::Meta
 		using type = Result;
 	};
 
-	template <auto V, unsigned N>
-	using ReplicateValue = typename ReplicateValueT<V, N>::type;
+	template <auto V, unsigned Count>
+	using ReplicateValue = typename ReplicateValueT<V, Count>::type;
 
 	template <typename T,
 		      typename List,

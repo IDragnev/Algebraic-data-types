@@ -80,10 +80,10 @@ namespace IDragnev::Meta
 
 	static_assert(std::is_same_v<LargestType<TypeList<char, unsigned, long double>>, long double>);
 
-	static_assert(std::is_same_v<AccReverse<TypeList<int, double, char>>,
+	static_assert(std::is_same_v<FReverse<TypeList<int, double, char>>,
 		                         TypeList<char, double, int>>);
 
-	static_assert(std::is_same_v<AccConcat<TypeList<int, double>, TypeList<float, char>>,
+	static_assert(std::is_same_v<FConcat<TypeList<int, double>, TypeList<float, char>>,
 		                         TypeList<int, double, float, char>>);
 
 	static_assert(std::is_same_v<Filter<std::is_integral, TypeList<int, float, double, unsigned, bool>>,
