@@ -46,28 +46,28 @@ namespace IDragnev::Meta::Detail
 
 	template <unsigned Height, typename T>
 	inline constexpr 
-	const T& extractValue(const TupleElement<Height, T>& e) noexcept
+	const T& getValue(const TupleElement<Height, T>& e) noexcept
 	{
 		return e.get();
 	}
 
 	template <unsigned Height, typename T>
 	inline constexpr
-	T& extractValue(TupleElement<Height, T>& e) noexcept
+	T& getValue(TupleElement<Height, T>& e) noexcept
 	{
-		return const_cast<T&>(extractValue(std::as_const(e)));
+		return const_cast<T&>(getValue(std::as_const(e)));
 	}
 
 	template <unsigned Height, typename T>
 	inline constexpr 
-	const T&& extractValue(const TupleElement<Height, T>&& e) noexcept
+	const T&& getValue(const TupleElement<Height, T>&& e) noexcept
 	{
-		return std::move(extractValue(e));
+		return std::move(getValue(e));
 	}
 
 	template <unsigned Height, typename T>
 	inline constexpr
-	T&& extractValue(TupleElement<Height, T>&& e) noexcept
+	T&& getValue(TupleElement<Height, T>&& e) noexcept
 	{
 		return std::move(e).get();
 	}

@@ -39,12 +39,13 @@ namespace IDragnev::Meta
 		inline constexpr bool matchesHeadOf = MatchesHeadOf<List, T>::value;
 	}
 
-	template <unsigned I, typename TupleT, 
-		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
-	inline constexpr
+	template <unsigned I,
+		      typename TupleT, 
+		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr
 	decltype(auto) get(TupleT&& tuple) noexcept
 	{
-		return Detail::extractValue<Size - I - 1>(std::forward<TupleT>(tuple));
+		return Detail::getValue<Size - I - 1>(std::forward<TupleT>(tuple));
 	}
 
 	template <>
@@ -64,7 +65,9 @@ namespace IDragnev::Meta
 
 		template <typename... Args>
 		using EnableIfNotTailTuple = std::enable_if_t<(sizeof...(Args) != 1) ||
-			                                          !Detail::matchesHeadOf<TypeList<std::decay_t<Args>...>, TailTuple>>;
+			                                          !Detail::matchesHeadOf<TypeList<std::decay_t<Args>...>, 
+			                                                                 TailTuple>
+		                                             >;
 	public:
 		Tuple() = default;
 		Tuple(Tuple&& source) = default;
