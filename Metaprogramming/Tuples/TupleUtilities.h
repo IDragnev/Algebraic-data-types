@@ -27,7 +27,7 @@ namespace IDragnev::Meta
 		template <typename CompareFn, 
 			      typename UHead, typename... UTail, 
 			      typename VHead, typename... VTail
-		> bool constexpr
+		> constexpr bool
 		compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
 		{
 			return compare(u.getHead(), v.getHead()) &&

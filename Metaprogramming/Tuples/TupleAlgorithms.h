@@ -15,10 +15,10 @@ namespace IDragnev::Meta
 	template <>
 	struct HeadT<Tuple<>> { };
 
-	template <typename T, typename... Ts>
-	struct TailT<Tuple<T, Ts...>>
+	template <typename H, typename... Tail>
+	struct TailT<Tuple<H, Tail...>>
 	{
-		using type = Tuple<Ts...>;
+		using type = Tuple<Tail...>;
 	};
 
 	template <>
@@ -61,7 +61,8 @@ namespace IDragnev::Meta
 	}
 
 	template <typename T, typename Head, typename... Tail>
-	constexpr auto insertBack(const Tuple<Head, Tail...>& tuple, const T& value)
+	constexpr 
+	auto insertBack(const Tuple<Head, Tail...>& tuple, const T& value)
 	{
 		using Result = Tuple<Head, Tail..., T>;
 		return Result(tuple.getHead(), 
@@ -97,8 +98,8 @@ namespace IDragnev::Meta
 
 	template <unsigned... Indices, 
 		      typename TupleT,
-		      typename = Detail::EnableIfTuple<TupleT>>
-	inline constexpr
+		      typename = Detail::EnableIfTuple<TupleT>
+	> inline constexpr
 	auto select(TupleT&& tuple)
 	{
 		using IndicesT = ValueList<unsigned, Indices...>;
@@ -106,29 +107,32 @@ namespace IDragnev::Meta
 	}
 
 	template <typename TupleT,
-	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>>
-	inline constexpr
+	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr
 	auto reverse(TupleT&& tuple)
 	{
 		using Indices = Reverse<MakeIndexList<Size>>;
 		return Detail::select(std::forward<TupleT>(tuple), Indices{});
 	}
 
-	template <unsigned Index, unsigned N, typename... Elements>
-	inline constexpr
-	auto replicate(const Tuple<Elements...>& t)
+	template <unsigned Index, 
+		      unsigned Count,
+		      typename Head,
+		      typename... Tail
+	> inline constexpr
+	auto replicate(const Tuple<Head, Tail...>& t)
 	{
-		using Indices = ReplicateValue<Index, N>;
+		using Indices = ReplicateValue<Index, Count>;
 		return Detail::select(t, Indices{});
 	}
 
 	template <unsigned N, 
 	          typename TupleT,
-	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+			  typename = Detail::EnableIfTuple<TupleT>
 	> inline constexpr
 	auto take(TupleT&& t)
 	{
-		using Indices = Take<N, MakeIndexList<Size>>;
+		using Indices = MakeIndexList<N>;
 		return Detail::select(std::forward<TupleT>(t), Indices{});
 	}
 
