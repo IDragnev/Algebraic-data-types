@@ -53,7 +53,7 @@ namespace Tupletest
 			auto str = get<0>(std::move(tuple));
 
 			Assert::IsTrue(str == "a"s);
-			Assert::IsTrue(tuple.getHead() == ""s);
+			Assert::IsTrue(get<0>(tuple) == ""s);
 		}
 
 		TEST_METHOD(conversionConstructorFromLValue)
@@ -131,6 +131,21 @@ namespace Tupletest
 			lhs = rhs;
 
 			Assert::IsTrue(lhs == rhs);
+		}
+
+		TEST_METHOD(copyAssignmentCanBeUsedAtCompileTime)
+		{
+			constexpr auto f = []() constexpr
+			{
+				auto result = makeTuple(1, 2);
+				result = reverse(result);
+
+				return result;
+			};
+
+			constexpr auto tuple = f();
+			
+			static_assert(tuple == makeTuple(2, 1));
 		}
 
 		TEST_METHOD(moveAssignment)
