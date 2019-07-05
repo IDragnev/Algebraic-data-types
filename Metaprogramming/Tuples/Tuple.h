@@ -76,40 +76,40 @@ namespace IDragnev::Meta
 
 		constexpr Tuple(const Head& h, const Tuple<Tail...>& tail);
 
-		template<typename VHead,
-			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail...>,
-		         typename = EnableIfNotTailTuple<VTail...>>
-		constexpr Tuple(VHead&& head, VTail&&... tail);
+		template <typename VHead,
+			      typename... VTail,
+			      typename = EnableIfMatchesTailLength<VTail...>,
+		          typename = EnableIfNotTailTuple<VTail...>
+		> constexpr Tuple(VHead&& head, VTail&&... tail);
 
-		template<typename VHead,
-			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail...>>
-		constexpr Tuple(const Tuple<VHead, VTail...>& source);
+		template <typename VHead,
+			      typename... VTail,
+			      typename = EnableIfMatchesTailLength<VTail...>
+		> constexpr Tuple(const Tuple<VHead, VTail...>& source);
 
-		template<typename VHead,
-			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail...>>
-		constexpr Tuple(Tuple<VHead, VTail...>&& source);
+		template <typename VHead,
+			      typename... VTail,
+			      typename = EnableIfMatchesTailLength<VTail...>
+		> constexpr Tuple(Tuple<VHead, VTail...>&& source);
 
 		Tuple& operator=(Tuple&& rhs) = default;
 		Tuple& operator=(const Tuple& rhs) = default;
 		 
-		template<typename VHead,
-			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail...>>
-		constexpr Tuple& operator=(const Tuple<VHead, VTail...>& source);
+		template <typename VHead,
+			      typename... VTail,
+			      typename = EnableIfMatchesTailLength<VTail...>
+		> constexpr Tuple& operator=(const Tuple<VHead, VTail...>& source);
 
-		template<typename VHead,
-			     typename... VTail,
-			     typename = EnableIfMatchesTailLength<VTail...>>
-		constexpr Tuple& operator=(Tuple<VHead, VTail...>&& source);
+		template <typename VHead,
+			      typename... VTail,
+			      typename = EnableIfMatchesTailLength<VTail...>
+		> constexpr Tuple& operator=(Tuple<VHead, VTail...>&& source);
 
 		constexpr Head& getHead() noexcept;
 		constexpr const Head& getHead() const noexcept;
 
-		constexpr Tuple<Tail...>& getTail() noexcept;
-		constexpr const Tuple<Tail...>& getTail() const noexcept;
+		constexpr TailTuple& getTail() noexcept;
+		constexpr const TailTuple& getTail() const noexcept;
 	
 		template <unsigned I, typename TupleT, unsigned Size>
 		friend constexpr decltype(auto) get(TupleT&& tuple) noexcept;

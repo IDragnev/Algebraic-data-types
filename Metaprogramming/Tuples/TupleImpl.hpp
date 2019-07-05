@@ -33,7 +33,7 @@ namespace IDragnev::Meta
 	}
 
 	template <typename Head, typename... Tail>
-	template<typename VHead, typename... VTail, typename>
+	template <typename VHead, typename... VTail, typename>
 	constexpr auto Tuple<Head, Tail...>::operator=(const Tuple<VHead, VTail...>& rhs) -> Tuple&
 	{
 		getHead() = rhs.getHead();
@@ -43,7 +43,7 @@ namespace IDragnev::Meta
 	}
 
 	template <typename Head, typename... Tail>
-	template<typename VHead, typename... VTail, typename>
+	template <typename VHead, typename... VTail, typename>
 	constexpr auto Tuple<Head, Tail...>::operator=(Tuple<VHead, VTail...>&& rhs) -> Tuple&
 	{
 		getHead() = std::move(rhs.getHead());
@@ -68,14 +68,14 @@ namespace IDragnev::Meta
 
 	template <typename Head, typename... Tail>
 	inline constexpr 
-	Tuple<Tail...>& Tuple<Head, Tail...>::getTail() noexcept
+	auto Tuple<Head, Tail...>::getTail() noexcept -> TailTuple&
 	{
 		return *this;
 	}
 
 	template <typename Head, typename... Tail>
 	inline constexpr
-	const Tuple<Tail...>& Tuple<Head, Tail...>::getTail() const noexcept
+	auto Tuple<Head, Tail...>::getTail() const noexcept -> const TailTuple&
 	{
 		return *this;
 	}
