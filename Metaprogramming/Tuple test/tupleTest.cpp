@@ -288,6 +288,16 @@ namespace Tupletest
 			static_assert(result == makeTuple('1', 2, 3.0));
 		}
 
+		TEST_METHOD(sortTakesValueCategoryIntoAccount)
+		{
+			auto tuple = makeTuple("1"s, 0);
+
+			auto result = sortByType<IsSmallerT>(std::move(tuple));
+
+			Assert::IsTrue(result == makeTuple(0, "1"s));
+			Assert::IsTrue(tuple == makeTuple(""s, 0));
+		}
+
 		TEST_METHOD(applyingAFunctionForEachElementOfATuple)
 		{
 			auto tuple = makeTuple(1, 2);

@@ -147,13 +147,16 @@ namespace IDragnev::Meta
 	}
 
 	template <template <typename U, typename V> typename CompareFn,
-		      typename... Elements>
-	inline constexpr
-	auto sortByType(const Tuple<Elements...>& t)
+		      typename TupleT,
+		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr
+	auto sortByType(TupleT&& t)
 	{
-		using Indices = InsertionSort<MakeIndexList<sizeof...(Elements)>,
-			                          MakeIndexedCompareT<Tuple<Elements...>, CompareFn>::template Compare>;
-		return Detail::select(t, Indices{});
+		using TypeList = std::decay_t<TupleT>;
+		using InitialIndices = MakeIndexList<Size>;
+		using SortedIndices = InsertionSort<InitialIndices,
+			                                MakeIndexedCompareT<TypeList, CompareFn>::template Compare>;
+		return Detail::select(std::forward<TupleT>(t), SortedIndices{});
 	}
 
 	namespace Detail
