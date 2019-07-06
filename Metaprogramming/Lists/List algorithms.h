@@ -214,8 +214,8 @@ namespace IDragnev::Meta
 
 	template <typename T,
 		      typename List,
-		      template <typename U, typename V> typename Compare>
-	using InsertInSorted = typename InsertInSortedT<T, List, Compare>::type;
+		      template <typename U, typename V> typename Compare
+	> using InsertInSorted = typename InsertInSortedT<T, List, Compare>::type;
 
 	template <typename List,
 		      template <typename U, typename V> typename Compare,
@@ -223,8 +223,8 @@ namespace IDragnev::Meta
 	> struct InsertionSortT;
 
 	template <typename List,
-		      template <typename U, typename V> typename Compare> 
-	using InsertionSort = typename InsertionSortT<List, Compare>::type;
+		      template <typename U, typename V> typename Compare
+	> using InsertionSort = typename InsertionSortT<List, Compare>::type;
 
 	template <typename List,
 		      template <typename U, typename V> typename Compare
@@ -285,9 +285,11 @@ namespace IDragnev::Meta
 	struct AllOfT<Predicate, List, true> : std::true_type { };
 
 	template <template <typename T> typename Predicate,
-		      typename List> 
-	struct AllOfT<Predicate, List, false> : 
-		std::bool_constant<Predicate<Head<List>>::value && allOf<Predicate, Tail<List>>> { };
+		      typename List
+	> struct AllOfT<Predicate, List, false> : 
+		std::bool_constant<Predicate<Head<List>>::value && 
+						   allOf<Predicate, Tail<List>>> 
+	{ };
 
 	template <template <typename T> typename Predicate,
 		      typename List
@@ -320,15 +322,21 @@ namespace IDragnev::Meta
 	struct IsMemberT<T, List, false> 
 	{
 	private:
-		using ValueT = std::conditional_t<std::is_same_v<T, Head<List>>,
+		using Result = std::conditional_t<std::is_same_v<T, Head<List>>,
 										  std::true_type,
 										  IsMemberT<T, Tail<List>>>;
 	public:
-		static inline constexpr bool value = ValueT::value;
+		static inline constexpr bool value = Result::value;
 	};
 
 	template <typename List, bool = isEmpty<List>>
-	struct MakeSetT
+	struct MakeSetT;
+
+	template <typename List>
+	using MakeSet = typename MakeSetT<List>::type;
+
+	template <typename List>
+	struct MakeSetT<List, true>
 	{
 		using type = List;
 	};
@@ -337,14 +345,11 @@ namespace IDragnev::Meta
 	struct MakeSetT<List, false>
 	{
 	private:
-		using TailSet = typename MakeSetT<Tail<List>>::type;	
+		using TailSet = MakeSet<Tail<List>>;	
 		using Result = std::conditional_t<isMember<Head<List>, Tail<List>>,
 										  IdentityT<TailSet>,
 						                  InsertFrontT<TailSet, Head<List>>>;
 	public:
 		using type = typename Result::type;
 	 };
-
-	template <typename List>
-	using MakeSet = typename MakeSetT<List>::type;
 }
