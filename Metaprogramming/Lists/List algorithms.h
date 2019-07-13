@@ -43,24 +43,6 @@ namespace IDragnev::Meta
 		using type = List;
 	};
 
-	template <template <typename U, typename V> typename F,
-		      typename L1,
-		      typename L2
-	> struct ZipT;
-
-	template <template <typename, typename> typename F,
-		      typename... Ts,
-		      typename... Fs
-	> struct ZipT<F, TypeList<Ts...>, TypeList<Fs...>>
-	{
-		using type = TypeList<typename F<Ts, Fs>::type...>;
-	};
-
-	template <template <typename, typename> typename F,
-		      typename L1,
-		      typename L2
-	> using Zip = typename ZipT<F, L1, L2>::type;
-
 	template <template <typename> typename F,
 		      typename List
 	> struct MapT;
@@ -371,4 +353,37 @@ namespace IDragnev::Meta
 	public:
 		using type = typename Result::type;
 	 };
+
+	namespace Detail
+	{
+		template <template <typename... Args> typename F,
+			      typename PackedLists,
+			      bool = anyOf<IsEmpty, PackedLists>
+		> struct ZipImplT;
+
+		template <template <typename... Args> typename F,
+			      typename PackedLists
+		> using ZipImpl = typename ZipImplT<F, PackedLists>::type;
+
+		template <template <typename... Args> typename F,
+			      typename HeadList,
+				  typename... Lists
+		> struct ZipImplT<F, TypeList<HeadList, Lists...>, true> : EmptyListT<HeadList> { };
+
+		template <template <typename... Args> typename F,
+			      typename... Lists
+		> struct ZipImplT<F, TypeList<Lists...>, false> :
+			InsertFrontT<ZipImpl<F, TypeList<Tail<Lists>...>>, 
+			             typename F<Head<Lists>...>::type> 
+		{ };
+	}
+	
+	template <template <typename... Args> typename F,
+	          typename HeadList, 
+			  typename... Lists
+	> struct ZipT : Detail::ZipImplT<F, TypeList<HeadList, Lists...>> { };
+
+	template <template <typename... Args> typename F,
+		      typename... Lists
+	> using Zip = typename ZipT<F, Lists...>::type;
 }
