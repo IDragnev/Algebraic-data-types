@@ -45,42 +45,42 @@ namespace IDragnev::Meta
 
 	template <template <typename U, typename V> typename F,
 		      typename L1,
-		      typename L2>
-	struct ZipT;
+		      typename L2
+	> struct ZipT;
 
 	template <template <typename, typename> typename F,
 		      typename... Ts,
-		      typename... Fs>
-	struct ZipT<F, TypeList<Ts...>, TypeList<Fs...>>
+		      typename... Fs
+	> struct ZipT<F, TypeList<Ts...>, TypeList<Fs...>>
 	{
 		using type = TypeList<typename F<Ts, Fs>::type...>;
 	};
 
 	template <template <typename, typename> typename F,
 		      typename L1,
-		      typename L2>
-	using Zip = typename ZipT<F, L1, L2>::type;
+		      typename L2
+	> using Zip = typename ZipT<F, L1, L2>::type;
 
 	template <template <typename> typename F,
-		      typename List>
-	struct MapT;
+		      typename List
+	> struct MapT;
 
 	template <template <typename> typename F,
-		      typename... Ts>
-	struct MapT<F, TypeList<Ts...>>
+		      typename... Ts
+	> struct MapT<F, TypeList<Ts...>>
 	{
 		using type = TypeList<typename F<Ts>::type...>;
 	};
 
 	template <template <typename> typename F,
-		      typename List>
-	using Map = typename MapT<F, List>::type;
+		      typename List
+	> using Map = typename MapT<F, List>::type;
 
 	template <template <typename Res, typename Current> typename Op,
 		      typename Initial,
 		      typename List,
-	          bool = isEmpty<List>>
-	struct FoldLeftT : FoldLeftT<Op, typename Op<Initial, Head<List>>::type, Tail<List>> { };
+	          bool = isEmpty<List>
+	> struct FoldLeftT : FoldLeftT<Op, typename Op<Initial, Head<List>>::type, Tail<List>> { };
 
 	template <template <typename Res, typename Current> typename Op,
 		      typename Initial,
@@ -92,8 +92,8 @@ namespace IDragnev::Meta
 
 	template <template <typename Res, typename Current> typename Op,
 		      typename Initial,
-		      typename List>
-	using FoldLeft = typename FoldLeftT<Op, Initial, List>::type;
+		      typename List
+	> using FoldLeft = typename FoldLeftT<Op, Initial, List>::type;
 
 	template <typename List>
 	struct LargestTypeT : FoldLeftT<LargerT, Head<List>, Tail<List>> { };
@@ -116,12 +116,12 @@ namespace IDragnev::Meta
 	> struct FilterT;
 
 	template <template <typename> typename Predicate,
-		      typename List>
-	using Filter = typename FilterT<Predicate, List>::type;
+		      typename List
+	> using Filter = typename FilterT<Predicate, List>::type;
 
 	template <template <typename> typename Predicate,
-		      typename List>
-	struct FilterT<Predicate, List, false>
+		      typename List
+	> struct FilterT<Predicate, List, false>
 	{
 	private:
 		using H = Head<List>;
@@ -134,12 +134,31 @@ namespace IDragnev::Meta
 	};
 
 	template <template <typename> typename Predicate,
-	          typename List>
-	struct FilterT<Predicate, List, true>
+	          typename List
+	> struct FilterT<Predicate, List, true>
 	{
 		using type = List;
 	};
 
+	template <template <typename> typename Predicate>
+	struct MakeConditionalInsertBack
+	{
+		template <typename List, typename T>
+		struct Lambda
+		{
+		private:
+			using Result = std::conditional_t<Predicate<T>::value,
+											  InsertBackT<List, T>,
+										      IdentityT<List>>;
+		public:
+			using type = typename Result::type;
+		};
+	};
+
+	template <template <typename> typename Predicate,
+		      typename List
+	> using FFilter = FoldLeft<MakeConditionalInsertBack<Predicate>::template Lambda, EmptyList<List>, List>;
+	
 	template <unsigned N, typename List>
 	struct DropT : DropT<N - 1, Tail<List>> { };
 

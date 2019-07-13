@@ -178,4 +178,10 @@ namespace IDragnev::Meta
 
 	static_assert(std::is_same_v<MakeSet<ValueList<int, 1, 2, 3, 2, 1>>,
 		                         ValueList<int, 3, 2, 1>>);
+
+	static_assert(std::is_same_v<FFilter<std::is_const, TypeList<>>,
+								 TypeList<>>);
+
+	static_assert(std::is_same_v<FFilter<std::is_const, TypeList<int, const int, double, const float>>, 
+								 TypeList<const int, const float>>);
 }
