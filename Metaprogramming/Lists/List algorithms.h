@@ -44,19 +44,24 @@ namespace IDragnev::Meta
 	};
 
 	template <template <typename> typename F,
-		      typename List
+		      typename List,
+			  bool = isEmpty<List>
 	> struct MapT;
-
-	template <template <typename> typename F,
-		      typename... Ts
-	> struct MapT<F, TypeList<Ts...>>
-	{
-		using type = TypeList<typename F<Ts>::type...>;
-	};
 
 	template <template <typename> typename F,
 		      typename List
 	> using Map = typename MapT<F, List>::type;
+
+	template <template <typename> typename F,
+		      typename List
+	> struct MapT<F, List, true> : IdentityT<List> { };
+
+	template <template <typename> typename F,
+			  typename List
+	> struct MapT<F, List, false> : 
+		InsertFrontT<Map<F, Tail<List>>,
+		             typename F<Head<List>>::type>
+	{ };
 
 	template <template <typename Res, typename Current> typename Op,
 		      typename Initial,
@@ -140,7 +145,7 @@ namespace IDragnev::Meta
 	template <template <typename> typename Predicate,
 		      typename List
 	> using FFilter = FoldLeft<MakeConditionalInsertBack<Predicate>::template Lambda, EmptyList<List>, List>;
-	
+	 
 	template <unsigned N, typename List>
 	struct DropT : DropT<N - 1, Tail<List>> { };
 
