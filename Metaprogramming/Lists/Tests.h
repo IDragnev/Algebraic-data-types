@@ -66,6 +66,18 @@ namespace IDragnev::Meta
 	static_assert(std::is_same_v<Zip<std::common_type, TypeList<int, char, bool>, TypeList<unsigned, char16_t, bool>>,
 		                         TypeList<unsigned, int, bool>>);
 
+	template <typename... Args>
+	struct MakeTypeListT
+	{
+		using type = TypeList<Args...>;
+	};
+
+	static_assert(std::is_same_v<Zip<MakeTypeListT, TypeList<char, int>, TypeList<float, double>, TypeList<void, void>>,
+								 TypeList<TypeList<char, float, void>, TypeList<int, double, void>>>);
+
+	static_assert(std::is_same_v<Zip<MakeTypeListT, TypeList<char, int>, TypeList<float>, TypeList<void, void>>,
+		                         TypeList<TypeList<char, float, void>>>);
+
 	static_assert(std::is_same_v<Map<std::add_lvalue_reference, TypeList<int, char, double>>,
 		                         TypeList<int&, char&, double&>>);
 
