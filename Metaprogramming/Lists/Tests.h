@@ -90,6 +90,18 @@ namespace IDragnev::Meta
 	static_assert(std::is_same_v<Map<IdentityT, TypeList<int, float, double>>,
 		                         TypeList<int, float, double>>);
 
+	template <typename T>
+	struct Double;
+	
+	template <int N>
+	struct Double<CTValue<int, N>>
+	{
+		using type = CTValue<int, 2 * N>;
+	};
+
+	static_assert(std::is_same_v<Map<Double, ValueList<int, 1, 2, 3>>,
+								 ValueList<int, 2, 4, 6>>);
+
 	static_assert(std::is_same_v<LargestType<TypeList<char, unsigned, long double>>, long double>);
 
 	static_assert(std::is_same_v<FReverse<TypeList<int, double, char>>,
