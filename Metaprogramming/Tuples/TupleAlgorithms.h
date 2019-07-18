@@ -45,30 +45,59 @@ namespace IDragnev::Meta
 		using type = Tuple<>;
 	};
 
-	template <typename T, typename... Elements>
-	inline constexpr
-	auto insertFront(const Tuple<Elements...>& tuple, const T& value)
+	namespace Detail
 	{
-		using Result = Tuple<T, Elements...>;
-		return Result(value, tuple);
+		template <typename TupleT,
+			      typename... Ts,
+			      unsigned... Indices
+		> inline constexpr
+		auto insertBack(TupleT&& tuple, ValueList<unsigned, Indices...>, Ts&&... values)
+		{
+			return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...,
+				             std::forward<Ts>(values)...);
+		}
+
+		template <typename TupleT,
+			      typename... Ts,
+				  unsigned... Indices
+		> inline constexpr 
+		auto insertFront(TupleT&& tuple, ValueList<unsigned, Indices...>, Ts&&... values)
+		{
+			return makeTuple(std::forward<Ts>(values)...,
+				             get<Indices>(std::forward<TupleT>(tuple))...);
+		}
 	}
 
-	template <typename T>
-	inline constexpr 
-	auto insertBack(const Tuple<>& tuple, const T& value)
+	template <typename TupleT,
+		      typename T,
+		      typename... Rest,
+		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr
+	auto insertFront(TupleT&& tuple, T&& value, Rest&&... rest)
 	{
-		return Tuple<T>(value);
+		using Indices = MakeIndexList<Size>;
+		
+		return Detail::insertFront(std::forward<TupleT>(tuple), 
+			                       Indices{},
+								   std::forward<T>(value),
+								   std::forward<Rest>(rest)...);
 	}
 
-	template <typename T, typename Head, typename... Tail>
-	constexpr 
-	auto insertBack(const Tuple<Head, Tail...>& tuple, const T& value)
+	template <typename TupleT,
+		      typename T,
+		      typename... Rest,
+		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+	> inline constexpr
+	auto insertBack(TupleT&& tuple, T&& value, Rest&&... rest)
 	{
-		using Result = Tuple<Head, Tail..., T>;
-		return Result(tuple.getHead(), 
-			          insertBack(tuple.getTail(), value));
-	}
+		using Indices = MakeIndexList<Size>;
 
+		return Detail::insertBack(std::forward<TupleT>(tuple),
+			                      Indices{},
+			                      std::forward<T>(value),
+			                      std::forward<Rest>(rest)...);
+	}
+	
 	template <typename H, typename... Elements>
 	inline constexpr 
 	auto dropHead(const Tuple<H, Elements...>& tuple)

@@ -182,20 +182,43 @@ namespace Tupletest
 			Assert::IsTrue(rhs == makeTuple(1, ""s), L"Moved-from object has invalid contents");
 		}
 
-		TEST_METHOD(insertingBack)
+		TEST_METHOD(insertingAtTheBack)
 		{
-			constexpr auto tuple = insertBack(makeTuple(1, 2), 3);
+			constexpr auto tuple = insertBack(makeTuple(1, 2), 3, 4, 5);
 
-			static_assert(tuple == makeTuple(1, 2, 3));
+			static_assert(tuple == makeTuple(1, 2, 3, 4, 5));
 		}
 
-		TEST_METHOD(insertingFront)
+		TEST_METHOD(insertingAtTheFront)
 		{
-			constexpr auto tuple = insertFront(makeTuple(1, 2), 0);
+			constexpr auto tuple = insertFront(makeTuple(2, 3), 0, 1);
 
-			static_assert(tuple == makeTuple(0, 1, 2));
+			static_assert(tuple == makeTuple(0, 1, 2, 3));
 		}
 
+		TEST_METHOD(insertFrontTakesValueCategoryIntoAccountAndUsesPerfectForwarding)
+		{
+			auto source = makeTuple("a"s, "b"s);
+			auto str = "c"s;
+
+			auto result = insertFront(std::move(source), std::move(str));
+
+			Assert::IsTrue(result == makeTuple("c"s, "a"s, "b"s));
+			Assert::IsTrue(source == makeTuple(""s, ""s));
+			Assert::IsTrue(str == ""s);
+		}
+
+		TEST_METHOD(insertBackTakesValueCategoryIntoAccountAndUsesPerfectForwarding)
+		{
+			auto source = makeTuple("a"s, "b"s);
+			auto str = "c"s;
+
+			auto result = insertBack(std::move(source), std::move(str));
+
+			Assert::IsTrue(result == makeTuple("a"s, "b"s, "c"s));
+			Assert::IsTrue(source == makeTuple(""s, ""s));
+			Assert::IsTrue(str == ""s);
+		}
 		TEST_METHOD(droppingTheTail)
 		{
 			constexpr auto tuple = dropTail(makeTuple(0, 1));
