@@ -47,24 +47,25 @@ namespace IDragnev::Meta
 
 	namespace Detail
 	{
-		template <typename TupleT,
+		enum class InsertionPolicy { front, back };
+
+		template <InsertionPolicy policy,
+			      typename TupleT,
 			      typename... Ts,
 			      unsigned... Indices
 		> inline constexpr
-		auto insertBack(TupleT&& tuple, ValueList<unsigned, Indices...>, Ts&&... values)
+		auto insertAt(TupleT&& tuple, ValueList<unsigned, Indices...>, Ts&&... values)
 		{
-			return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...,
-				             std::forward<Ts>(values)...);
-		}
-
-		template <typename TupleT,
-			      typename... Ts,
-				  unsigned... Indices
-		> inline constexpr 
-		auto insertFront(TupleT&& tuple, ValueList<unsigned, Indices...>, Ts&&... values)
-		{
-			return makeTuple(std::forward<Ts>(values)...,
-				             get<Indices>(std::forward<TupleT>(tuple))...);
+			if constexpr (policy == InsertionPolicy::back)
+			{
+				return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...,
+								 std::forward<Ts>(values)...);
+			}
+			else
+			{
+				return makeTuple(std::forward<Ts>(values)...,
+					             get<Indices>(std::forward<TupleT>(tuple))...);
+			}
 		}
 	}
 
@@ -75,12 +76,13 @@ namespace IDragnev::Meta
 	> inline constexpr
 	auto insertFront(TupleT&& tuple, T&& value, Rest&&... rest)
 	{
+		using IP = Detail::InsertionPolicy;
 		using Indices = MakeIndexList<Size>;
 		
-		return Detail::insertFront(std::forward<TupleT>(tuple), 
-			                       Indices{},
-								   std::forward<T>(value),
-								   std::forward<Rest>(rest)...);
+		return Detail::insertAt<IP::front>(std::forward<TupleT>(tuple), 
+			                               Indices{},
+								           std::forward<T>(value),
+								           std::forward<Rest>(rest)...);
 	}
 
 	template <typename TupleT,
@@ -90,12 +92,13 @@ namespace IDragnev::Meta
 	> inline constexpr
 	auto insertBack(TupleT&& tuple, T&& value, Rest&&... rest)
 	{
+		using IP = Detail::InsertionPolicy;
 		using Indices = MakeIndexList<Size>;
 
-		return Detail::insertBack(std::forward<TupleT>(tuple),
-			                      Indices{},
-			                      std::forward<T>(value),
-			                      std::forward<Rest>(rest)...);
+		return Detail::insertAt<IP::back>(std::forward<TupleT>(tuple),
+			                              Indices{},
+			                              std::forward<T>(value),
+			                              std::forward<Rest>(rest)...);
 	}
 	
 	template <typename H, typename... Elements>
