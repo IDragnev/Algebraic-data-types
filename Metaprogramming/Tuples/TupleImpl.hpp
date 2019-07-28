@@ -2,13 +2,6 @@
 namespace IDragnev::Meta
 {
 	template <typename Head, typename... Tail>
-	constexpr Tuple<Head, Tail...>::Tuple(const Head& h, const Tuple<Tail...>& tail) :
-		HeadElement(h),
-		TailTuple(tail)
-	{
-	}
-
-	template <typename Head, typename... Tail>
 	template <typename VHead, typename... VTail, typename, typename>
 	constexpr Tuple<Head, Tail...>::Tuple(VHead&& head, VTail&&... tail) :
 		HeadElement(std::forward<VHead>(head)),

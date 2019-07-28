@@ -114,15 +114,6 @@ namespace Tupletest
 			Assert::IsTrue(source == makeTuple(1, ""s), L"Moved-from object has invalid constents");
 		}
 
-		TEST_METHOD(headAndTailConstructor)
-		{
-			constexpr auto source = makeTuple(1, 2);
-			
-			constexpr auto destination = Tuple<int,int>(source.getHead(), source.getTail());
-
-			static_assert(source == destination);
-		}
-
 		TEST_METHOD(copyAssignment)
 		{
 			auto rhs = makeTuple(1, 2u);

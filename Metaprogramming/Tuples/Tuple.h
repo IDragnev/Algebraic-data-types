@@ -74,8 +74,6 @@ namespace IDragnev::Meta
 		Tuple(const Tuple& source) = default;
 		~Tuple() = default;
 
-		constexpr Tuple(const Head& h, const Tuple<Tail...>& tail);
-
 		template <typename VHead,
 			      typename... VTail,
 			      typename = EnableIfMatchesTailLength<VTail...>,
