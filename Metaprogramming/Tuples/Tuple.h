@@ -28,15 +28,6 @@ namespace IDragnev::Meta
 
 		template <typename T>
 		inline constexpr bool isTuple = IsTuple<T>::value;
-
-		template <typename List, typename T, bool = isEmpty<List>>
-		struct MatchesHeadOf : std::false_type { };
-
-		template <typename List, typename T>
-		struct MatchesHeadOf<List, T, false> : std::is_same<T, Head<List>> { };
-
-		template <typename List, typename T>
-		inline constexpr bool matchesHeadOf = MatchesHeadOf<List, T>::value;
 	}
 
 	template <unsigned I,
@@ -63,11 +54,6 @@ namespace IDragnev::Meta
 		template <typename... Args>
 		using EnableIfMatchesTailLength = std::enable_if_t<sizeof...(Args) == sizeof...(Tail)>;
 
-		template <typename... Args>
-		using EnableIfNotTailTuple = std::enable_if_t<(sizeof...(Args) != 1) ||
-			                                          !Detail::matchesHeadOf<TypeList<std::decay_t<Args>...>, 
-			                                                                 TailTuple>
-		                                             >;
 	public:
 		Tuple() = default;
 		Tuple(Tuple&& source) = default;
@@ -76,8 +62,7 @@ namespace IDragnev::Meta
 
 		template <typename VHead,
 			      typename... VTail,
-			      typename = EnableIfMatchesTailLength<VTail...>,
-		          typename = EnableIfNotTailTuple<VTail...>
+			      typename = EnableIfMatchesTailLength<VTail...>
 		> constexpr Tuple(VHead&& head, VTail&&... tail);
 
 		template <typename VHead,
