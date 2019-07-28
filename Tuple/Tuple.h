@@ -1,8 +1,8 @@
 #pragma once
 
 #include "TupleElement.h"
-#include "Meta\ValueList.h"
-#include "Meta\TypeList.h"
+#include "ValueList.h"
+#include "TypeList.h"
 
 namespace IDragnev
 {

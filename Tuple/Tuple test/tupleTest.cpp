@@ -1,6 +1,7 @@
 #include "CppUnitTest.h"
-#include "Tuples\Tuple.h"
-#include "Tuples\TupleAlgorithms.h"
+#include "Tuple.h"
+#include "TupleAlgorithms.h"
+#include "Tests.h"
 #include <vector>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

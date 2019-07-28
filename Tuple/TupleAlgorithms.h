@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Meta\ListInterface.h"
-#include "Meta\List algorithms.h"
+#include "ListInterface.h"
+#include "List algorithms.h"
 #include "Tuple.h"
 
 namespace IDragnev
