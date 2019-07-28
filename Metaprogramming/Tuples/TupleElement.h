@@ -3,7 +3,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace IDragnev::Meta::Detail
+namespace IDragnev::Detail
 {
 	template <typename T>
 	inline constexpr auto canBeInherited = std::is_class_v<T> && !std::is_final_v<T>;

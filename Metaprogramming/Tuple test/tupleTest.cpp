@@ -4,7 +4,7 @@
 #include <vector>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-using namespace IDragnev::Meta;
+using namespace IDragnev;
 using namespace std::string_literals;
 
 namespace Tupletest
@@ -312,7 +312,7 @@ namespace Tupletest
 		{
 			constexpr auto tuple = makeTuple(2, '1', 3.0);
 
-			constexpr auto result = sortByType<IsSmallerT>(tuple);
+			constexpr auto result = sortByType<Meta::IsSmallerT>(tuple);
 		
 			static_assert(result == makeTuple('1', 2, 3.0));
 		}
@@ -321,7 +321,7 @@ namespace Tupletest
 		{
 			auto tuple = makeTuple("1"s, 0);
 
-			auto result = sortByType<IsSmallerT>(std::move(tuple));
+			auto result = sortByType<Meta::IsSmallerT>(std::move(tuple));
 
 			Assert::IsTrue(result == makeTuple(0, "1"s));
 			Assert::IsTrue(tuple == makeTuple(""s, 0));
@@ -367,7 +367,7 @@ namespace Tupletest
 				return x + std::forward<decltype(y)>(y);
 			};
 
-			auto result = IDragnev::Meta::apply(sum, std::move(tuple));
+			auto result = IDragnev::apply(sum, std::move(tuple));
 
 			Assert::IsTrue(result == "ab"s);
 			Assert::IsTrue(tuple == makeTuple("a"s, ""s));

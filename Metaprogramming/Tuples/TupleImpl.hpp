@@ -1,5 +1,5 @@
 
-namespace IDragnev::Meta
+namespace IDragnev
 {
 	template <typename Head, typename... Tail>
 	template <typename VHead, typename... VTail, typename>

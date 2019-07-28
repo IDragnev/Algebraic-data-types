@@ -4,18 +4,18 @@
 #include "Lists\ValueList.h"
 #include "Lists\TypeList.h"
 
-namespace IDragnev::Meta
+namespace IDragnev
 {
 	template <typename... Types>
 	class Tuple;
 
 	namespace Detail
 	{
-		template <typename T>
+		template <typename TupleT>
 		struct TupleSize { };
 
 		template <typename... Types>
-		struct TupleSize<Tuple<Types...>> : CTValue<unsigned, sizeof...(Types)> { };
+		struct TupleSize<Tuple<Types...>> : Meta::CTValue<unsigned, sizeof...(Types)> { };
 
 		template <typename T>
 		inline constexpr unsigned tupleSize = TupleSize<T>::value;
@@ -24,25 +24,26 @@ namespace IDragnev::Meta
 		struct IsTuple : std::false_type { };
 
 		template <typename T>
-		struct IsTuple<T, std::void_t<decltype(TupleSize<std::decay_t<T>>::value)>> : std::true_type { };
+		struct IsTuple<T, std::void_t<decltype(TupleSize<std::decay_t<T>>::value)>> :
+			std::true_type { };
 
 		template <typename T>
 		inline constexpr bool isTuple = IsTuple<T>::value;
 	}
 
-	template <unsigned I,
+	template <unsigned Index,
 		      typename TupleT, 
 		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
 	> inline constexpr
 	decltype(auto) get(TupleT&& tuple) noexcept
 	{
-		return Detail::getValue<Size - I - 1>(std::forward<TupleT>(tuple));
+		return Detail::getValue<Size - Index - 1>(std::forward<TupleT>(tuple));
 	}
 
 	template <>
 	class Tuple<> { };
 
-	template<typename Head, typename... Tail>
+	template <typename Head, typename... Tail>
 	class Tuple<Head, Tail...>
 		: private Detail::TupleElement<sizeof...(Tail), Head>, 
 		  private Tuple<Tail...>
@@ -94,7 +95,7 @@ namespace IDragnev::Meta
 		constexpr TailTuple& getTail() noexcept;
 		constexpr const TailTuple& getTail() const noexcept;
 	
-		template <unsigned I, typename TupleT, unsigned Size>
+		template <unsigned Index, typename TupleT, unsigned Size>
 		friend constexpr decltype(auto) get(TupleT&& tuple) noexcept;
 	};
 }
