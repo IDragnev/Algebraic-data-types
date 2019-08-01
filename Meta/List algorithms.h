@@ -391,4 +391,30 @@ namespace IDragnev::Meta
 	template <template <typename... Args> typename F,
 		      typename... Lists
 	> using Zip = typename ZipT<F, Lists...>::type;
+
+	template <template <typename...> typename Predicate,
+		      typename List
+	> struct CountIfT
+	{
+	private:
+		template <typename Acc, typename Current>
+		struct Lambda;
+
+		template <unsigned Acc, typename Current>
+		struct Lambda<CTValue<unsigned, Acc>, Current>
+		{
+			using type = CTValue<unsigned, Acc + (Predicate<Current>::value ? 1 : 0)>;
+		};
+
+	public:
+		using type = FoldLeft<Lambda, CTValue<unsigned, 0>, List>;
+	};
+
+	template <template <typename...> typename Predicate,
+		      typename List
+	> using CountIf = typename CountIfT<Predicate, List>::type;
+
+	template <template <typename...> typename Predicate,
+		      typename List
+	> inline constexpr unsigned countIf = CountIf<Predicate, List>::value;
 }

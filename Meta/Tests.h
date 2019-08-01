@@ -208,4 +208,8 @@ namespace IDragnev::Meta
 
 	static_assert(std::is_same_v<FFilter<std::is_const, TypeList<int, const int, double, const float>>, 
 								 TypeList<const int, const float>>);
+
+	static_assert(countIf<std::is_const, TypeList<>> == 0);
+
+	static_assert(countIf<std::is_const, TypeList<int, const int, double>> == 1);
 }
