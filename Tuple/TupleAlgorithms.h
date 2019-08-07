@@ -50,69 +50,69 @@ namespace IDragnev
 		enum class InsertionPolicy { front, back };
 
 		template <InsertionPolicy policy,
-			      typename TupleT,
-			      typename... Ts,
-			      unsigned... Indices
-		> inline constexpr
+                  typename TupleT,
+                  typename... Ts,
+                  unsigned... Indices
+        > inline constexpr
 		auto insertAt(TupleT&& tuple, 
-			          Meta::ValueList<unsigned, Indices...>, 
-			          Ts&&... values)
+                      Meta::ValueList<unsigned, Indices...>, 
+                      Ts&&... values)
 		{
 			if constexpr (policy == InsertionPolicy::back)
 			{
 				return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...,
-								 std::forward<Ts>(values)...);
+                                 std::forward<Ts>(values)...);
 			}
 			else
 			{
 				return makeTuple(std::forward<Ts>(values)...,
-					             get<Indices>(std::forward<TupleT>(tuple))...);
+                                 get<Indices>(std::forward<TupleT>(tuple))...);
 			}
 		}
 	}
 
 	template <typename TupleT,
-		      typename T,
-		      typename... Rest,
-		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr
+              typename T,
+              typename... Rest,
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr
 	auto insertFront(TupleT&& tuple, T&& value, Rest&&... rest)
 	{
 		using IP = Detail::InsertionPolicy;
 		using Indices = Meta::MakeIndexList<Size>;
 		
 		return Detail::insertAt<IP::front>(std::forward<TupleT>(tuple), 
-			                               Indices{},
-								           std::forward<T>(value),
-								           std::forward<Rest>(rest)...);
+                                           Indices{},
+                                           std::forward<T>(value),
+                                           std::forward<Rest>(rest)...);
 	}
 
 	template <typename TupleT,
-		      typename T,
-		      typename... Rest,
-		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr
+              typename T,
+              typename... Rest,
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr
 	auto insertBack(TupleT&& tuple, T&& value, Rest&&... rest)
 	{
 		using IP = Detail::InsertionPolicy;
 		using Indices = Meta::MakeIndexList<Size>;
 
 		return Detail::insertAt<IP::back>(std::forward<TupleT>(tuple),
-			                              Indices{},
-			                              std::forward<T>(value),
-			                              std::forward<Rest>(rest)...);
+                                          Indices{},
+                                          std::forward<T>(value),
+                                          std::forward<Rest>(rest)...);
 	}
 	
 	template <typename H, typename... Elements>
 	inline constexpr 
-	auto dropHead(const Tuple<H, Elements...>& tuple)
+	Tuple<Elements...> dropHead(const Tuple<H, Elements...>& tuple)
 	{
 		return tuple.getTail();
 	}
 
 	template <typename H, typename... Elements>
 	inline constexpr
-	auto dropTail(const Tuple<H, Elements...>& tuple)
+	Tuple<H> dropTail(const Tuple<H, Elements...>& tuple)
 	{
 		return Tuple<H>(tuple.getHead());
 	}
@@ -131,9 +131,9 @@ namespace IDragnev
 	}
 
 	template <unsigned... Indices, 
-		      typename TupleT,
-		      typename = Detail::EnableIfTuple<TupleT>
-	> inline constexpr
+              typename TupleT,
+              typename = Detail::EnableIfTuple<TupleT>
+    > inline constexpr
 	auto select(TupleT&& tuple)
 	{
 		using IndicesT = Meta::ValueList<unsigned, Indices...>;
@@ -141,8 +141,8 @@ namespace IDragnev
 	}
 
 	template <typename TupleT,
-	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr
 	auto reverse(TupleT&& tuple)
 	{
 		using Meta::Reverse;
@@ -153,10 +153,10 @@ namespace IDragnev
 	}
 
 	template <unsigned Index, 
-		      unsigned Count,
-		      typename Head,
-		      typename... Tail
-	> inline constexpr
+              unsigned Count,
+              typename Head,
+              typename... Tail
+    > inline constexpr
 	auto replicate(const Tuple<Head, Tail...>& t)
 	{
 		using Indices = Meta::ReplicateValue<Index, Count>;
@@ -164,9 +164,9 @@ namespace IDragnev
 	}
 
 	template <unsigned N, 
-	          typename TupleT,
-			  typename = Detail::EnableIfTuple<TupleT>
-	> inline constexpr
+              typename TupleT,
+              typename = Detail::EnableIfTuple<TupleT>
+    > inline constexpr
 	auto take(TupleT&& t)
 	{
 		using Indices = Meta::MakeIndexList<N>;
@@ -174,9 +174,9 @@ namespace IDragnev
 	}
 
 	template <unsigned N,
-	          typename TupleT,
-	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr 
+              typename TupleT,
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr 
 	auto drop(TupleT&& t)
 	{
 		using Meta::Drop;
@@ -187,9 +187,9 @@ namespace IDragnev
 	}
 
 	template <template <typename U, typename V> typename CompareFn,
-		      typename TupleT,
-		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr
+              typename TupleT,
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr
 	auto sortByType(TupleT&& t)
 	{
 		using Meta::InsertionSort;
@@ -197,7 +197,7 @@ namespace IDragnev
 		using TypeList = std::decay_t<TupleT>;
 		using InitialIndices = Meta::MakeIndexList<Size>;
 		using SortedIndices = InsertionSort<InitialIndices,
-			                                MakeIndexedCompareT<TypeList, CompareFn>::template Compare>;
+                                            MakeIndexedCompareT<TypeList, CompareFn>::template Compare>;
 
 		return Detail::select(std::forward<TupleT>(t), SortedIndices{});
 	}
@@ -211,9 +211,9 @@ namespace IDragnev
 		}
 
 		template <typename Callable, 
-			      typename TupleT,
-			      unsigned... Indices
-		> inline constexpr
+                  typename TupleT,
+                  unsigned... Indices
+        > inline constexpr
 		void forEach(TupleT&& tuple, Callable f, Meta::ValueList<unsigned, Indices...>)
 		{
 			forEachArg(f, get<Indices>(std::forward<TupleT>(tuple))...);
@@ -221,9 +221,9 @@ namespace IDragnev
 	}
 
 	template <typename Callable, 
-		      typename TupleT,
-	          unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr
+              typename TupleT,
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr
 	void forEach(TupleT&& tuple, Callable f)
 	{
 		using Indices = Meta::MakeIndexList<Size>;
@@ -233,9 +233,9 @@ namespace IDragnev
 	namespace Detail
 	{
 		template <typename Callable, 
-			      typename TupleT, 
-			      unsigned... Indices
-		> inline constexpr 
+                  typename TupleT, 
+                  unsigned... Indices
+        > inline constexpr 
 		decltype(auto) apply(Callable f, TupleT&& tuple, Meta::ValueList<unsigned, Indices...>)
 		{
 			return f(get<Indices>(std::forward<TupleT>(tuple))...);
@@ -243,9 +243,9 @@ namespace IDragnev
 	}
 
 	template <typename Callable,
-		      typename TupleT,
-		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr
+              typename TupleT,
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr
 	decltype(auto) apply(Callable f, TupleT&& tuple)
 	{
 		using Indices = Meta::MakeIndexList<Size>;
@@ -255,44 +255,44 @@ namespace IDragnev
 	namespace Detail
 	{
 		template <typename UTuple,
-			      typename VTuple,
-				  unsigned... UIndices,
-			      unsigned... VIndices
-		> constexpr auto concatenate(UTuple&& u, VTuple&& v,
-			                         Meta::ValueList<unsigned, UIndices...>,
-			                         Meta::ValueList<unsigned, VIndices...>)
+                  typename VTuple,
+                  unsigned... UIndices,
+                  unsigned... VIndices
+        > constexpr auto concatenate(UTuple&& u, VTuple&& v,
+                                     Meta::ValueList<unsigned, UIndices...>,
+                                     Meta::ValueList<unsigned, VIndices...>)
 		{
 			return makeTuple(get<UIndices>(std::forward<UTuple>(u))...,
-				             get<VIndices>(std::forward<VTuple>(v))...);
+                             get<VIndices>(std::forward<VTuple>(v))...);
 		}
 
 		template <typename... Types>
-		inline constexpr bool areAllTuples = Meta::allOf<IsTuple, Meta::TypeList<std::decay_t<Types>...>>;
+        inline constexpr bool areAllTuples = Meta::allOf<IsTuple, Meta::TypeList<std::decay_t<Types>...>>;
 	}
 
 	template <typename UTuple,
-		      typename VTuple,
-		      unsigned USize = Detail::tupleSize<std::decay_t<UTuple>>,
-		      unsigned VSize = Detail::tupleSize<std::decay_t<VTuple>>
+              typename VTuple,
+              unsigned USize = Detail::tupleSize<std::decay_t<UTuple>>,
+              unsigned VSize = Detail::tupleSize<std::decay_t<VTuple>>
 	> constexpr auto concatenate(UTuple&& u, VTuple&& v)
 	{
 		using UIndices = Meta::MakeIndexList<USize>;
 		using VIndices = Meta::MakeIndexList<VSize>;
 
 		return Detail::concatenate(std::forward<UTuple>(u), 
-								   std::forward<VTuple>(v),
-			                       UIndices{},
-			                       VIndices{});
+                                   std::forward<VTuple>(v),
+                                   UIndices{},
+                                   VIndices{});
 	}
 
 	template <typename UTuple,
-		      typename VTuple,
-		      typename... Tuples,
-		      typename = std::enable_if_t<Detail::areAllTuples<UTuple, VTuple, Tuples...>>
+              typename VTuple,
+              typename... Tuples,
+              typename = std::enable_if_t<Detail::areAllTuples<UTuple, VTuple, Tuples...>>
 	> constexpr auto concatenate(UTuple&& u, VTuple&& v, Tuples&&... rest)
 	{
 		return concatenate(concatenate(std::forward<UTuple>(u), 
-			                           std::forward<VTuple>(v)),
-			               std::forward<Tuples>(rest)...);
+                                       std::forward<VTuple>(v)),
+                           std::forward<Tuples>(rest)...);
 	}
 }
