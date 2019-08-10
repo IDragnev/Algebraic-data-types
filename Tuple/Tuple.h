@@ -25,16 +25,16 @@ namespace IDragnev
 
 		template <typename T>
 		struct IsTuple<T, std::void_t<decltype(TupleSize<std::decay_t<T>>::value)>> :
-			std::true_type { };
+             std::true_type { };
 
 		template <typename T>
 		inline constexpr bool isTuple = IsTuple<T>::value;
 	}
 
 	template <unsigned Index,
-		      typename TupleT, 
-		      unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
-	> inline constexpr
+              typename TupleT, 
+              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+    > inline constexpr
 	decltype(auto) get(TupleT&& tuple) noexcept
 	{
 		return Detail::getValue<Size - Index - 1>(std::forward<TupleT>(tuple));
@@ -45,8 +45,8 @@ namespace IDragnev
 
 	template <typename Head, typename... Tail>
 	class Tuple<Head, Tail...>
-		: private Detail::TupleElement<sizeof...(Tail), Head>, 
-		  private Tuple<Tail...>
+        : private Detail::TupleElement<sizeof...(Tail), Head>, 
+          private Tuple<Tail...>
 	{
 	private:
 		using HeadElement = Detail::TupleElement<sizeof...(Tail), Head>;
@@ -62,32 +62,32 @@ namespace IDragnev
 		~Tuple() = default;
 
 		template <typename VHead,
-			      typename... VTail,
-			      typename = EnableIfMatchesTailLength<VTail...>
-		> constexpr Tuple(VHead&& head, VTail&&... tail);
+                  typename... VTail,
+                  typename = EnableIfMatchesTailLength<VTail...>
+        > constexpr Tuple(VHead&& head, VTail&&... tail);
 
 		template <typename VHead,
-			      typename... VTail,
-			      typename = EnableIfMatchesTailLength<VTail...>
-		> constexpr Tuple(const Tuple<VHead, VTail...>& source);
+                  typename... VTail,
+                  typename = EnableIfMatchesTailLength<VTail...>
+        > constexpr Tuple(const Tuple<VHead, VTail...>& source);
 
 		template <typename VHead,
-			      typename... VTail,
-			      typename = EnableIfMatchesTailLength<VTail...>
-		> constexpr Tuple(Tuple<VHead, VTail...>&& source);
+                  typename... VTail,
+                  typename = EnableIfMatchesTailLength<VTail...>
+        > constexpr Tuple(Tuple<VHead, VTail...>&& source);
 
 		Tuple& operator=(Tuple&& rhs) = default;
 		Tuple& operator=(const Tuple& rhs) = default;
 		 
 		template <typename VHead,
-			      typename... VTail,
-			      typename = EnableIfMatchesTailLength<VTail...>
-		> constexpr Tuple& operator=(const Tuple<VHead, VTail...>& source);
+                  typename... VTail,
+                  typename = EnableIfMatchesTailLength<VTail...>
+        > constexpr Tuple& operator=(const Tuple<VHead, VTail...>& source);
 
 		template <typename VHead,
-			      typename... VTail,
-			      typename = EnableIfMatchesTailLength<VTail...>
-		> constexpr Tuple& operator=(Tuple<VHead, VTail...>&& source);
+                  typename... VTail,
+                  typename = EnableIfMatchesTailLength<VTail...>
+        > constexpr Tuple& operator=(Tuple<VHead, VTail...>&& source);
 
 		constexpr Head& getHead() noexcept;
 		constexpr const Head& getHead() const noexcept;
