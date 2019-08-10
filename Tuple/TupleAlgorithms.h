@@ -60,12 +60,12 @@ namespace IDragnev
 		{
 			if constexpr (policy == InsertionPolicy::back)
 			{
-				return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...,
+                return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...,
                                  std::forward<Ts>(values)...);
 			}
 			else
 			{
-				return makeTuple(std::forward<Ts>(values)...,
+                return makeTuple(std::forward<Ts>(values)...,
                                  get<Indices>(std::forward<TupleT>(tuple))...);
 			}
 		}
@@ -81,7 +81,7 @@ namespace IDragnev
 		using IP = Detail::InsertionPolicy;
 		using Indices = Meta::MakeIndexList<Size>;
 		
-		return Detail::insertAt<IP::front>(std::forward<TupleT>(tuple), 
+        return Detail::insertAt<IP::front>(std::forward<TupleT>(tuple), 
                                            Indices{},
                                            std::forward<T>(value),
                                            std::forward<Rest>(rest)...);
@@ -97,7 +97,7 @@ namespace IDragnev
 		using IP = Detail::InsertionPolicy;
 		using Indices = Meta::MakeIndexList<Size>;
 
-		return Detail::insertAt<IP::back>(std::forward<TupleT>(tuple),
+        return Detail::insertAt<IP::back>(std::forward<TupleT>(tuple),
                                           Indices{},
                                           std::forward<T>(value),
                                           std::forward<Rest>(rest)...);
@@ -196,7 +196,7 @@ namespace IDragnev
 		using Meta::MakeIndexedCompareT;
 		using TypeList = std::decay_t<TupleT>;
 		using InitialIndices = Meta::MakeIndexList<Size>;
-		using SortedIndices = InsertionSort<InitialIndices,
+        using SortedIndices = InsertionSort<InitialIndices,
                                             MakeIndexedCompareT<TypeList, CompareFn>::template Compare>;
 
 		return Detail::select(std::forward<TupleT>(t), SortedIndices{});
@@ -262,7 +262,7 @@ namespace IDragnev
                                      Meta::ValueList<unsigned, UIndices...>,
                                      Meta::ValueList<unsigned, VIndices...>)
 		{
-			return makeTuple(get<UIndices>(std::forward<UTuple>(u))...,
+            return makeTuple(get<UIndices>(std::forward<UTuple>(u))...,
                              get<VIndices>(std::forward<VTuple>(v))...);
 		}
 
@@ -279,7 +279,7 @@ namespace IDragnev
 		using UIndices = Meta::MakeIndexList<USize>;
 		using VIndices = Meta::MakeIndexList<VSize>;
 
-		return Detail::concatenate(std::forward<UTuple>(u), 
+        return Detail::concatenate(std::forward<UTuple>(u), 
                                    std::forward<VTuple>(v),
                                    UIndices{},
                                    VIndices{});
@@ -291,7 +291,7 @@ namespace IDragnev
               typename = std::enable_if_t<Detail::areAllTuples<UTuple, VTuple, Tuples...>>
 	> constexpr auto concatenate(UTuple&& u, VTuple&& v, Tuples&&... rest)
 	{
-		return concatenate(concatenate(std::forward<UTuple>(u), 
+        return concatenate(concatenate(std::forward<UTuple>(u), 
                                        std::forward<VTuple>(v)),
                            std::forward<Tuples>(rest)...);
 	}
