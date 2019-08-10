@@ -16,14 +16,21 @@ namespace IDragnev::Meta
 	template <typename List, std::size_t N>
 	using ListRef = typename ListRefT<List, N>::type;
 
-	template <typename Lhs, typename Rhs, bool = isEmpty<Rhs>>
-	struct ConcatT
+	template <typename Lhs, 
+              typename Rhs, 
+              bool = isEmpty<Rhs>
+    > struct ConcatT;
+
+	template <typename Lhs,
+              typename Rhs
+	> struct ConcatT<Lhs, Rhs, true>
 	{
 		using type = Lhs;
 	};
 
-	template <typename Lhs, typename Rhs>
-	struct ConcatT<Lhs, Rhs, false> : ConcatT<InsertBack<Lhs, Head<Rhs>>, Tail<Rhs>> { };
+	template <typename Lhs, 
+              typename Rhs
+    > struct ConcatT<Lhs, Rhs, false> : ConcatT<InsertBack<Lhs, Head<Rhs>>, Tail<Rhs>> { };
 
 	template <typename Lhs, typename Rhs>
 	using Concat = typename ConcatT<Lhs, Rhs>::type;
@@ -44,49 +51,62 @@ namespace IDragnev::Meta
 	};
 
 	template <template <typename> typename F,
-		      typename List,
-			  bool = isEmpty<List>
-	> struct MapT;
+              typename List,
+              bool = isEmpty<List>
+    > struct MapT;
 
 	template <template <typename> typename F,
-		      typename List
-	> using Map = typename MapT<F, List>::type;
+              typename List
+    > using Map = typename MapT<F, List>::type;
 
 	template <template <typename> typename F,
-		      typename List
-	> struct MapT<F, List, true> : IdentityT<List> { };
+              typename List
+    > struct MapT<F, List, true>
+	{
+		using type = List;
+	};
 
 	template <template <typename> typename F,
-			  typename List
-	> struct MapT<F, List, false> : 
-		InsertFrontT<Map<F, Tail<List>>,
-		             typename F<Head<List>>::type>
+              typename List
+    > struct MapT<F, List, false> : 
+        InsertFrontT<Map<F, Tail<List>>,
+                     typename F<Head<List>>::type>
 	{ };
 
 	template <template <typename Res, typename Current> typename Op,
-		      typename Initial,
-		      typename List,
-	          bool = isEmpty<List>
-	> struct FoldLeftT : FoldLeftT<Op, typename Op<Initial, Head<List>>::type, Tail<List>> { };
+              typename Initial,
+              typename List,
+              bool = isEmpty<List>
+    > struct FoldLeftT;
 
 	template <template <typename Res, typename Current> typename Op,
-		      typename Initial,
-	          typename List>
-	struct FoldLeftT<Op, Initial, List, true>
+              typename Initial,
+              typename List
+    > struct FoldLeftT<Op, Initial, List, false> :
+        FoldLeftT<Op, typename Op<Initial, Head<List>>::type, Tail<List>> { };
+
+	template <template <typename Res, typename Current> typename Op,
+              typename Initial,
+              typename List
+    > struct FoldLeftT<Op, Initial, List, true>
 	{
 		using type = Initial;
 	};
 
 	template <template <typename Res, typename Current> typename Op,
-		      typename Initial,
-		      typename List
-	> using FoldLeft = typename FoldLeftT<Op, Initial, List>::type;
+              typename Initial,
+              typename List
+    > using FoldLeft = typename FoldLeftT<Op, Initial, List>::type;
+
+	template <typename List,
+              bool = isEmpty<List>
+    > struct LargestTypeT;
 
 	template <typename List>
-	struct LargestTypeT : FoldLeftT<LargerT, Head<List>, Tail<List>> { };
+	struct LargestTypeT<List, false> : FoldLeftT<LargerT, Head<List>, Tail<List>> { };
 
-	template<>
-	struct LargestTypeT<TypeList<>> { };
+	template <typename List>
+	struct LargestTypeT<List, true> { };
 
 	template <typename List>
 	using LargestType = typename LargestTypeT<List>::type;
@@ -98,31 +118,31 @@ namespace IDragnev::Meta
 	using FConcat = FoldLeft<InsertBackT, Lhs, Rhs>;
 
 	template <template <typename> typename Predicate,
-		      typename List,
-		      bool = isEmpty<List>
-	> struct FilterT;
+              typename List,
+              bool = isEmpty<List>
+    > struct FilterT;
 
 	template <template <typename> typename Predicate,
-		      typename List
-	> using Filter = typename FilterT<Predicate, List>::type;
+              typename List
+    > using Filter = typename FilterT<Predicate, List>::type;
 
 	template <template <typename> typename Predicate,
-		      typename List
-	> struct FilterT<Predicate, List, false>
+              typename List
+    > struct FilterT<Predicate, List, false>
 	{
 	private:
 		using H = Head<List>;
 		using FilteredTail = Filter<Predicate, Tail<List>>;
-		using Result = std::conditional_t<Predicate<H>::value,
-			                              InsertFrontT<FilteredTail, H>,
-			                              IdentityT<FilteredTail>>;
+        using Result = std::conditional_t<Predicate<H>::value,
+                                          InsertFrontT<FilteredTail, H>,
+                                          IdentityT<FilteredTail>>;
 	public:
 		using type = typename Result::type;
 	};
 
 	template <template <typename> typename Predicate,
-	          typename List
-	> struct FilterT<Predicate, List, true>
+              typename List
+    > struct FilterT<Predicate, List, true>
 	{
 		using type = List;
 	};
@@ -131,20 +151,20 @@ namespace IDragnev::Meta
 	struct MakeConditionalInsertBack
 	{
 		template <typename List, typename T>
-		struct Lambda
+		struct invoke
 		{
 		private:
-			using Result = std::conditional_t<Predicate<T>::value,
-											  InsertBackT<List, T>,
-										      IdentityT<List>>;
+            using Result = std::conditional_t<Predicate<T>::value,
+                                              InsertBackT<List, T>,
+                                              IdentityT<List>>;
 		public:
 			using type = typename Result::type;
 		};
 	};
 
 	template <template <typename> typename Predicate,
-		      typename List
-	> using FFilter = FoldLeft<MakeConditionalInsertBack<Predicate>::template Lambda, EmptyList<List>, List>;
+              typename List
+    > using FFilter = FoldLeft<MakeConditionalInsertBack<Predicate>::template invoke, EmptyList<List>, List>;
 	 
 	template <unsigned N, typename List>
 	struct DropT : DropT<N - 1, Tail<List>> { };
@@ -166,8 +186,8 @@ namespace IDragnev::Meta
 
 	template <unsigned N, typename List>
 	struct TakeT : 
-		InsertFrontT<Take<N - 1, Tail<List>>, 
-			         Head<List>>
+        InsertFrontT<Take<N - 1, Tail<List>>, 
+                     Head<List>>
 	{ };
 
 	template <typename List>
@@ -181,8 +201,8 @@ namespace IDragnev::Meta
 
 	template <unsigned Size, typename Result = ValueList<unsigned>>
 	struct MakeIndexListT : 
-		MakeIndexListT<Size - 1, 
-		               InsertFront<Result, CTValue<unsigned, Size - 1>>> 
+        MakeIndexListT<Size - 1, 
+                       InsertFront<Result, CTValue<unsigned, Size - 1>>> 
 	{ };
 
 	template <typename Result>
@@ -195,12 +215,12 @@ namespace IDragnev::Meta
 	using MakeIndexList = typename MakeIndexListT<N>::type;
 
 	template <auto Value,
-		      unsigned Count,
-		      typename Result = ValueList<decltype(Value)>
-	> struct ReplicateValueT : 
-		ReplicateValueT<Value, 
-					    Count - 1, 
-			            InsertFront<Result, CTValue<decltype(Value), Value>>> 
+              unsigned Count,
+              typename Result = ValueList<decltype(Value)>
+    > struct ReplicateValueT : 
+        ReplicateValueT<Value, 
+                        Count - 1, 
+                        InsertFront<Result, CTValue<decltype(Value), Value>>> 
 	{ };
 
 	template <auto Value, typename Result>
@@ -213,110 +233,110 @@ namespace IDragnev::Meta
 	using ReplicateValue = typename ReplicateValueT<V, Count>::type;
 
 	template <typename T,
-		      typename List,
-		      template <typename U, typename V> typename Compare,
-		      bool = isEmpty<List>
-	> struct InsertInSortedT;
+              typename List,
+              template <typename U, typename V> typename Compare,
+              bool = isEmpty<List>
+    > struct InsertInSortedT;
 
 	template <typename T,
-		      typename List,
-		      template <typename U, typename V> typename Compare
-	> using InsertInSorted = typename InsertInSortedT<T, List, Compare>::type;
+              typename List,
+              template <typename U, typename V> typename Compare
+    > using InsertInSorted = typename InsertInSortedT<T, List, Compare>::type;
 
 	template <typename List,
-		      template <typename U, typename V> typename Compare,
-		      bool = isEmpty<List>
-	> struct InsertionSortT;
+              template <typename U, typename V> typename Compare,
+              bool = isEmpty<List>
+    > struct InsertionSortT;
 
 	template <typename List,
-		      template <typename U, typename V> typename Compare
-	> using InsertionSort = typename InsertionSortT<List, Compare>::type;
+              template <typename U, typename V> typename Compare
+    > using InsertionSort = typename InsertionSortT<List, Compare>::type;
 
 	template <typename List,
-		      template <typename U, typename V> typename Compare
+              template <typename U, typename V> typename Compare
     > struct InsertionSortT<List, Compare, true>
 	{
 		using type = List;
 	};
 
 	template <typename List,
-		      template <typename U, typename V> typename Compare
-	> struct InsertionSortT<List, Compare, false> : 
-		InsertInSortedT<Head<List>, InsertionSort<Tail<List>, Compare>, Compare> { };
+              template <typename U, typename V> typename Compare
+    > struct InsertionSortT<List, Compare, false> : 
+        InsertInSortedT<Head<List>, InsertionSort<Tail<List>, Compare>, Compare> { };
 
 	template <typename T,
-		      typename List,
-		      template <typename U, typename V> typename Compare
-	> struct InsertInSortedT<T, List, Compare, true> : InsertFrontT<List, T> { };
+              typename List,
+              template <typename U, typename V> typename Compare
+    > struct InsertInSortedT<T, List, Compare, true> : InsertFrontT<List, T> { };
 
 	template <typename T,
-		      typename List,
-		      template <typename U, typename V> typename Compare
-	> struct InsertInSortedT<T, List, Compare, false>
+              typename List,
+              template <typename U, typename V> typename Compare
+    > struct InsertInSortedT<T, List, Compare, false>
 	{
 	private:
-		using NewTailT = std::conditional_t<Compare<T, Head<List>>::value,
-			                                IdentityT<List>,
-			                                InsertInSortedT<T, Tail<List>, Compare>>;
-		using NewTail = typename NewTailT::type;
-		using NewHead = std::conditional_t<Compare<T, Head<List>>::value,
-			                               T,
-			                               Head<List>>;
+        using NewTailT = std::conditional_t<Compare<T, Head<List>>::value,
+                                            IdentityT<List>,
+                                            InsertInSortedT<T, Tail<List>, Compare>>;
+        using NewTail = typename NewTailT::type;
+        using NewHead = std::conditional_t<Compare<T, Head<List>>::value,
+                                           T,
+                                           Head<List>>;
 	public:
 		using type = InsertFront<NewTail, NewHead>;
 	};
 
 	template <typename List,
               template <typename U, typename V> typename CompareFn
-	> struct MakeIndexedCompareT
+    > struct MakeIndexedCompareT
 	{
 		template <typename T, typename F> struct invoke;
 
-		template <unsigned I, unsigned J>
-		struct invoke<CTValue<unsigned, I>, CTValue<unsigned, J>> : 
-            CompareFn<ListRef<List, I>, ListRef<List, J>> { };
+        template <unsigned I, unsigned J>
+        struct invoke<CTValue<unsigned, I>, CTValue<unsigned, J>> : 
+             CompareFn<ListRef<List, I>, ListRef<List, J>> { };
 	};
 
 	template <template <typename T> typename Predicate,
-		      typename List,
-		      bool = isEmpty<List>
-	> struct AllOfT;
+              typename List,
+              bool = isEmpty<List>
+    > struct AllOfT;
 
 	template <template <typename T> typename Predicate,
-		      typename List>
+              typename List>
 	inline constexpr bool allOf = AllOfT<Predicate, List>::value;
 
 	template <template <typename T> typename Predicate,
-		      typename List>
+              typename List>
 	struct AllOfT<Predicate, List, true> : std::true_type { };
 
 	template <template <typename T> typename Predicate,
-		      typename List
-	> struct AllOfT<Predicate, List, false> : 
-		std::bool_constant<Predicate<Head<List>>::value && 
-						   allOf<Predicate, Tail<List>>> 
+              typename List
+    > struct AllOfT<Predicate, List, false> : 
+        std::bool_constant<Predicate<Head<List>>::value && 
+                           allOf<Predicate, Tail<List>>> 
 	{ };
 
 	template <template <typename T> typename Predicate,
-		      typename List
-	> struct NoneOfT : AllOfT<Inverse<Predicate>::template invoke, List> { };
+              typename List
+    > struct NoneOfT : AllOfT<Inverse<Predicate>::template invoke, List> { };
 
 	template <template <typename T> typename Predicate,
-		      typename List>
+              typename List>
 	inline constexpr bool noneOf = NoneOfT<Predicate, List>::value;
 
 	template <template <typename T> typename Predicate,
-		      typename List
-	> struct AnyOfT : std::bool_constant<!allOf<Inverse<Predicate>::template invoke, List>> { };
+              typename List
+    > struct AnyOfT : std::bool_constant<!allOf<Inverse<Predicate>::template invoke, List>> { };
 
 	template <template <typename T> typename Predicate,
-		      typename List>
-	inline constexpr bool anyOf = AnyOfT<Predicate, List>::value;
+              typename List
+    > inline constexpr bool anyOf = AnyOfT<Predicate, List>::value;
 
 	template <typename T,
-		      typename List,
-		      bool = isEmpty<List>
-	> struct IsMemberT;
+              typename List,
+              bool = isEmpty<List>
+    > struct IsMemberT;
 
 	template <typename T, typename List>
 	inline constexpr bool isMember = IsMemberT<T, List>::value;
@@ -328,9 +348,9 @@ namespace IDragnev::Meta
 	struct IsMemberT<T, List, false> 
 	{
 	private:
-		using Result = std::conditional_t<std::is_same_v<T, Head<List>>,
-										  std::true_type,
-										  IsMemberT<T, Tail<List>>>;
+        using Result = std::conditional_t<std::is_same_v<T, Head<List>>,
+                                          std::true_type,
+                                          IsMemberT<T, Tail<List>>>;
 	public:
 		static inline constexpr bool value = Result::value;
 	};
@@ -351,10 +371,10 @@ namespace IDragnev::Meta
 	struct MakeSetT<List, false>
 	{
 	private:
-		using TailSet = MakeSet<Tail<List>>;	
-		using Result = std::conditional_t<isMember<Head<List>, Tail<List>>,
-										  IdentityT<TailSet>,
-						                  InsertFrontT<TailSet, Head<List>>>;
+        using TailSet = MakeSet<Tail<List>>;	
+        using Result = std::conditional_t<isMember<Head<List>, Tail<List>>,
+                                          IdentityT<TailSet>,
+                                          InsertFrontT<TailSet, Head<List>>>;
 	public:
 		using type = typename Result::type;
 	 };
@@ -362,45 +382,45 @@ namespace IDragnev::Meta
 	namespace Detail
 	{
 		template <template <typename... Args> typename F,
-			      typename PackedLists,
-			      bool = anyOf<IsEmpty, PackedLists>
-		> struct ZipImplT;
+                  typename PackedLists,
+                  bool = anyOf<IsEmpty, PackedLists>
+        > struct ZipImplT;
 
 		template <template <typename... Args> typename F,
-			      typename PackedLists
-		> using ZipImpl = typename ZipImplT<F, PackedLists>::type;
+                  typename PackedLists
+        > using ZipImpl = typename ZipImplT<F, PackedLists>::type;
 
 		template <template <typename... Args> typename F,
-			      typename HeadList,
-				  typename... Lists
-		> struct ZipImplT<F, TypeList<HeadList, Lists...>, true> : EmptyListT<HeadList> { };
+                  typename HeadList,
+                  typename... Lists
+        > struct ZipImplT<F, TypeList<HeadList, Lists...>, true> : EmptyListT<HeadList> { };
 
 		template <template <typename... Args> typename F,
-			      typename... Lists
-		> struct ZipImplT<F, TypeList<Lists...>, false> :
-			InsertFrontT<ZipImpl<F, TypeList<Tail<Lists>...>>, 
-			             typename F<Head<Lists>...>::type> 
+                  typename... Lists
+        > struct ZipImplT<F, TypeList<Lists...>, false> :
+            InsertFrontT<ZipImpl<F, TypeList<Tail<Lists>...>>, 
+                         typename F<Head<Lists>...>::type> 
 		{ };
 	}
 	
 	template <template <typename... Args> typename F,
-	          typename HeadList, 
-			  typename... Lists
-	> struct ZipT : Detail::ZipImplT<F, TypeList<HeadList, Lists...>> { };
+              typename HeadList, 
+              typename... Lists
+    > struct ZipT : Detail::ZipImplT<F, TypeList<HeadList, Lists...>> { };
 
 	template <template <typename... Args> typename F,
-		      typename... Lists
-	> using Zip = typename ZipT<F, Lists...>::type;
+              typename... Lists
+    > using Zip = typename ZipT<F, Lists...>::type;
 
 	template <template <typename...> typename Predicate,
-		      typename List
-	> struct CountIfT
+              typename List
+    > struct CountIfT
 	{
 	private:
 		template <typename Acc, typename Current>
 		struct Lambda;
 
-		template <unsigned Acc, typename Current>
+        template <unsigned Acc, typename Current>
 		struct Lambda<CTValue<unsigned, Acc>, Current>
 		{
 			using type = CTValue<unsigned, Acc + (Predicate<Current>::value ? 1 : 0)>;
@@ -411,10 +431,10 @@ namespace IDragnev::Meta
 	};
 
 	template <template <typename...> typename Predicate,
-		      typename List
-	> using CountIf = typename CountIfT<Predicate, List>::type;
+              typename List
+    > using CountIf = typename CountIfT<Predicate, List>::type;
 
 	template <template <typename...> typename Predicate,
-		      typename List
-	> inline constexpr unsigned countIf = CountIf<Predicate, List>::value;
+              typename List
+    > inline constexpr unsigned countIf = CountIf<Predicate, List>::value;
 }
