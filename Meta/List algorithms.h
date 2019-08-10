@@ -299,7 +299,7 @@ namespace IDragnev::Meta
 
 	template <template <typename T> typename Predicate,
 		      typename List
-	> struct NoneOfT : AllOfT<Inverse<Predicate>::template Result, List> { };
+	> struct NoneOfT : AllOfT<Inverse<Predicate>::template invoke, List> { };
 
 	template <template <typename T> typename Predicate,
 		      typename List>
@@ -307,7 +307,7 @@ namespace IDragnev::Meta
 
 	template <template <typename T> typename Predicate,
 		      typename List
-	> struct AnyOfT : std::bool_constant<!allOf<Inverse<Predicate>::template Result, List>> { };
+	> struct AnyOfT : std::bool_constant<!allOf<Inverse<Predicate>::template invoke, List>> { };
 
 	template <template <typename T> typename Predicate,
 		      typename List>

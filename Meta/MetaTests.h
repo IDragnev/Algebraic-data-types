@@ -180,7 +180,7 @@ namespace IDragnev::Meta
 
 	static_assert(allOf<std::is_const, TypeList<const int, const double>>);
 
-	static_assert(Inverse<std::is_const>::template invoke<int>::value);
+	static_assert(Inverse<std::is_const>::template Result<int>::value);
 
 	static_assert(noneOf<std::is_const, TypeList<>>);
 

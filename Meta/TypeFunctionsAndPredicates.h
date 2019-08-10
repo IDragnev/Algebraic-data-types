@@ -30,6 +30,6 @@ namespace IDragnev::Meta
 	struct Inverse
 	{
 		template <typename... Args>
-		struct Result : std::bool_constant<!Predicate<Args...>::value> { };
+		struct invoke : std::bool_constant<!Predicate<Args...>::value> { };
 	};
 }
