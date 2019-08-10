@@ -9,9 +9,9 @@ namespace IDragnev::Detail
 	inline constexpr auto canBeInherited = std::is_class_v<T> && !std::is_final_v<T>;
 
 	template <unsigned Height,
-		      typename T,
-		      bool = canBeInherited<T>
-	> class TupleElement;
+              typename T,
+              bool = canBeInherited<T>
+    > class TupleElement;
 
 	template <unsigned Height, typename T>
 	class TupleElement<Height, T, false>
@@ -45,28 +45,28 @@ namespace IDragnev::Detail
 	};
 
 	template <unsigned Height, typename T>
-	inline constexpr 
+    inline constexpr 
 	const T& getValue(const TupleElement<Height, T>& e) noexcept
 	{
 		return e.get();
 	}
 
 	template <unsigned Height, typename T>
-	inline constexpr
+    inline constexpr
 	T& getValue(TupleElement<Height, T>& e) noexcept
 	{
 		return const_cast<T&>(getValue(std::as_const(e)));
 	}
 
 	template <unsigned Height, typename T>
-	inline constexpr 
+    inline constexpr 
 	const T&& getValue(const TupleElement<Height, T>&& e) noexcept
 	{
 		return std::move(getValue(e));
 	}
 
 	template <unsigned Height, typename T>
-	inline constexpr
+    inline constexpr
 	T&& getValue(TupleElement<Height, T>&& e) noexcept
 	{
 		return std::move(e).get();
