@@ -9,7 +9,7 @@ namespace IDragnev
 
 		template <typename... Us, typename... Vs>
 		struct HaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>> :
-			std::bool_constant<(sizeof...(Us) == sizeof...(Vs))> { };
+            std::bool_constant<(sizeof...(Us) == sizeof...(Vs))> { };
 
 		template <typename U, typename V>
 		inline constexpr bool haveSameLength = HaveSameLength<U, V>::value;
@@ -18,25 +18,25 @@ namespace IDragnev
 		using EnableIfHaveSameLength = std::enable_if_t<haveSameLength<U, V>>;
 
 		template <typename CompareFn>
-		inline constexpr
+        inline constexpr
 		bool compareWith(CompareFn&&, const Tuple<>&, const Tuple<>&) noexcept
 		{
 			return true;
 		}
 
 		template <typename CompareFn, 
-			      typename UHead, typename... UTail, 
-			      typename VHead, typename... VTail
-		> constexpr bool
+                  typename UHead, typename... UTail, 
+                  typename VHead, typename... VTail
+        > constexpr bool
 		compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
 		{
-			return compare(u.getHead(), v.getHead()) &&
-				   compareWith(compare, u.getTail(), v.getTail());
+            return compare(u.getHead(), v.getHead()) &&
+                   compareWith(compare, u.getTail(), v.getTail());
 		}
 	}
 
 	template <typename... Types>
-	inline constexpr
+    inline constexpr
 	auto makeTuple(Types&&... args)
 	{
 		using T = Tuple<std::decay_t<Types>...>;
@@ -44,26 +44,26 @@ namespace IDragnev
 	}
 
 	template <typename... Us, 
-		      typename... Vs,
-		      typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
-	> inline constexpr
+              typename... Vs,
+              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
+    > inline constexpr
 	bool operator==(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return Detail::compareWith(std::equal_to{}, u, v);
 	}
 
 	template <typename... Us,
-		      typename... Vs,
-		      typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
-	> inline constexpr
+              typename... Vs,
+              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
+    > inline constexpr
 	bool operator!=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return !(u == v);
 	}
 
 	template <typename... Us,
-		      typename... Vs,
-		      typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
+              typename... Vs,
+              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
 	> inline constexpr
 	bool operator<(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
@@ -71,27 +71,27 @@ namespace IDragnev
 	}
 
 	template <typename... Us,
-		      typename... Vs,
-		      typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
-	> inline constexpr
+              typename... Vs,
+              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
+    > inline constexpr
 	bool operator>(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return v < u;
 	}
 
 	template <typename... Us,
-		      typename... Vs,
-		      typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
-	> inline constexpr
+              typename... Vs,
+              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
+    > inline constexpr
 	bool operator>=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return Detail::compareWith(std::greater_equal{}, u, v);
 	}
 
 	template <typename... Us,
-		      typename... Vs,
-		      typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
-	> inline constexpr
+              typename... Vs,
+              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
+    > inline constexpr
 	bool operator<=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
 	{
 		return Detail::compareWith(std::less_equal{}, u, v);
@@ -102,15 +102,15 @@ namespace IDragnev
 		struct IgnoreT
 		{
 			template <typename T>
-			constexpr 
-			const IgnoreT& operator=(const T&) const noexcept { return *this; }
+            constexpr 
+            const IgnoreT& operator=(const T&) const noexcept { return *this; }
 		};
 	}
 
 	inline constexpr Detail::IgnoreT ignore{};
 
 	template <typename... Types>
-	constexpr inline
+    constexpr inline
 	auto tie(Types&... args) noexcept
 	{
 		return Tuple<Types&...>(args...);
