@@ -197,7 +197,7 @@ namespace IDragnev
 		using TypeList = std::decay_t<TupleT>;
 		using InitialIndices = Meta::MakeIndexList<Size>;
         using SortedIndices = InsertionSort<InitialIndices,
-                                            MakeIndexedCompareT<TypeList, CompareFn>::template Compare>;
+                                            MakeIndexedCompareT<TypeList, CompareFn>::template invoke>;
 
 		return Detail::select(std::forward<TupleT>(t), SortedIndices{});
 	}

@@ -267,14 +267,14 @@ namespace IDragnev::Meta
 	};
 
 	template <typename List,
-		      template <typename U, typename V> typename CompareFn
+              template <typename U, typename V> typename CompareFn
 	> struct MakeIndexedCompareT
 	{
-		template <typename T, typename F> struct Compare;
+		template <typename T, typename F> struct invoke;
 
 		template <unsigned I, unsigned J>
-		struct Compare<CTValue<unsigned, I>, CTValue<unsigned, J>> : 
-			CompareFn<ListRef<List, I>, ListRef<List, J>> { };
+		struct invoke<CTValue<unsigned, I>, CTValue<unsigned, J>> : 
+            CompareFn<ListRef<List, I>, ListRef<List, J>> { };
 	};
 
 	template <template <typename T> typename Predicate,
