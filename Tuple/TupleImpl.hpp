@@ -4,8 +4,8 @@ namespace IDragnev
 	template <typename Head, typename... Tail>
 	template <typename VHead, typename... VTail, typename>
 	constexpr Tuple<Head, Tail...>::Tuple(VHead&& head, VTail&&... tail) :
-		HeadElement(std::forward<VHead>(head)),
-		TailTuple(std::forward<VTail>(tail)...)
+        HeadElement(std::forward<VHead>(head)),
+        TailTuple(std::forward<VTail>(tail)...)
 	{
 	}
 
@@ -46,28 +46,28 @@ namespace IDragnev
 	}
 
 	template <typename Head, typename... Tail>
-	inline constexpr 
+    inline constexpr 
 	Head& Tuple<Head, Tail...>::getHead() noexcept
 	{
 		return static_cast<HeadElement&>(*this).get();
 	}
 
 	template <typename Head, typename... Tail>
-	inline constexpr
+    inline constexpr
 	const Head& Tuple<Head, Tail...>::getHead() const noexcept
 	{
 		return static_cast<const HeadElement&>(*this).get();
 	}
 
 	template <typename Head, typename... Tail>
-	inline constexpr 
+    inline constexpr 
 	auto Tuple<Head, Tail...>::getTail() noexcept -> TailTuple&
 	{
 		return *this;
 	}
 
 	template <typename Head, typename... Tail>
-	inline constexpr
+    inline constexpr
 	auto Tuple<Head, Tail...>::getTail() const noexcept -> const TailTuple&
 	{
 		return *this;
