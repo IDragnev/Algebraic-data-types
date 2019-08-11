@@ -3,17 +3,12 @@
 #include "VariantChoice.h"
 #include "VariantStorage.h"
 #include "Meta\List algorithms.h"
+#include "VisitResult.h"
 
 #include <stdexcept>
 
 namespace IDragnev
 {
-    namespace Detail
-    {
-        template <typename... Args>
-        struct VisitResult;
-    }
-
     class EmptyVariant : public std::exception { };
 
     template <typename... Types>
@@ -61,16 +56,19 @@ namespace IDragnev
         template <typename T> 
         T&& get() &&;
 
-        template <typename R = ComputedResultType, typename Visitor>
-        Detail::VisitResult<R, Visitor, Types&...> 
+        template <typename R = Detail::ComputeResultType,
+                  typename Visitor
+        > Detail::VisitResult<R, Visitor, Types&...> 
         visit(Visitor&& v) &;
         
-        template <typename R = ComputedResultType, typename Visitor>
-        Detail::VisitResult<R, Visitor, const Types&...>
+        template <typename R = Detail::ComputeResultType,
+                  typename Visitor
+        > Detail::VisitResult<R, Visitor, const Types&...>
         visit(Visitor&& v) const&;
         
-        template<typename R = ComputedResultType, typename Visitor>
-        Detail::VisitResult<R, Visitor, Types&&...>
+        template <typename R = Detail::ComputeResultType,
+                  typename Visitor
+        > Detail::VisitResult<R, Visitor, Types&&...>
         visit(Visitor&& v) &&;
 
         bool isEmpty() const noexcept;
