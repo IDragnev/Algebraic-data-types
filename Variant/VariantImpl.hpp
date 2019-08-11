@@ -50,5 +50,9 @@ namespace IDragnev
         return *this->template getBufferAs<T>();
     }
 
-
+    template<typename... Types>
+    inline bool Variant<Types...>::isEmpty() const
+    {
+        return this->getDiscriminator() == NO_VALUE_DISCRIMINATOR;
+    }
 }
