@@ -34,20 +34,19 @@ namespace IDragnev::Detail
     }
 
     template<typename T, typename... Types>
-    auto VariantChoice<T, Types...>::operator=(T&& value) -> Derived&
+    inline auto VariantChoice<T, Types...>::operator=(T&& value) -> Derived&
     {
         return assign(std::move(value));
     }
 
     template <typename T, typename... Types>
-    auto VariantChoice<T, Types...>::operator=(const T& value) -> Derived&
+    inline auto VariantChoice<T, Types...>::operator=(const T& value) -> Derived&
     {
         return assign(value);
     }
 
     template <typename T, typename... Types>
     template <typename Value>
-    inline 
     auto VariantChoice<T, Types...>::assign(Value&& value) -> Derived&
     {
         if (isTheCurrentVariantChoice())

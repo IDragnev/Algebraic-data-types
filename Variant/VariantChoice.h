@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Meta\List algorithms.h"
+#include "Meta\ListAlgorithms.h"
 
 namespace IDragnev
 {
@@ -19,12 +19,12 @@ namespace IDragnev::Detail
     public:
         VariantChoice() = default;
         VariantChoice(T&& value);              
-        VariantChoice(T const& value);         
+        VariantChoice(const T& value);         
         
         void destroyValueIfHoldingIt() noexcept;
         
-        Derived& operator=(const T& value);  
         Derived& operator=(T&& value);
+        Derived& operator=(const T& value);  
 
     protected:
         static constexpr unsigned discriminator = Meta::indexOf<T, Meta::TypeList<Types...>> + 1;
@@ -38,7 +38,7 @@ namespace IDragnev::Detail
         Derived& assign(Value&& value);
 
         Derived& asDerived() noexcept;
-        Derived const& asDerived() const noexcept;
+        const Derived& asDerived() const noexcept;
     };
 }
 

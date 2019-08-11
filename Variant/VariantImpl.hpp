@@ -11,6 +11,79 @@ namespace IDragnev
     }
 
     template <typename... Types>
+    Variant<Types...>::Variant(Variant&& source)
+    {
+        if (!source.isEmpty())
+        {
+            std::move(source).visit([this](auto&& value) 
+            {
+                *this = std::move(value);
+            });
+        }
+    }
+
+    template <typename... Types>
+    template <typename... SourceTypes>
+    Variant<Types...>::Variant(const Variant<SourceTypes...>& source)
+    {
+        if (!source.isEmpty())
+        {
+            source.visit([this](auto const& value) 
+            {
+                *this = value;
+            });
+        }
+    }
+
+    template <typename... Types>
+    auto Variant<Types...>::operator=(const Variant& source) -> Variant&
+    {
+        if (!source.isEmpty())
+        {
+            source.visit([this](const auto& value)
+            {
+                *this = value;
+            });
+        }
+        else
+        {
+            destroyValue();
+        }
+
+        return *this;
+    }
+
+    template <typename... Types>
+    auto Variant<Types...>::operator=(Variant&& source) -> Variant&
+    {
+        if (!source.isEmpty())
+        {
+            source.visit([this](auto&& value)
+            {
+                *this = std::move(value);
+            });
+        }
+        else
+        {
+            destroyValue();
+        }
+
+        return *this;
+    }
+
+    template <typename... Types>
+    Variant<Types...>::Variant(const Variant& source)
+    {
+        if (!source.isEmpty())
+        {
+            source.visit([this](const auto& value) 
+            {
+                *this = value;
+            });
+        }
+    }
+
+    template <typename... Types>
     inline Variant<Types...>::~Variant()
     {
         destroyValue();
@@ -58,7 +131,7 @@ namespace IDragnev
     }
 
     template<typename... Types>
-    inline bool Variant<Types...>::isEmpty() const
+    inline bool Variant<Types...>::isEmpty() const noexcept
     {
         return this->getDiscriminator() == NO_VALUE_DISCRIMINATOR;
     }
