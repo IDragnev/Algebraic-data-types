@@ -30,19 +30,12 @@ namespace IDragnev::Detail
         static constexpr unsigned discriminator = Meta::indexOf<T, Meta::TypeList<Types...>> + 1;
 
     private:
+        template <typename Value>
+        void constructWith(Value&& value);
+
         Derived& asDerived() noexcept;
         Derived const& asDerived() const noexcept;
     };
-
-    template <typename T, typename... Types>
-    inline auto VariantChoice<T, Types...>::asDerived() noexcept -> Derived&
-    {
-        return static_cast<Derived&>(*this);
-    }
-
-    template <typename T, typename... Types>
-    inline auto VariantChoice<T, Types...>::asDerived() const noexcept ->  const Derived&
-    {
-        return static_cast<const Derived&>(*this);
-    }
 }
+
+#include "VariantChoiceImpl.hpp"
