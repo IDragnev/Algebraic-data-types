@@ -16,6 +16,33 @@ namespace IDragnev::Meta
     template <typename List, std::size_t N>
     using ListRef = typename ListRefT<List, N>::type;
 
+    template <typename T,
+              typename List,
+              unsigned Result = 0,
+              bool = isEmpty<List>
+    > struct IndexOfT;
+
+    template <typename T,
+              typename List, 
+              unsigned Result
+    > struct IndexOfT<T, List, Result, false> :
+        std::conditional_t<std::is_same_v<Head<List>, T>,
+                           std::integral_constant<unsigned, Result>,
+                           IndexOfT<T, Tail<List>, Result + 1>>
+    {
+    };
+
+    template <typename T,
+              typename List,
+              unsigned Result
+    > struct IndexOfT<T, List, Result, true> { };
+    
+    template <typename T, typename List>
+    using IndexOf = typename IndexOfT<T, List>::type;
+
+    template <typename T, typename List>
+    inline constexpr auto indexOf = IndexOf<T, List>::value;
+
     template <typename Lhs,
               typename Rhs,
               bool = isEmpty<Rhs>

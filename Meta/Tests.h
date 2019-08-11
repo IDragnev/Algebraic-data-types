@@ -212,4 +212,6 @@ namespace IDragnev::Meta
     static_assert(countIf<std::is_const, TypeList<>> == 0);
 
     static_assert(countIf<std::is_const, TypeList<int, const int, double>> == 1);
+
+    static_assert(indexOf<int, TypeList<int, float, int>> == 0);
 }
