@@ -29,9 +29,13 @@ namespace IDragnev::Detail
     protected:
         static constexpr unsigned discriminator = Meta::indexOf<T, Meta::TypeList<Types...>> + 1;
 
+        static bool isTheCurrentVariantChoice() noexcept;
+
     private:
         template <typename Value>
-        void constructWith(Value&& value);
+        void emplace(Value&& value);
+        template <typename Value>
+        Derived& assign(Value&& value);
 
         Derived& asDerived() noexcept;
         Derived const& asDerived() const noexcept;
