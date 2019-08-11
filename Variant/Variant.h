@@ -1,9 +1,14 @@
+#pragma once
 
 #include "VariantChoice.h"
 #include "VariantStorage.h"
 
+#include <stdexcept>
+
 namespace IDragnev
 {
+    class EmptyVariant : public std::exception { };
+
     template <typename... Types>
     class Variant
         : private Detail::VariantStorage<Types...>,
@@ -41,25 +46,25 @@ namespace IDragnev
         bool is() const noexcept;          
         
         template <typename T> 
-        T& get() & noexcept;               
+        T& get() &;
 
         template <typename T> 
-        const T& get() const & noexcept;      
+        const T& get() const&;      
         
         template <typename T> 
-        T&& get() && noexcept
+        T&& get() &&;
 
         template <typename R = ComputedResultType, typename Visitor>
         VisitResult<R, Visitor, Types&...> 
-        visit(Visitor&& v) & ;
+        visit(Visitor&& v) &;
         
         template <typename R = ComputedResultType, typename Visitor>
         VisitResult<R, Visitor, const Types&...> 
-        visit(Visitor&& v) const & ;
+        visit(Visitor&& v) const&;
         
         template<typename R = ComputedResultType, typename Visitor>
         VisitResult<R, Visitor, Types&&...> 
-        visit(Visitor&& v) && ;
+        visit(Visitor&& v) &&;
 
         bool isEmpty() const noexcept;
 
@@ -67,3 +72,5 @@ namespace IDragnev
         void destroy();              
     };
 }
+
+#include "VariantImpl.hpp"
