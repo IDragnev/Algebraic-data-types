@@ -1,3 +1,5 @@
+#pragma once
+
 #include <new>
 #include "Meta\List algorithms.h"
 
