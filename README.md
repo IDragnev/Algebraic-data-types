@@ -11,6 +11,5 @@
  - forEach  
  - concatenate  
 and more. Examples and details can be found in the [tests](https://github.com/IDragnev/Tuple/blob/master/Tuple/Tuple%20test/tupleTest.cpp).  
-Structured bindings are not supported due to some ambiguity in the get function.  
-They can be supported with a lot of duplicate code, which is why I decided against it.
+Structured bindings are not supported due to some ambiguity in the get function.
 
