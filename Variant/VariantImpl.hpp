@@ -4,6 +4,13 @@
 namespace IDragnev
 {
     template <typename... Types>
+    Variant<Types...>::Variant()
+    {
+        using T = Meta::Head<Meta::TypeList<Types...>>;  
+        *this = T{};
+    }
+
+    template <typename... Types>
     inline Variant<Types...>::~Variant()
     {
         destroyValue();
