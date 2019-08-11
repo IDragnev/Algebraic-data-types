@@ -4,35 +4,35 @@ namespace IDragnev
 {
 	namespace Detail
 	{
-		template <typename U, typename V>
-		struct HaveSameLength { };
+        template <typename U, typename V>
+        struct HaveSameLength { };
 
-		template <typename... Us, typename... Vs>
-		struct HaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>> :
+        template <typename... Us, typename... Vs>
+        struct HaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>> :
             std::bool_constant<(sizeof...(Us) == sizeof...(Vs))> { };
 
-		template <typename U, typename V>
-		inline constexpr bool haveSameLength = HaveSameLength<U, V>::value;
+        template <typename U, typename V>
+        inline constexpr bool haveSameLength = HaveSameLength<U, V>::value;
 
-		template <typename U, typename V>
-		using EnableIfHaveSameLength = std::enable_if_t<haveSameLength<U, V>>;
+        template <typename U, typename V>
+        using EnableIfHaveSameLength = std::enable_if_t<haveSameLength<U, V>>;
 
-		template <typename CompareFn>
+        template <typename CompareFn>
         inline constexpr
-		bool compareWith(CompareFn&&, const Tuple<>&, const Tuple<>&) noexcept
-		{
-			return true;
-		}
+        bool compareWith(CompareFn&&, const Tuple<>&, const Tuple<>&) noexcept
+        {
+            return true;
+        }
 
-		template <typename CompareFn, 
-                  typename UHead, typename... UTail, 
+        template <typename CompareFn,
+                  typename UHead, typename... UTail,
                   typename VHead, typename... VTail
         > constexpr bool
-		compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
-		{
+        compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
+        {
             return compare(u.getHead(), v.getHead()) &&
                    compareWith(compare, u.getTail(), v.getTail());
-		}
+        }
 	}
 
 	template <typename... Types>
