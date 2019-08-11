@@ -434,7 +434,7 @@ namespace IDragnev::Meta
               typename List
     > using CountIf = typename CountIfT<Predicate, List>::type;
 
-	template <template <typename...> typename Predicate,
+    template <template <typename...> typename Predicate,
               typename List
     > inline constexpr unsigned countIf = CountIf<Predicate, List>::value;
 }
