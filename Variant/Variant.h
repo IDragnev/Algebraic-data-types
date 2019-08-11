@@ -24,7 +24,7 @@ namespace IDragnev
         Variant();                                         
         Variant(Variant const& source);                    
         Variant(Variant&& source);                   
-        ~Variant() { destroy(); }
+        ~Variant();
         
         template <typename... SourceTypes>
         Variant(const Variant<SourceTypes...>& source);
@@ -69,7 +69,9 @@ namespace IDragnev
         bool isEmpty() const noexcept;
 
     private:
-        void destroy();              
+        static constexpr unsigned NO_VALUE_DISCRIMINATOR = 0;
+        
+        void destroyValue() noexcept;
     };
 }
 

@@ -21,7 +21,7 @@ namespace IDragnev::Detail
         VariantChoice(T&& value);              
         VariantChoice(T const& value);         
         
-        bool destroy();                        
+        void destroyValueIfHoldingIt() noexcept;
         
         Derived& operator=(const T& value);  
         Derived& operator=(T&& value);

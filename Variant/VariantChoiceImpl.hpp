@@ -32,4 +32,13 @@ namespace IDragnev::Detail
     {
         return static_cast<const Derived&>(*this);
     }
+
+    template <typename T, typename... Types>
+    void VariantChoice<T, Types...>::destroyValueIfHoldingIt() noexcept
+    {
+        if (asDerived().getDiscriminator() == discriminator)
+        {
+            asDerived().template getBufferAs<T>()->~T();
+        }
+    }
 }

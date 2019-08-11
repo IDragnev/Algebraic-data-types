@@ -4,6 +4,19 @@
 namespace IDragnev
 {
     template <typename... Types>
+    inline Variant<Types...>::~Variant()
+    {
+        destroyValue();
+    }
+
+    template<typename... Types>
+    void Variant<Types...>::destroyValue() noexcept
+    {
+        (VariantChoice<Types, Types...>::destroyValueIfHoldingIt(), ...);
+        this->setDiscriminator(NO_VALUE_DISCRIMINATOR);
+    }
+
+    template <typename... Types>
     template <typename T>
     bool Variant<Types...>::is() const noexcept
     {
@@ -36,4 +49,6 @@ namespace IDragnev
         assert(is<T>());
         return *this->template getBufferAs<T>();
     }
+
+
 }
