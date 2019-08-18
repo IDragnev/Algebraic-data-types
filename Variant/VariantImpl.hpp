@@ -127,7 +127,7 @@ namespace IDragnev
         }
 
         assert(is<T>());
-        return *this->template getBufferAs<T>();
+        return *(this->template getBufferAs<T>());
     }
 
     template<typename... Types>
