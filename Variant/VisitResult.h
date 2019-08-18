@@ -1,5 +1,5 @@
 
-#include "Meta\ListAlgorithms.h"
+#include "Meta/ListAlgorithms.h"
 
 namespace IDragnev::Detail
 {
