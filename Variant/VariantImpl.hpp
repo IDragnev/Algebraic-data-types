@@ -46,18 +46,19 @@ namespace IDragnev
     template <typename... Types>
     Variant<Types...>::Variant(const Variant& source)
     {
-        if (!source.isEmpty())
-        {
-            source.visit([this](const auto& value)
-            {
-                *this = value;
-            });
-        }
+        copyFrom(source);
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
     Variant<Types...>::Variant(const Variant<SourceTypes...>& source)
+    {
+        copyFrom(source);
+    }
+
+    template <typename... Types>
+    template <typename... SourceTypes>
+    void Variant<Types...>::copyFrom(const Variant<SourceTypes...>& source)
     {
         if (!source.isEmpty())
         {
