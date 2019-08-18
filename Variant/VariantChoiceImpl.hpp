@@ -56,7 +56,7 @@ namespace IDragnev::Detail
         else
         {
             asDerived().destroyValue();
-            emplace(value);
+            emplace(std::forward<Value>(value));
         }
 
         return asDerived();
