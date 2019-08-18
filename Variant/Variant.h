@@ -2,7 +2,7 @@
 
 #include "VariantChoice.h"
 #include "VariantStorage.h"
-#include "Meta\ListAlgorithms.h"
+#include "Meta/ListAlgorithms.h"
 #include "VisitResult.h"
 
 #include <stdexcept>
@@ -17,11 +17,14 @@ namespace IDragnev
           private Detail::VariantChoice<Types, Types...>...
     {
     private:
-        template <typename T, typename... Types>
-        friend class VariantChoice;
+        template <typename T, typename... AllTypes>
+        friend class Detail::VariantChoice;
+
+        template <typename T>
+        using VChoice = Detail::VariantChoice<T, Types...>;
 
     public:
-        using VariantChoice<Types, Types...>::VariantChoice...;
+        using VChoice<Types>::VariantChoice...;
 
         Variant();                                         
         Variant(Variant&& source);                   
@@ -34,7 +37,7 @@ namespace IDragnev
         template <typename... SourceTypes>
         Variant(const Variant<SourceTypes...>& source);
         
-        using VariantChoice<Types, Types...>::operator=...;
+        using VChoice<Types>::operator=...;
 
         Variant& operator=(Variant&& source);
         Variant& operator=(const Variant& source);
@@ -73,7 +76,7 @@ namespace IDragnev
         visit(Visitor&& v) &&;
 
         bool isEmpty() const noexcept;
-
+ 
     private:
         static constexpr unsigned char NO_VALUE_DISCRIMINATOR = 0;
         
