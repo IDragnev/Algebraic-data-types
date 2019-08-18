@@ -1,9 +1,9 @@
 
-#include "Meta\List algorithms.h"
+#include "Meta\ListAlgorithms.h"
 
 namespace IDragnev::Detail
 {
-    struct ComputeResultType;
+    struct DeduceResultType;
 
     template <typename R,
               typename Visitor,
@@ -15,7 +15,7 @@ namespace IDragnev::Detail
 
     template <typename Visitor, 
               typename... Types
-    > struct VisitResultT<ComputeResultType, Visitor, Types...>
+    > struct VisitResultT<DeduceResultType, Visitor, Types...>
     {
         using type = std::common_type_t<std::invoke_result_t<Visitor, Types>...>;
     };

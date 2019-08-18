@@ -28,7 +28,7 @@ namespace IDragnev
         Variant(const Variant& source);                    
         ~Variant();
         
-        template<typename... SourceTypes>
+        template <typename... SourceTypes>
         Variant(Variant<SourceTypes...>&& source);
 
         template <typename... SourceTypes>
@@ -39,10 +39,10 @@ namespace IDragnev
         Variant& operator=(Variant&& source);
         Variant& operator=(const Variant& source);
 
-        template<typename... SourceTypes>
+        template <typename... SourceTypes>
         Variant& operator=(Variant<SourceTypes...>&& source);
 
-        template<typename... SourceTypes>
+        template <typename... SourceTypes>
         Variant& operator=(const Variant<SourceTypes...>& source);
 
         template <typename T>
@@ -57,17 +57,17 @@ namespace IDragnev
         template <typename T> 
         const T& get() const&;      
 
-        template <typename R = Detail::ComputeResultType,
+        template <typename R = Detail::DeduceResultType,
                   typename Visitor
         > Detail::VisitResult<R, Visitor, Types&...> 
         visit(Visitor&& v) &;
         
-        template <typename R = Detail::ComputeResultType,
+        template <typename R = Detail::DeduceResultType,
                   typename Visitor
         > Detail::VisitResult<R, Visitor, const Types&...>
         visit(Visitor&& v) const&;
         
-        template <typename R = Detail::ComputeResultType,
+        template <typename R = Detail::DeduceResultType,
                   typename Visitor
         > Detail::VisitResult<R, Visitor, Types&&...>
         visit(Visitor&& v) &&;
