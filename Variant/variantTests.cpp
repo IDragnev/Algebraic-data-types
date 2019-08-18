@@ -52,7 +52,7 @@ TEST_CASE("testing the move constructor")
 
 TEST_CASE("testing the copy constructor")
 {
-    Variant<int, std::string> source("str");
+    const Variant<int, std::string> source("str");
 
     auto destination = source;
 
@@ -60,6 +60,39 @@ TEST_CASE("testing the copy constructor")
     REQUIRE(destination.is<std::string>());
     CHECK(source.get<std::string>() == "str");
     CHECK(destination.get<std::string>() == "str");
+}
+
+TEST_CASE("testing the conversion constructors")
+{
+    struct X
+    {
+        X(std::string value) : value(value) { }
+        X& operator=(std::string value) { this->value = value; }
+
+        std::string value;
+    };
+
+    Variant<int, std::string> source("abc");
+
+    SUBCASE("copy conversion")
+    {
+        Variant<int, float, X> destination = source;
+
+        REQUIRE(source.is<std::string>());
+        REQUIRE(destination.is<X>());
+        CHECK(source.get<std::string>() == "abc");
+        CHECK(destination.get<X>().value == "abc");
+    }
+
+    SUBCASE("move conversion")
+    {
+        Variant<int, float, X> destination = std::move(source);
+
+        REQUIRE(source.is<std::string>());
+        REQUIRE(destination.is<X>());
+        CHECK(source.get<std::string>() == "");
+        CHECK(destination.get<X>().value == "abc");
+    }
 }
 
 TEST_CASE("testing assignment of a plain value")
