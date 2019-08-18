@@ -30,7 +30,7 @@ namespace IDragnev::Detail
     protected:
         static constexpr unsigned discriminator = Meta::indexOf<T, Meta::TypeList<AllTypes...>> + 1;
 
-        static bool isTheCurrentVariantChoice() noexcept;
+        bool isTheCurrentVariantChoice() const noexcept;
 
     private:
         template <typename Value>

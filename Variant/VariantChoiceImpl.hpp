@@ -63,7 +63,7 @@ namespace IDragnev::Detail
     }
 
     template <typename T, typename... AllTypes>
-    bool VariantChoice<T, AllTypes...>::isTheCurrentVariantChoice() noexcept
+    bool VariantChoice<T, AllTypes...>::isTheCurrentVariantChoice() const noexcept
     {
         return asDerived().getDiscriminator() == discriminator;
     }
