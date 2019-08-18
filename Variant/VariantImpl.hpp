@@ -14,40 +14,48 @@ namespace IDragnev
     template <typename... Types>
     Variant<Types...>::Variant(Variant&& source)
     {
-        copyFrom(std::move(source));
+        copyFromIfNotEmpty(std::move(source));
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
     Variant<Types...>::Variant(Variant<SourceTypes...>&& source)
     {
-        copyFrom(std::move(source));
+        copyFromIfNotEmpty(std::move(source));
     }
 
     template <typename... Types>
     Variant<Types...>::Variant(const Variant& source)
     {
-        copyFrom(source);
+        copyFromIfNotEmpty(source);
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
     Variant<Types...>::Variant(const Variant<SourceTypes...>& source)
     {
-        copyFrom(source);
+        copyFromIfNotEmpty(source);
+    }
+
+    template <typename... Types>
+    template <typename VariantT>
+    void Variant<Types...>::copyFromIfNotEmpty(VariantT&& source)
+    {
+        if (!source.isEmpty())
+        {
+            copyFrom(std::forward<VariantT>(source));
+        }
     }
 
     template <typename... Types>
     template <typename VariantT>
     void Variant<Types...>::copyFrom(VariantT&& source)
     {
-        if (!source.isEmpty())
+        assert(!source.isEmpty());
+        std::forward<VariantT>(source).visit([this](auto&& value)
         {
-            std::forward<VariantT>(source).visit([this](auto&& value)
-            {
-                *this = std::forward<decltype(value)>(value);
-            });
-        }
+            *this = std::forward<decltype(value)>(value);
+        });
     }
 
     template<typename... Types>
@@ -67,10 +75,7 @@ namespace IDragnev
     {
         if (!source.isEmpty())
         {
-            std::move(source).visit([this](auto&& value)
-            {
-                *this = std::move(value);
-            });
+            copyFrom(std::move(source));
         }
         else
         {
@@ -85,10 +90,7 @@ namespace IDragnev
     {
         if (!source.isEmpty())
         {
-            source.visit([this](const auto& value)
-            {
-                *this = value;
-            });
+            copyFrom(source);
         }
         else
         {
@@ -104,10 +106,7 @@ namespace IDragnev
     {
         if (!source.isEmpty())
         {
-            std::move(source).visit([this](auto&& value)
-            {
-                *this = std::move(value);
-            });
+            copyFrom(std::move(source));
         }
         else
         {
@@ -123,10 +122,7 @@ namespace IDragnev
     {
         if (!source.isEmpty())
         {
-            source.visit([this](const auto& value)
-            {
-                *this = value;
-            });
+            copyFrom(source);
         }
         else
         {

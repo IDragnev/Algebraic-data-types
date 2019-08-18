@@ -79,6 +79,8 @@ namespace IDragnev
  
     private:
         template <typename VariantT>
+        void copyFromIfNotEmpty(VariantT&& source);
+        template <typename VariantT>
         void copyFrom(VariantT&& source);
 
     private:
