@@ -14,6 +14,20 @@ namespace IDragnev
     template <typename... Types>
     Variant<Types...>::Variant(Variant&& source)
     {
+        moveFrom(std::move(source));
+    }
+
+    template <typename... Types>
+    template <typename... SourceTypes>
+    Variant<Types...>::Variant(Variant<SourceTypes...>&& source)
+    {
+        moveFrom(std::move(source));
+    }
+
+    template <typename... Types>
+    template <typename... SourceTypes>
+    void Variant<Types...>::moveFrom(Variant<SourceTypes...>&& source)
+    {
         if (!source.isEmpty())
         {
             std::move(source).visit([this](auto&& value)
@@ -37,19 +51,6 @@ namespace IDragnev
             source.visit([this](const auto& value)
             {
                 *this = value;
-            });
-        }
-    }
-
-    template <typename... Types>
-    template <typename... SourceTypes>
-    Variant<Types...>::Variant(Variant<SourceTypes...>&& source)
-    {
-        if (!source.isEmpty())
-        {
-            std::move(source).visit([this](auto&& value)
-            {
-                *this = std::move(value);
             });
         }
     }
