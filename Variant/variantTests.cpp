@@ -100,21 +100,28 @@ TEST_CASE("testing visit")
     SUBCASE("visiting a non-const variant")
     {
         Variant<int, double> v(10);
-        auto readValue = 0;
 
-        v.visit([&](auto value) { readValue = value; });
+        auto result = v.visit([](auto value) { return value; });
 
-        CHECK(readValue == 10);
+        CHECK(result == 10);
     }
 
     SUBCASE("visiting an rvalue variant")
     {
         Variant<int, double> v(20.0);
-        auto readValue = 0.0;
         
-        std::move(v).visit([&](auto&& value) { readValue = value; });
+        auto result = std::move(v).visit([](auto&& value) { return std::move(value); });
 
-        CHECK(readValue == 20.0);
+        CHECK(result == 20.0);
+    }
+
+    SUBCASE("specifying the return type for visit")
+    {
+        const Variant<int, float> v(10);
+        
+        auto result = v.visit<double>([](auto x) { return x; });
+
+        CHECK(result == 10.0);
     }
 }
 
