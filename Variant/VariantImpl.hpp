@@ -165,14 +165,14 @@ namespace IDragnev
     template <typename T>
     T&& Variant<Types...>::get() &&
     {
-        return std::move(get());
+        return std::move(get<T>());
     }
 
     template <typename... Types>
     template <typename T>
     T& Variant<Types...>::get() &
     {
-        return const_cast<T&>(std::as_const(*this).get());
+        return const_cast<T&>(std::as_const(*this).template get<T>());
     }
 
     template <typename... Types>
