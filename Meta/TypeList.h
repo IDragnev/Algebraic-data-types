@@ -5,7 +5,7 @@
 namespace IDragnev::Meta
 {
     template <typename... Elements>
-    struct TypeList;
+    struct TypeList { };
 
     template <typename H, typename... Tail>
     struct HeadT<TypeList<H, Tail...>>
