@@ -73,6 +73,24 @@ namespace IDragnev
     }
 
     template <typename... Types>
+    auto Variant<Types...>::operator=(Variant&& source) -> Variant&
+    {
+        if (!source.isEmpty())
+        {
+            std::move(source).visit([this](auto&& value)
+            {
+                *this = std::move(value);
+            });
+        }
+        else
+        {
+            destroyValue();
+        }
+
+        return *this;
+    }
+
+    template <typename... Types>
     auto Variant<Types...>::operator=(const Variant& source) -> Variant&
     {
         if (!source.isEmpty())
@@ -91,13 +109,33 @@ namespace IDragnev
     }
 
     template <typename... Types>
-    auto Variant<Types...>::operator=(Variant&& source) -> Variant&
+    template <typename... SourceTypes>
+    auto Variant<Types...>::operator=(Variant<SourceTypes...>&& source) -> Variant&
     {
         if (!source.isEmpty())
         {
-            source.visit([this](auto&& value)
+            std::move(source).visit([this](auto&& value)
             {
                 *this = std::move(value);
+            });
+        }
+        else
+        {
+            destroyValue();
+        }
+
+        return *this;
+    }
+
+    template <typename... Types>
+    template <typename... SourceTypes>
+    auto Variant<Types...>::operator=(const Variant<SourceTypes...>& source) -> Variant&
+    {
+        if (!source.isEmpty())
+        {
+            source.visit([this](const auto& value)
+            {
+                *this = value;
             });
         }
         else
