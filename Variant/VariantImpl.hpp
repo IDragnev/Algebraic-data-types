@@ -6,7 +6,7 @@ namespace IDragnev
     template <typename... Types>
     Variant<Types...>::Variant()
     {
-        using T = Meta::Head<Meta::TypeList<Types...>>;  
+        using T = Meta::Head<Meta::TypeList<Types...>>;
         *this = T{};
     }
 
@@ -15,7 +15,38 @@ namespace IDragnev
     {
         if (!source.isEmpty())
         {
-            std::move(source).visit([this](auto&& value) 
+            std::move(source).visit([this](auto&& value)
+            {
+                *this = std::move(value);
+            });
+        }
+    }
+
+    template<typename... Types>
+    inline bool Variant<Types...>::isEmpty() const noexcept
+    {
+        return this->getDiscriminator() == NO_VALUE_DISCRIMINATOR;
+    }
+
+    template <typename... Types>
+    Variant<Types...>::Variant(const Variant& source)
+    {
+        if (!source.isEmpty())
+        {
+            source.visit([this](const auto& value)
+            {
+                *this = value;
+            });
+        }
+    }
+
+    template <typename... Types>
+    template <typename... SourceTypes>
+    Variant<Types...>::Variant(Variant<SourceTypes...>&& source)
+    {
+        if (!source.isEmpty())
+        {
+            std::move(source).visit([this](auto&& value)
             {
                 *this = std::move(value);
             });
@@ -28,11 +59,17 @@ namespace IDragnev
     {
         if (!source.isEmpty())
         {
-            source.visit([this](auto const& value) 
+            source.visit([this](auto const& value)
             {
                 *this = value;
             });
         }
+    }
+
+    template <typename... Types>
+    inline Variant<Types...>::~Variant()
+    {
+        destroyValue();
     }
 
     template <typename... Types>
@@ -69,24 +106,6 @@ namespace IDragnev
         }
 
         return *this;
-    }
-
-    template <typename... Types>
-    Variant<Types...>::Variant(const Variant& source)
-    {
-        if (!source.isEmpty())
-        {
-            source.visit([this](const auto& value) 
-            {
-                *this = value;
-            });
-        }
-    }
-
-    template <typename... Types>
-    inline Variant<Types...>::~Variant()
-    {
-        destroyValue();
     }
 
     template<typename... Types>
@@ -128,12 +147,6 @@ namespace IDragnev
 
         assert(is<T>());
         return *(this->template getBufferAs<T>());
-    }
-
-    template<typename... Types>
-    inline bool Variant<Types...>::isEmpty() const noexcept
-    {
-        return this->getDiscriminator() == NO_VALUE_DISCRIMINATOR;
     }
 
     namespace Detail 
