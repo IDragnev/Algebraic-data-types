@@ -62,3 +62,59 @@ TEST_CASE("testing the copy constructor")
     CHECK(destination.get<std::string>() == "str");
 }
 
+TEST_CASE("testing assignment of a plain value")
+{
+    SUBCASE("basics")
+    {
+        Variant<int, std::string> v("str");
+
+        v = 100;
+
+        REQUIRE(v.is<int>());
+        CHECK(v.get<int>() == 100);
+    }
+
+    SUBCASE("type conversions")
+    {
+        Variant<int, std::string> v(100);
+
+        v = "c-string";
+
+        REQUIRE(v.is<std::string>());
+        CHECK(v.get<std::string>() == "c-string");
+    }
+}
+
+TEST_CASE("testing visit")
+{
+    SUBCASE("visiting a const variant")
+    {
+        const Variant<int, std::string> v("abc");
+        std::string str = "";
+        
+        v.visit([&str](const auto& value) { str = value; });
+
+        CHECK(str == "abc");
+    }
+
+    SUBCASE("visiting a non-const variant")
+    {
+        Variant<int, double> v(10);
+        auto readValue = 0;
+
+        v.visit([&](auto value) { readValue = value; });
+
+        CHECK(readValue == 10);
+    }
+
+    SUBCASE("visiting an rvalue variant")
+    {
+        Variant<int, double> v(20.0);
+        auto readValue = 0.0;
+        
+        std::move(v).visit([&](auto&& value) { readValue = value; });
+
+        CHECK(readValue == 20.0);
+    }
+}
+
