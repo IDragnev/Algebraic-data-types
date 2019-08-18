@@ -1,5 +1,6 @@
 
 #include <assert.h>
+#include <functional>
 
 namespace IDragnev
 {
@@ -149,7 +150,7 @@ namespace IDragnev
     template<typename... Types>
     void Variant<Types...>::destroyValue() noexcept
     {
-        (VariantChoice<Types, Types...>::destroyValueIfHoldingIt(), ...);
+        (VChoice<Types>::destroyValueIfHoldingIt(), ...);
         this->setDiscriminator(NO_VALUE_DISCRIMINATOR);
     }
 
@@ -157,7 +158,7 @@ namespace IDragnev
     template <typename T>
     bool Variant<Types...>::is() const noexcept
     {
-        return this->getDiscriminator() == VariantChoice<T, Types...>::discriminator;
+        return this->getDiscriminator() == VChoice<T>::discriminator;
     }
 
     template <typename... Types>
@@ -206,7 +207,7 @@ namespace IDragnev
             {
                 return variantVisit<R>(std::forward<V>(variant),
                                        std::forward<Visitor>(visitor),
-                                       Meta::Typelist<Tail...>{});
+                                       Meta::TypeList<Tail...>{});
             }
             else
             {
