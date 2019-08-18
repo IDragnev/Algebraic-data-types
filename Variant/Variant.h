@@ -78,10 +78,8 @@ namespace IDragnev
         bool isEmpty() const noexcept;
  
     private:
-        template <typename... SourceTypes>
-        void moveFrom(Variant<SourceTypes...>&& source);
-        template <typename... SourceTypes>
-        void copyFrom(const Variant<SourceTypes...>& source);
+        template <typename VariantT>
+        void copyFrom(VariantT&& source);
 
     private:
         static constexpr unsigned char NO_VALUE_DISCRIMINATOR = 0;

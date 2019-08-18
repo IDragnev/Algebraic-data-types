@@ -14,33 +14,14 @@ namespace IDragnev
     template <typename... Types>
     Variant<Types...>::Variant(Variant&& source)
     {
-        moveFrom(std::move(source));
+        copyFrom(std::move(source));
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
     Variant<Types...>::Variant(Variant<SourceTypes...>&& source)
     {
-        moveFrom(std::move(source));
-    }
-
-    template <typename... Types>
-    template <typename... SourceTypes>
-    void Variant<Types...>::moveFrom(Variant<SourceTypes...>&& source)
-    {
-        if (!source.isEmpty())
-        {
-            std::move(source).visit([this](auto&& value)
-            {
-                *this = std::move(value);
-            });
-        }
-    }
-
-    template<typename... Types>
-    inline bool Variant<Types...>::isEmpty() const noexcept
-    {
-        return this->getDiscriminator() == NO_VALUE_DISCRIMINATOR;
+        copyFrom(std::move(source));
     }
 
     template <typename... Types>
@@ -57,16 +38,22 @@ namespace IDragnev
     }
 
     template <typename... Types>
-    template <typename... SourceTypes>
-    void Variant<Types...>::copyFrom(const Variant<SourceTypes...>& source)
+    template <typename VariantT>
+    void Variant<Types...>::copyFrom(VariantT&& source)
     {
         if (!source.isEmpty())
         {
-            source.visit([this](auto const& value)
+            std::forward<VariantT>(source).visit([this](auto&& value)
             {
-                *this = value;
+                *this = std::forward<decltype(value)>(value);
             });
         }
+    }
+
+    template<typename... Types>
+    inline bool Variant<Types...>::isEmpty() const noexcept
+    {
+        return this->getDiscriminator() == NO_VALUE_DISCRIMINATOR;
     }
 
     template <typename... Types>
