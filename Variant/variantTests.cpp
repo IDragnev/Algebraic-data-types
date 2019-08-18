@@ -95,7 +95,7 @@ TEST_CASE("testing the conversion constructors")
     }
 }
 
-TEST_CASE("testing assignment of a plain value")
+TEST_CASE("testing the assignment of a plain value")
 {
     SUBCASE("basics")
     {
@@ -115,6 +115,62 @@ TEST_CASE("testing assignment of a plain value")
 
         REQUIRE(v.is<std::string>());
         CHECK(v.get<std::string>() == "c-string");
+    }
+}
+
+TEST_CASE("testing copy assignment")
+{
+    const Variant<int, double> rhs(10);
+    Variant<double, int, float> lhs(0.0);
+
+    lhs = rhs;
+
+    REQUIRE(lhs.is<int>());
+    REQUIRE(lhs.get<int>() == 10);
+}
+
+TEST_CASE("testing move assignment")
+{
+    Variant<int, std::string> rhs("abc");
+    Variant<double, std::string> lhs(0.0);
+
+    lhs = std::move(rhs);
+
+    REQUIRE(lhs.is<std::string>());
+    REQUIRE(rhs.is<std::string>());
+    CHECK(lhs.get<std::string>() == "abc");
+    CHECK(rhs.get<std::string>() == "");
+}
+
+TEST_CASE("testing the conversion assignment operators")
+{
+    struct X
+    {
+        X(std::string value) : value(value) {}
+        X& operator=(std::string value) { this->value = value; }
+
+        std::string value;
+    };
+
+    Variant<double, int, X> lhs(123.42);
+    Variant<int, std::string> rhs("abc");
+
+    SUBCASE("copy assignment")
+    {
+        lhs = std::as_const(rhs);
+
+        REQUIRE(lhs.is<X>());
+        CHECK(lhs.get<X>().value == "abc");
+    }
+
+    SUBCASE("move assignment")
+    {
+        lhs = std::move(rhs);
+
+        REQUIRE(lhs.is<X>());
+        REQUIRE(rhs.is<std::string>());
+        CHECK(lhs.get<X>().value == "abc");
+        CHECK(rhs.get<std::string>() == "");
     }
 }
 
@@ -157,4 +213,5 @@ TEST_CASE("testing visit")
         CHECK(result == 10.0);
     }
 }
+
 
