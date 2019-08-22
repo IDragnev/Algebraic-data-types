@@ -78,67 +78,48 @@ namespace IDragnev
     }
 
     template <typename... Types>
-    auto Variant<Types...>::operator=(Variant&& source) -> Variant&
+    inline auto Variant<Types...>::operator=(Variant&& source) -> Variant&
     {
-        if (!source.isEmpty())
-        {
-            copyFrom(std::move(source));
-        }
-        else
-        {
-            destroyValue();
-        }
-
-        return *this;
-    }
-
-    template <typename... Types>
-    auto Variant<Types...>::operator=(const Variant& source) -> Variant&
-    {
-        if (!source.isEmpty())
-        {
-            copyFrom(source);
-        }
-        else
-        {
-            destroyValue();
-        }
-
+        assignFrom(std::move(source));
         return *this;
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
-    auto Variant<Types...>::operator=(Variant<SourceTypes...>&& source) -> Variant&
+    inline auto Variant<Types...>::operator=(Variant<SourceTypes...>&& source) -> Variant&
     {
-        if (!source.isEmpty())
-        {
-            copyFrom(std::move(source));
-        }
-        else
-        {
-            destroyValue();
-        }
+        assignFrom(std::move(source));
+        return *this;
+    }
 
+    template <typename... Types>
+    inline auto Variant<Types...>::operator=(const Variant& source) -> Variant&
+    {
+        assignFrom(source);
         return *this;
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
-    auto Variant<Types...>::operator=(const Variant<SourceTypes...>& source) -> Variant&
+    inline auto Variant<Types...>::operator=(const Variant<SourceTypes...>& source) -> Variant&
+    {
+        assignFrom(source);
+        return *this;
+    }
+
+    template <typename... Types>
+    template <typename VariantT>
+    void Variant<Types...>::assignFrom(VariantT&& source)
     {
         if (!source.isEmpty())
         {
-            copyFrom(source);
+            copyFrom(std::forward<VariantT>(source));
         }
         else
         {
             destroyValue();
         }
-
-        return *this;
     }
-
 
     template <typename... Types>
     template <typename T>

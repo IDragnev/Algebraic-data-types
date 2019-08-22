@@ -84,7 +84,8 @@ namespace IDragnev
         void copyFromIfNotEmpty(VariantT&& source);
         template <typename VariantT>
         void copyFrom(VariantT&& source);
-        
+        template <typename VariantT>
+        void assignFrom(VariantT&& source);
         void destroyValue() noexcept;
     };
 }
