@@ -59,14 +59,16 @@ namespace IDragnev::Detail
 
     template <typename... Types>
     template <typename T>
-    inline T* VariantStorage<Types...>::getBufferAs() noexcept
+    inline 
+    T* VariantStorage<Types...>::getBufferAs() noexcept
     {
         return std::launder(reinterpret_cast<T*>(buffer));
     }
 
     template <typename... Types>
     template <typename T>
-    inline const T* VariantStorage<Types...>::getBufferAs() const noexcept
+    inline 
+    const T* VariantStorage<Types...>::getBufferAs() const noexcept
     {
         return std::launder(reinterpret_cast<const T*>(buffer));
     }

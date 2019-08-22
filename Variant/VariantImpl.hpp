@@ -178,7 +178,7 @@ namespace IDragnev
             }
             else
             {
-                throw EmptyVariant();
+                throw EmptyVariant{};
             }
         }
     }

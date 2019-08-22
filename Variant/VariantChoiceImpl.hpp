@@ -2,13 +2,13 @@
 namespace IDragnev::Detail
 {
     template<typename T, typename... AllTypes>
-    VariantChoice<T, AllTypes...>::VariantChoice(T&& value)
+    inline VariantChoice<T, AllTypes...>::VariantChoice(T&& value)
     {
         emplace(std::move(value));
     }
 
     template<typename T, typename... AllTypes>
-    VariantChoice<T, AllTypes...>::VariantChoice(const T& value)
+    inline VariantChoice<T, AllTypes...>::VariantChoice(const T& value)
     {
         emplace(value);
     }
