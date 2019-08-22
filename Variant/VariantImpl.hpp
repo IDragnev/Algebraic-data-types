@@ -39,7 +39,7 @@ namespace IDragnev
 
     template <typename... Types>
     template <typename VariantT>
-    void Variant<Types...>::copyFromIfNotEmpty(VariantT&& source)
+    inline void Variant<Types...>::copyFromIfNotEmpty(VariantT&& source)
     {
         if (!source.isEmpty())
         {
@@ -65,9 +65,16 @@ namespace IDragnev
     }
 
     template <typename... Types>
-    inline Variant<Types...>::~Variant()
+    Variant<Types...>::~Variant()
     {
         destroyValue();
+    }
+
+    template<typename... Types>
+    void Variant<Types...>::destroyValue() noexcept
+    {
+        (VChoice<Types>::destroyValueIfHoldingIt(), ...);
+        this->setDiscriminator(NO_VALUE_DISCRIMINATOR);
     }
 
     template <typename... Types>
@@ -132,12 +139,6 @@ namespace IDragnev
         return *this;
     }
 
-    template<typename... Types>
-    void Variant<Types...>::destroyValue() noexcept
-    {
-        (VChoice<Types>::destroyValueIfHoldingIt(), ...);
-        this->setDiscriminator(NO_VALUE_DISCRIMINATOR);
-    }
 
     template <typename... Types>
     template <typename T>
@@ -148,14 +149,14 @@ namespace IDragnev
 
     template <typename... Types>
     template <typename T>
-    T&& Variant<Types...>::get() &&
+    inline T&& Variant<Types...>::get() &&
     {
         return std::move(get<T>());
     }
 
     template <typename... Types>
     template <typename T>
-    T& Variant<Types...>::get() &
+    inline T& Variant<Types...>::get() &
     {
         return const_cast<T&>(std::as_const(*this).template get<T>());
     }
@@ -203,6 +204,7 @@ namespace IDragnev
 
     template <typename... Types>
     template <typename R, typename Visitor>
+    inline 
     Detail::VisitResult<R, Visitor, Types&...>
     Variant<Types...>::visit(Visitor&& v) &
     {
@@ -214,6 +216,7 @@ namespace IDragnev
 
     template <typename... Types>
     template <typename R, typename Visitor>
+    inline
     Detail::VisitResult<R, Visitor, const Types&...>
     Variant<Types...>::visit(Visitor&& v) const&
     {
@@ -225,6 +228,7 @@ namespace IDragnev
 
     template <typename... Types>
     template <typename R, typename Visitor>
+    inline
     Detail::VisitResult<R, Visitor, Types&&...>
     Variant<Types...>::visit(Visitor&& v) &&
     {

@@ -78,13 +78,12 @@ namespace IDragnev
         bool isEmpty() const noexcept;
  
     private:
+        static constexpr unsigned char NO_VALUE_DISCRIMINATOR = 0;
+        
         template <typename VariantT>
         void copyFromIfNotEmpty(VariantT&& source);
         template <typename VariantT>
         void copyFrom(VariantT&& source);
-
-    private:
-        static constexpr unsigned char NO_VALUE_DISCRIMINATOR = 0;
         
         void destroyValue() noexcept;
     };
