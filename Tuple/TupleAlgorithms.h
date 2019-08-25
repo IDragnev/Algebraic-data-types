@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ListInterface.h"
-#include "List algorithms.h"
+#include "Meta/ListInterface.h"
+#include "Meta/ListAlgorithms.h"
 #include "Tuple.h"
 
 namespace IDragnev
@@ -250,6 +250,30 @@ namespace IDragnev
     {
         using Indices = Meta::MakeIndexList<Size>;
         return Detail::apply(f, std::forward<TupleT>(tuple), Indices{});
+    }
+
+    template <typename TupleT,
+              typename T,
+              typename BinaryOp,
+              typename = std::enable_if_t<Detail::isTuple<std::decay_t<TupleT>>>,
+              typename = std::enable_if_t<Meta::isEmpty<std::decay_t<TupleT>>>
+    > inline constexpr
+    T foldl(TupleT&&, T&& acc, BinaryOp)
+    {
+        return std::forward<T>(acc);
+    }
+
+    template <typename TupleT,
+              typename T,
+              typename BinaryOp,
+              typename = std::enable_if_t<Detail::isTuple<std::decay_t<TupleT>>>,
+              typename = std::enable_if_t<!Meta::isEmpty<std::decay_t<TupleT>>>
+    > constexpr
+    decltype(auto) foldl(TupleT&& tuple, T&& acc, BinaryOp op)
+    {
+        return foldl(std::forward<TupleT>(tuple).getTail(),
+                     op(std::forward<T>(acc), std::forward<TupleT>(tuple).getHead()),
+                     op);
     }
 
     namespace Detail

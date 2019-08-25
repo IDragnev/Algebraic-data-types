@@ -1,8 +1,8 @@
 #pragma once
 
 #include "TupleElement.h"
-#include "ValueList.h"
-#include "TypeList.h"
+#include "Meta/ValueList.h"
+#include "Meta/TypeList.h"
 
 namespace IDragnev
 {
@@ -89,11 +89,13 @@ namespace IDragnev
                   typename = EnableIfMatchesTailLength<VTail...>
         > constexpr Tuple& operator=(Tuple<VHead, VTail...>&& source);
 
-        constexpr Head& getHead() noexcept;
-        constexpr const Head& getHead() const noexcept;
+        constexpr Head& getHead() & noexcept;
+        constexpr Head&& getHead() && noexcept;
+        constexpr const Head& getHead() const& noexcept;
 
-        constexpr TailTuple& getTail() noexcept;
-        constexpr const TailTuple& getTail() const noexcept;
+        constexpr TailTuple& getTail() & noexcept;
+        constexpr TailTuple&& getTail() && noexcept;
+        constexpr const TailTuple& getTail() const& noexcept;
 
         template <unsigned Index, typename TupleT, unsigned Size>
         friend constexpr decltype(auto) get(TupleT&& tuple) noexcept;

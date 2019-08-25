@@ -47,28 +47,42 @@ namespace IDragnev
 
     template <typename Head, typename... Tail>
     inline constexpr
-    Head& Tuple<Head, Tail...>::getHead() noexcept
+    Head&& Tuple<Head, Tail...>::getHead() && noexcept
     {
-        return static_cast<HeadElement&>(*this).get();
+        return std::move(getHead());
     }
 
     template <typename Head, typename... Tail>
     inline constexpr
-    const Head& Tuple<Head, Tail...>::getHead() const noexcept
+    Head& Tuple<Head, Tail...>::getHead() & noexcept
+    {
+        return const_cast<Head&>(std::as_const(*this).getHead());
+    }
+
+    template <typename Head, typename... Tail>
+    inline constexpr
+    const Head& Tuple<Head, Tail...>::getHead() const& noexcept
     {
         return static_cast<const HeadElement&>(*this).get();
     }
 
     template <typename Head, typename... Tail>
     inline constexpr
-    auto Tuple<Head, Tail...>::getTail() noexcept -> TailTuple&
+    auto Tuple<Head, Tail...>::getTail() && noexcept -> TailTuple&&
     {
-        return *this;
+        return std::move(getTail());
     }
 
     template <typename Head, typename... Tail>
     inline constexpr
-    auto Tuple<Head, Tail...>::getTail() const noexcept -> const TailTuple&
+    auto Tuple<Head, Tail...>::getTail() & noexcept -> TailTuple&
+    {
+        return const_cast<TailTuple&>(std::as_const(*this).getTail());
+    }
+
+    template <typename Head, typename... Tail>
+    inline constexpr
+    auto Tuple<Head, Tail...>::getTail() const& noexcept -> const TailTuple&
     {
         return *this;
     }

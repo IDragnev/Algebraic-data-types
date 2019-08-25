@@ -1,7 +1,7 @@
 #include "CppUnitTest.h"
 #include "Tuple.h"
 #include "TupleAlgorithms.h"
-#include "Tests.h"
+#include "Meta/Tests.h"
 #include <vector>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -373,6 +373,26 @@ namespace Tupletest
 			Assert::IsTrue(result == "ab"s);
 			Assert::IsTrue(tuple == makeTuple("a"s, ""s));
 		}
+
+    TEST_METHOD(tupleFoldl)
+    {
+        constexpr auto tuple = makeTuple(1, 2, 3);
+
+        constexpr auto result = foldl(tuple, 0, std::plus{});
+
+        static_assert(result == 6);
+    }
+
+    TEST_METHOD(foldlTakesValueCategoryIntoAccount)
+    {
+        auto tuple = makeTuple("a"s, "b"s, "c"s);
+        auto concat = [](auto acc, auto x) { return std::move(acc) + std::move(x); };
+
+        const auto result = foldl(std::move(tuple), ""s, concat);
+
+        Assert::IsTrue(result == "abc");
+        Assert::IsTrue(tuple == makeTuple("", "", ""));
+    }
 
 		TEST_METHOD(concatenatingTuples)
 		{
