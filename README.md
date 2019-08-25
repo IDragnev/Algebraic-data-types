@@ -7,7 +7,8 @@
  - drop  
  - sortByType   
  - replicate  
- - apply  
+ - apply
+ - foldl
  - forEach  
  - concatenate  
 and more. Examples and details can be found in the [tests of tuple](https://github.com/IDragnev/Tuple/blob/master/Tuple/Tuple%20test/tupleTest.cpp) and [tests of variant](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Variant/variantTests.cpp).    
