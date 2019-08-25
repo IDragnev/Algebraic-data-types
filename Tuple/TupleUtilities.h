@@ -2,8 +2,8 @@
 
 namespace IDragnev
 {
-	namespace Detail
-	{
+    namespace Detail
+    {
         template <typename U, typename V>
         struct HaveSameLength { };
 
@@ -31,88 +31,88 @@ namespace IDragnev
         compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
         {
             return compare(u.getHead(), v.getHead()) &&
-                   compareWith(compare, u.getTail(), v.getTail());
+                           compareWith(compare, u.getTail(), v.getTail());
         }
-	}
+    }
 
-	template <typename... Types>
+    template <typename... Types>
     inline constexpr
-	auto makeTuple(Types&&... args)
-	{
-		using T = Tuple<std::decay_t<Types>...>;
-		return T(std::forward<Types>(args)...);
-	}
+    auto makeTuple(Types&&... args)
+    {
+        using T = Tuple<std::decay_t<Types>...>;
+        return T(std::forward<Types>(args)...);
+    }
 
-	template <typename... Us, 
+    template <typename... Us,
               typename... Vs,
               typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
     > inline constexpr
-	bool operator==(const Tuple<Us...>& u, const Tuple<Vs...>& v)
-	{
-		return Detail::compareWith(std::equal_to{}, u, v);
-	}
+    bool operator==(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+    {
+        return Detail::compareWith(std::equal_to{}, u, v);
+    }
 
-	template <typename... Us,
+    template <typename... Us,
               typename... Vs,
               typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
     > inline constexpr
-	bool operator!=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
-	{
-		return !(u == v);
-	}
+    bool operator!=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+    {
+        return !(u == v);
+    }
 
-	template <typename... Us,
-              typename... Vs,
-              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
-	> inline constexpr
-	bool operator<(const Tuple<Us...>& u, const Tuple<Vs...>& v)
-	{
-		return Detail::compareWith(std::less{}, u, v);
-	}
-
-	template <typename... Us,
+    template <typename... Us,
               typename... Vs,
               typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
     > inline constexpr
-	bool operator>(const Tuple<Us...>& u, const Tuple<Vs...>& v)
-	{
-		return v < u;
-	}
+    bool operator<(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+    {
+        return Detail::compareWith(std::less{}, u, v);
+    }
 
-	template <typename... Us,
+    template <typename... Us,
               typename... Vs,
               typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
     > inline constexpr
-	bool operator>=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
-	{
-		return Detail::compareWith(std::greater_equal{}, u, v);
-	}
+    bool operator>(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+    {
+        return v < u;
+    }
 
-	template <typename... Us,
+    template <typename... Us,
               typename... Vs,
               typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
     > inline constexpr
-	bool operator<=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
-	{
-		return Detail::compareWith(std::less_equal{}, u, v);
-	}
+    bool operator>=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+    {
+        return Detail::compareWith(std::greater_equal{}, u, v);
+    }
 
-	namespace Detail
-	{
-		struct IgnoreT
-		{
-			template <typename T>
-            constexpr 
+    template <typename... Us,
+              typename... Vs,
+              typename = Detail::EnableIfHaveSameLength<Meta::TypeList<Us...>, Meta::TypeList<Vs...>>
+    > inline constexpr
+    bool operator<=(const Tuple<Us...>& u, const Tuple<Vs...>& v)
+    {
+        return Detail::compareWith(std::less_equal{}, u, v);
+    }
+
+    namespace Detail
+    {
+        struct IgnoreT
+        {
+            template <typename T>
+            constexpr
             const IgnoreT& operator=(const T&) const noexcept { return *this; }
-		};
-	}
+        };
+    }
 
-	inline constexpr Detail::IgnoreT ignore{};
+    inline constexpr Detail::IgnoreT ignore{};
 
-	template <typename... Types>
+    template <typename... Types>
     constexpr inline
-	auto tie(Types&... args) noexcept
-	{
-		return Tuple<Types&...>(args...);
-	}
+    auto tie(Types&... args) noexcept
+    {
+        return Tuple<Types&...>(args...);
+    }
 }
