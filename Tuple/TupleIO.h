@@ -16,7 +16,7 @@ namespace IDragnev
     std::ostream& operator<<(std::ostream& out, const Tuple<Ts...>& tuple)
     {
         out << '(' << tuple.getHead();
-        forEach(tuple.getTail(), [&out](const auto& e) { out << ', ' << e; });
+        forEach(tuple.getTail(), [&out](const auto& e) { out << ", " << e; });
         out << ')';
         
         return out;
