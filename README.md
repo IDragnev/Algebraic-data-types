@@ -12,6 +12,6 @@
  - foldl
  - forEach  
  - concatenate  
-and more. Examples and details can be found in the [tests of tuple](https://github.com/IDragnev/Tuple-and-Variant/tree/master/Tuple/test) and [tests of variant](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Variant/variantTests.cpp).    
+and more. Examples and details can be found in the [tests of tuple](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Tuple/test/tupleTests.cpp) and [tests of variant](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Variant/variantTests.cpp).    
 Structured bindings are not supported due to some ambiguity in the get function.
 
