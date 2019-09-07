@@ -60,21 +60,6 @@ namespace IDragnev
         template <typename T> 
         const T& get() const&;      
 
-        template <typename R = Detail::DeduceResultType,
-                  typename Visitor
-        > Detail::VisitResult<R, Visitor, Types&...> 
-        visit(Visitor&& v) &;
-        
-        template <typename R = Detail::DeduceResultType,
-                  typename Visitor
-        > Detail::VisitResult<R, Visitor, const Types&...>
-        visit(Visitor&& v) const&;
-        
-        template <typename R = Detail::DeduceResultType,
-                  typename Visitor
-        > Detail::VisitResult<R, Visitor, Types&&...>
-        visit(Visitor&& v) &&;
-
         bool isEmpty() const noexcept;
  
     private:
@@ -88,6 +73,24 @@ namespace IDragnev
         void assignFrom(VariantT&& source);
         void destroyValue() noexcept;
     };
+
+    template <typename R = Detail::DeduceResultType,
+              typename... Types,
+              typename Visitor
+    > Detail::VisitResult<R, Visitor, Types&...> 
+    visit(Variant<Types...>& variant, Visitor&& v);
+        
+    template <typename R = Detail::DeduceResultType,
+              typename... Types,
+              typename Visitor
+    > Detail::VisitResult<R, Visitor, const Types&...>
+    visit(const Variant<Types...>& variant, Visitor&& v);
+        
+    template <typename R = Detail::DeduceResultType,
+              typename... Types,
+              typename Visitor
+    > Detail::VisitResult<R, Visitor, Types&&...>
+    visit(Variant<Types...>&& variant, Visitor&& v);
 }
 
 #include "VariantImpl.hpp"

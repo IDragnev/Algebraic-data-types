@@ -52,7 +52,7 @@ namespace IDragnev
     void Variant<Types...>::copyFrom(VariantT&& source)
     {
         assert(!source.isEmpty());
-        std::forward<VariantT>(source).visit([this](auto&& value)
+        visit(std::forward<VariantT>(source), [this](auto&& value)
         {
             *this = std::forward<decltype(value)>(value);
         });
@@ -183,38 +183,38 @@ namespace IDragnev
         }
     }
 
-    template <typename... Types>
-    template <typename R, typename Visitor>
-    inline 
-    Detail::VisitResult<R, Visitor, Types&...>
-    Variant<Types...>::visit(Visitor&& v) &
+    template <typename R = Detail::DeduceResultType,
+              typename... Types,
+              typename Visitor
+    > Detail::VisitResult<R, Visitor, Types&...> 
+    visit(Variant<Types...>& variant, Visitor&& v)
     {
         using Result = Detail::VisitResult<R, Visitor, Types&...>;
-        return Detail::variantVisit<Result>(*this, 
+        return Detail::variantVisit<Result>(variant,
                                             std::forward<Visitor>(v),
                                             Meta::TypeList<Types...>{});
     }
-
-    template <typename... Types>
-    template <typename R, typename Visitor>
-    inline
-    Detail::VisitResult<R, Visitor, const Types&...>
-    Variant<Types...>::visit(Visitor&& v) const&
+        
+    template <typename R = Detail::DeduceResultType,
+              typename... Types,
+              typename Visitor
+    > Detail::VisitResult<R, Visitor, const Types&...>
+    visit(const Variant<Types...>& variant, Visitor&& v)
     {
         using Result = Detail::VisitResult<R, Visitor, const Types&...>;
-        return Detail::variantVisit<Result>(*this, 
+        return Detail::variantVisit<Result>(variant, 
                                             std::forward<Visitor>(v),
                                             Meta::TypeList<Types...>{});
     }
-
-    template <typename... Types>
-    template <typename R, typename Visitor>
-    inline
-    Detail::VisitResult<R, Visitor, Types&&...>
-    Variant<Types...>::visit(Visitor&& v) &&
+        
+    template <typename R = Detail::DeduceResultType,
+              typename... Types,
+              typename Visitor
+    > Detail::VisitResult<R, Visitor, Types&&...>
+    visit(Variant<Types...>&& variant, Visitor&& v)
     {
         using Result = Detail::VisitResult<R, Visitor, Types&&...>;
-        return Detail::variantVisit<Result>(std::move(*this),
+        return Detail::variantVisit<Result>(std::move(variant),
                                             std::forward<Visitor>(v),
                                             Meta::TypeList<Types...>{});
     }

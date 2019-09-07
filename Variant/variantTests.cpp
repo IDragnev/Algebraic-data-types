@@ -4,6 +4,7 @@
 #include <string>
 
 using IDragnev::Variant;
+using IDragnev::visit;
 
 TEST_CASE("the default constructor default-constructs the first type")
 {
@@ -181,7 +182,7 @@ TEST_CASE("testing visit")
         const Variant<int, std::string> v("abc");
         std::string str = "";
         
-        v.visit([&str](const auto& value) { str = value; });
+        visit(v, [&str](const auto& value) { str = value; });
 
         CHECK(str == "abc");
     }
@@ -190,7 +191,7 @@ TEST_CASE("testing visit")
     {
         Variant<int, double> v(10);
 
-        auto result = v.visit([](auto value) { return value; });
+        auto result = visit(v, [](auto value) { return value; });
 
         CHECK(result == 10);
     }
@@ -199,7 +200,7 @@ TEST_CASE("testing visit")
     {
         Variant<int, double> v(20.0);
         
-        auto result = std::move(v).visit([](auto&& value) { return std::move(value); });
+        auto result = visit(std::move(v), [](auto&& value) { return std::move(value); });
 
         CHECK(result == 20.0);
     }
@@ -208,7 +209,7 @@ TEST_CASE("testing visit")
     {
         const Variant<int, float> v(10);
         
-        auto result = v.visit<double>([](auto x) { return x; });
+        auto result = visit<double>(v, [](auto x) { return x; });
 
         CHECK(result == 10.0);
     }
