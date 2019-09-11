@@ -533,3 +533,32 @@ TEST_CASE("testing tie")
     CHECK(x == 1);
     CHECK(y == 2.0);
 }
+
+TEST_CASE("pipe")
+{
+    constexpr auto take3 = [](auto&& t) constexpr 
+    { 
+        return take<3>(std::forward<decltype(t)>(t)); 
+    };
+    
+    SUBCASE("basics")
+    {
+        constexpr auto sum = [](const auto& t) constexpr { return foldl(t, 0, std::plus{}); };
+
+        constexpr auto s = makeTuple(1, 2, 3, 4, 5)
+                           | take3
+                           | sum;
+        static_assert(s == 6);
+    }
+
+    SUBCASE("the pipe uses perfect forwarding")
+    {
+        const auto reverse = [](Tuple<int, int, int>&& t) { return IDragnev::reverse(std::move(t)); };
+        
+        const auto tuple = makeTuple(1, 2, 3, 4) 
+                           | take3
+                           | reverse;
+
+        CHECK(tuple == makeTuple(3, 2, 1));
+    }
+} 

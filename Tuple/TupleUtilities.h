@@ -97,6 +97,17 @@ namespace IDragnev
         return Detail::compareWith(std::less_equal{}, u, v);
     }
 
+    template <typename TupleT,
+              typename F,
+              typename = std::enable_if_t<Detail::isTuple<std::decay_t<TupleT>>>
+    > inline constexpr 
+    decltype(auto) operator|(TupleT&& t, F&& f)
+    {
+        static_assert(std::is_invocable_v<decltype(f), decltype(t)>,
+                      "cannot invoke the passed function with the piped tuple");
+        return std::forward<F>(f)(std::forward<TupleT>(t));
+    }
+
     namespace Detail
     {
         struct IgnoreT
