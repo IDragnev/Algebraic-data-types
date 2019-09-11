@@ -12,6 +12,20 @@
  - foldl
  - forEach  
  - concatenate  
-and more. Examples and details can be found in the [tests of tuple](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Tuple/test/tupleTests.cpp) and [tests of variant](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Variant/variantTests.cpp).    
+and more.  
+
+Tuples also support the pipe syntax:
+```C++
+  const auto take3 = [](const auto& tuple) 
+  { 
+     return take<3>(tuple); 
+  };
+  const auto sum = [](const auto& tuple) { return foldl(tuple, 0, std::plus{}); };
+  const auto s = makeTuple(1, 2, 3, 4, 5)
+                 | take3
+                 | sum;
+  //s == 6
+```
+Examples and details can be found in the [tests of tuple](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Tuple/test/tupleTests.cpp) and [tests of variant](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Variant/variantTests.cpp).    
 Structured bindings are not supported due to some ambiguity in the get function.
 
