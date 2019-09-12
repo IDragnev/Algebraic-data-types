@@ -17,13 +17,9 @@ and more.
 
 Tuples also support the pipe syntax:
 ```C++
-  const auto take3 = [](const auto& tuple) 
-  { 
-     return take<3>(tuple); 
-  };
   const auto sum = [](const auto& tuple) { return foldl(tuple, 0, std::plus{}); };
   const auto s = makeTuple(1, 2, 3, 4, 5)
-                 | take3
+                 | take<3>
                  | sum;
   //s == 6
 ```
