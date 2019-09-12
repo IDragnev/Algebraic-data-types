@@ -8,6 +8,7 @@
 #include <vector>
 
 using namespace IDragnev;
+using namespace IDragnev::TupleAlgorithms;
 using namespace std::string_literals;
 
 namespace idr = IDragnev;
@@ -441,7 +442,7 @@ TEST_CASE("testing apply")
             return std::move(x) + std::move(y);
         };
 
-        auto result = idr::apply(sum, std::move(tuple));
+        auto result = idr::TupleAlgorithms::apply(sum, std::move(tuple));
 
         CHECK(result == "ab");
         CHECK(tuple == makeTuple("", ""));
@@ -535,28 +536,23 @@ TEST_CASE("testing tie")
 }
 
 TEST_CASE("pipe")
-{
-    constexpr auto take3 = [](auto&& t) constexpr 
-    { 
-        return take<3>(std::forward<decltype(t)>(t)); 
-    };
-    
+{    
     SUBCASE("basics")
     {
         constexpr auto sum = [](const auto& t) constexpr { return foldl(t, 0, std::plus{}); };
 
         constexpr auto s = makeTuple(1, 2, 3, 4, 5)
-                           | take3
+                           | take<3>
                            | sum;
         static_assert(s == 6);
     }
 
     SUBCASE("the pipe uses perfect forwarding")
     {
-        const auto reverse = [](Tuple<int, int, int>&& t) { return IDragnev::reverse(std::move(t)); };
+        const auto reverse = [](Tuple<int, int, int>&& t) { return IDragnev::TupleAlgorithms::reverse(std::move(t)); };
         
         const auto tuple = makeTuple(1, 2, 3, 4) 
-                           | take3
+                           | take<3>
                            | reverse;
 
         CHECK(tuple == makeTuple(3, 2, 1));

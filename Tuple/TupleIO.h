@@ -15,6 +15,8 @@ namespace IDragnev
     template <typename... Ts>
     std::ostream& operator<<(std::ostream& out, const Tuple<Ts...>& tuple)
     {
+        using TupleAlgorithms::forEach;
+
         out << '(' << tuple.getHead();
         forEach(tuple.getTail(), [&out](const auto& e) { out << ", " << e; });
         out << ')';

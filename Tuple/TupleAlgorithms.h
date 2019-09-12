@@ -44,7 +44,10 @@ namespace IDragnev
     {
         using type = Tuple<>;
     };
+}
 
+namespace IDragnev::TupleAlgorithms
+{
     namespace Detail
     {
         enum class InsertionPolicy { front, back };
@@ -74,7 +77,7 @@ namespace IDragnev
     template <typename TupleT,
               typename T,
               typename... Rest,
-              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+              unsigned Size = tupleSize<TupleT>
     > inline constexpr
     auto insertFront(TupleT&& tuple, T&& value, Rest&&... rest)
     {
@@ -90,7 +93,7 @@ namespace IDragnev
     template <typename TupleT,
               typename T,
               typename... Rest,
-              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+              unsigned Size = tupleSize<TupleT>
     > inline constexpr
     auto insertBack(TupleT&& tuple, T&& value, Rest&&... rest)
     {
@@ -125,14 +128,11 @@ namespace IDragnev
         {
             return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...);
         }
-
-        template <typename T>
-        using EnableIfTuple = std::enable_if_t<isTuple<std::decay_t<T>>>;
     }
 
     template <unsigned... Indices,
               typename TupleT,
-              typename = Detail::EnableIfTuple<TupleT>
+              typename = std::enable_if_t<isTuple<TupleT>>
     > inline constexpr
     auto select(TupleT&& tuple)
     {
@@ -141,7 +141,7 @@ namespace IDragnev
     }
 
     template <typename TupleT,
-              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+              unsigned Size = tupleSize<TupleT>
     > inline constexpr
     auto reverse(TupleT&& tuple)
     {
@@ -163,19 +163,25 @@ namespace IDragnev
         return Detail::select(t, Indices{});
     }
 
-    template <unsigned N,
-              typename TupleT,
-              typename = Detail::EnableIfTuple<TupleT>
-    > inline constexpr
-    auto take(TupleT&& t)
+    template <unsigned N>
+    struct Take
     {
-        using Indices = Meta::MakeIndexList<N>;
-        return Detail::select(std::forward<TupleT>(t), Indices{});
-    }
+        template <typename TupleT,
+                  typename = std::enable_if_t<isTuple<TupleT>>
+        > inline constexpr
+        auto operator()(TupleT&& t) const
+        {
+            using Indices = Meta::MakeIndexList<N>;
+            return Detail::select(std::forward<TupleT>(t), Indices{});
+        }
+    };
+
+    template <unsigned N>
+    inline constexpr auto take = Take<N>{};
 
     template <unsigned N,
               typename TupleT,
-              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+              unsigned Size = tupleSize<TupleT>
     > inline constexpr
     auto drop(TupleT&& t)
     {
@@ -188,7 +194,7 @@ namespace IDragnev
 
     template <template <typename U, typename V> typename CompareFn,
               typename TupleT,
-              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+              unsigned Size = tupleSize<TupleT>
     > inline constexpr
     auto sortByType(TupleT&& t)
     {
@@ -222,7 +228,7 @@ namespace IDragnev
 
     template <typename Callable,
               typename TupleT,
-              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+              unsigned Size = tupleSize<TupleT>
     > inline constexpr
     void forEach(TupleT&& tuple, Callable f)
     {
@@ -244,7 +250,7 @@ namespace IDragnev
 
     template <typename Callable,
               typename TupleT,
-              unsigned Size = Detail::tupleSize<std::decay_t<TupleT>>
+              unsigned Size = tupleSize<TupleT>
     > inline constexpr
     decltype(auto) apply(Callable f, TupleT&& tuple)
     {
@@ -255,8 +261,8 @@ namespace IDragnev
     template <typename TupleT,
               typename T,
               typename BinaryOp,
-              typename = std::enable_if_t<Detail::isTuple<std::decay_t<TupleT>>>,
-              typename = std::enable_if_t<Meta::isEmpty<std::decay_t<TupleT>>>
+              typename = std::enable_if_t<isTuple<TupleT> && 
+                                          Meta::isEmpty<std::decay_t<TupleT>>>
     > inline constexpr
     T foldl(TupleT&&, T&& acc, BinaryOp)
     {
@@ -266,8 +272,8 @@ namespace IDragnev
     template <typename TupleT,
               typename T,
               typename BinaryOp,
-              typename = std::enable_if_t<Detail::isTuple<std::decay_t<TupleT>>>,
-              typename = std::enable_if_t<!Meta::isEmpty<std::decay_t<TupleT>>>
+              typename = std::enable_if_t<isTuple<TupleT> && 
+                                          !Meta::isEmpty<std::decay_t<TupleT>>>
     > constexpr
     decltype(auto) foldl(TupleT&& tuple, T&& acc, BinaryOp op)
     {
@@ -291,13 +297,14 @@ namespace IDragnev
         }
 
         template <typename... Types>
-        inline constexpr bool areAllTuples = Meta::allOf<IsTuple, Meta::TypeList<std::decay_t<Types>...>>;
+        inline constexpr bool areAllTuples = Meta::allOf<IDragnev::Detail::IsTuple, 
+                                                         Meta::TypeList<std::decay_t<Types>... >> ;
     }
 
     template <typename UTuple,
               typename VTuple,
-              unsigned USize = Detail::tupleSize<std::decay_t<UTuple>>,
-              unsigned VSize = Detail::tupleSize<std::decay_t<VTuple>>
+              unsigned USize = tupleSize<UTuple>,
+              unsigned VSize = tupleSize<VTuple>
     > constexpr auto concatenate(UTuple&& u, VTuple&& v)
     {
         using UIndices = Meta::MakeIndexList<USize>;

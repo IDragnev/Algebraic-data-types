@@ -99,7 +99,7 @@ namespace IDragnev
 
     template <typename TupleT,
               typename F,
-              typename = std::enable_if_t<Detail::isTuple<std::decay_t<TupleT>>>
+              typename = std::enable_if_t<isTuple<TupleT>>
     > inline constexpr 
     decltype(auto) operator|(TupleT&& t, F&& f)
     {
