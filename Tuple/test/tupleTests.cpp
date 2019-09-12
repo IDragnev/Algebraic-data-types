@@ -472,6 +472,29 @@ TEST_CASE("testing foldl")
     }
 }
 
+TEST_CASE("transform")
+{
+    SUBCASE("basics and compile time usage")
+    {
+        constexpr auto plusOne = [](auto x) constexpr { return x + 1; };
+
+        constexpr auto tuple = transform(makeTuple(1, 2), plusOne);
+
+        static_assert(tuple == makeTuple(2, 3));
+    }
+
+    SUBCASE("transform take the tuple's value category into account")
+    {
+        const auto f = [](auto x) { return x + "!"; };
+        auto source = makeTuple("a"s, "b"s);
+
+        const auto result = transform(std::move(source), f);
+
+        CHECK(result == makeTuple("a!", "b!"));
+        CHECK(source == makeTuple("", ""));
+    }
+}
+
 TEST_CASE("testing concatenate")
 {
     SUBCASE("basics (and compile time computation)")

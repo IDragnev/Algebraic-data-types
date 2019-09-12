@@ -282,6 +282,28 @@ namespace IDragnev::TupleAlgorithms
                      op);
     }
 
+    namespace Detail 
+    {
+        template <typename TupleT,
+                  typename UnaryFunction,
+                  unsigned... Indices
+        > inline constexpr
+        auto transform(TupleT&& tuple, UnaryFunction f, Meta::ValueList<unsigned, Indices...>)
+        {
+            return makeTuple(f(get<Indices>(std::forward<TupleT>(tuple)))...);
+        }
+    }
+
+    template <typename TupleT,
+              typename UnaryFunction,
+              unsigned Size = tupleSize<TupleT>
+    > inline constexpr
+    auto transform(TupleT&& tuple, UnaryFunction f)
+    {
+        using Indices = Meta::MakeIndexList<Size>;
+        return Detail::transform(std::forward<TupleT>(tuple), f, Indices{});
+    }
+
     namespace Detail
     {
         template <typename UTuple,
