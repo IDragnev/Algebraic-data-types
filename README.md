@@ -10,6 +10,7 @@
  - replicate  
  - apply
  - foldl
+ - transform
  - forEach  
  - concatenate  
 and more.  
