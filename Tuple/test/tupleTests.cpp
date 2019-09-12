@@ -12,15 +12,16 @@ using namespace IDragnev::TupleAlgorithms;
 using namespace std::string_literals;
 
 namespace idr = IDragnev;
+namespace alg = idr::TupleAlgorithms;
 
-TEST_CASE("testing the default constructor")
+TEST_CASE("default constructor")
 {
     constexpr auto tuple = Tuple<int>{};
 
     static_assert(get<0>(tuple) == 0);
 }
 
-TEST_CASE("testing the variadic constructor and makeTuple")
+TEST_CASE("variadic constructor and makeTuple")
 {
     SUBCASE("they both use perfect forwarding")
     {
@@ -43,7 +44,7 @@ TEST_CASE("testing the variadic constructor and makeTuple")
     }
 }
 
-TEST_CASE("testing get")
+TEST_CASE("get")
 {
     SUBCASE("basics")
     {
@@ -64,7 +65,7 @@ TEST_CASE("testing get")
     }
 }
 
-TEST_CASE("testing the conversion constructors")
+TEST_CASE("conversion constructors")
 {
     SUBCASE("lvalue conversion")
     {
@@ -96,7 +97,7 @@ TEST_CASE("testing the conversion constructors")
     }
 }
 
-TEST_CASE("testing the copy constructor")
+TEST_CASE("copy constructor")
 {
     constexpr auto source = makeTuple(1, 2u);
     constexpr auto destination = source;
@@ -104,7 +105,7 @@ TEST_CASE("testing the copy constructor")
     static_assert(source == destination);
 }
 
-TEST_CASE("testing the move constructor")
+TEST_CASE("move constructor")
 {
     auto source = makeTuple(1, "str"s);
     const auto expected = source;
@@ -115,7 +116,7 @@ TEST_CASE("testing the move constructor")
     CHECK(source == makeTuple(1, ""));
 }
 
-TEST_CASE("testing copy assignment")
+TEST_CASE("copy assignment")
 {
     SUBCASE("basics")
     {
@@ -140,7 +141,7 @@ TEST_CASE("testing copy assignment")
     }
 }
 
-TEST_CASE("testing move assignment")
+TEST_CASE("move assignment")
 {
     auto lhs = makeTuple(0, ""s);
     auto rhs = makeTuple(0, "str"s);
@@ -153,7 +154,7 @@ TEST_CASE("testing move assignment")
     CHECK(rhs == expectedRhs);
 }
 
-TEST_CASE("testing conversion assignment operators")
+TEST_CASE("conversion assignment operators")
 {
     SUBCASE("copy assignment")
     {
@@ -177,7 +178,7 @@ TEST_CASE("testing conversion assignment operators")
     }
 }
 
-TEST_CASE("testing insertBack")
+TEST_CASE("insertBack")
 {
     SUBCASE("insertBack accecpts any positive number of arguments to append")
     {
@@ -215,7 +216,7 @@ TEST_CASE("testing insertBack")
     }
 }
 
-TEST_CASE("testing insertFront")
+TEST_CASE("insertFront")
 {
     SUBCASE("insertFront accecpts any positive number of arguments to prepend")
     {
@@ -253,17 +254,17 @@ TEST_CASE("testing insertFront")
     }
 }
 
-TEST_CASE("testing dropTail")
+TEST_CASE("dropTail")
 {
     static_assert(dropTail(makeTuple(0, 1)) == makeTuple(0));
 }
 
-TEST_CASE("testing dropHead")
+TEST_CASE("dropHead")
 {
     static_assert(dropHead(makeTuple(0, 1, 2)) == makeTuple(1, 2));
 }
 
-TEST_CASE("testing select")
+TEST_CASE("select")
 {
     SUBCASE("basics")
     {
@@ -285,7 +286,7 @@ TEST_CASE("testing select")
     }
 }
 
-TEST_CASE("testing reverse")
+TEST_CASE("reverse")
 {
     SUBCASE("basics")
     {
@@ -305,7 +306,7 @@ TEST_CASE("testing reverse")
     }
 }
 
-TEST_CASE("testing replicate")
+TEST_CASE("replicate")
 {
     constexpr auto source = makeTuple(0, 1, 2);
 
@@ -314,7 +315,7 @@ TEST_CASE("testing replicate")
     static_assert(result == makeTuple(1, 1, 1, 1));
 }
 
-TEST_CASE("testing take")
+TEST_CASE("take")
 {
     SUBCASE("basics")
     {
@@ -336,7 +337,7 @@ TEST_CASE("testing take")
     }
 }
 
-TEST_CASE("testing drop")
+TEST_CASE("drop")
 {
     SUBCASE("basics")
     {
@@ -358,7 +359,7 @@ TEST_CASE("testing drop")
     }
 }
 
-TEST_CASE("testing sortByType")
+TEST_CASE("sortByType")
 {
     SUBCASE("basics")
     {
@@ -380,7 +381,7 @@ TEST_CASE("testing sortByType")
     }
 }
 
-TEST_CASE("testing forEach")
+TEST_CASE("forEach")
 {
     SUBCASE("basics")
     {
@@ -423,7 +424,7 @@ TEST_CASE("testing forEach")
     }
 }
 
-TEST_CASE("testing apply")
+TEST_CASE("apply")
 {
     SUBCASE("basics (and compile time computation)")
     {
@@ -442,14 +443,14 @@ TEST_CASE("testing apply")
             return std::move(x) + std::move(y);
         };
 
-        auto result = idr::TupleAlgorithms::apply(sum, std::move(tuple));
+        auto result = alg::apply(sum, std::move(tuple));
 
         CHECK(result == "ab");
         CHECK(tuple == makeTuple("", ""));
     }
 }
 
-TEST_CASE("testing foldl")
+TEST_CASE("foldl")
 {
     SUBCASE("basics (and compile time computation)")
     {
@@ -495,7 +496,7 @@ TEST_CASE("transform")
     }
 }
 
-TEST_CASE("testing concatenate")
+TEST_CASE("concatenate")
 {
     SUBCASE("basics (and compile time computation)")
     {
@@ -528,7 +529,7 @@ TEST_CASE("testing concatenate")
     }
 }
 
-TEST_CASE("testing tuple comparisions")
+TEST_CASE("tuple comparisions")
 {
     static_assert(makeTuple(1, 2) == makeTuple(1, 2));
     static_assert(!(makeTuple(1, 2) != makeTuple(1, 2)));
@@ -546,7 +547,7 @@ TEST_CASE("testing tuple comparisions")
     static_assert(!(makeTuple(3, 4) <= makeTuple(4, 3)));
 }
 
-TEST_CASE("testing tie")
+TEST_CASE("tie")
 {
     auto x = 0;
     auto y = 0.0;
@@ -562,7 +563,10 @@ TEST_CASE("pipe")
 {    
     SUBCASE("basics")
     {
-        constexpr auto sum = [](const auto& t) constexpr { return foldl(t, 0, std::plus{}); };
+        constexpr auto sum = [](const auto& t) constexpr 
+        { 
+            return foldl(t, 0, std::plus{});
+        };
 
         constexpr auto s = makeTuple(1, 2, 3, 4, 5)
                            | take<3>
@@ -572,7 +576,10 @@ TEST_CASE("pipe")
 
     SUBCASE("the pipe uses perfect forwarding")
     {
-        const auto reverse = [](Tuple<int, int, int>&& t) { return IDragnev::TupleAlgorithms::reverse(std::move(t)); };
+        const auto reverse = [](Tuple<int, int, int>&& t) 
+        { 
+            return alg::reverse(std::move(t)); 
+        };
         
         const auto tuple = makeTuple(1, 2, 3, 4) 
                            | take<3>
