@@ -106,20 +106,6 @@ namespace IDragnev::TupleAlgorithms
                                           std::forward<Rest>(rest)...);
     }
 
-    template <typename H, typename... Elements>
-    inline constexpr
-    Tuple<Elements...> dropHead(const Tuple<H, Elements...>& tuple)
-    {
-        return tuple.getTail();
-    }
-
-    template <typename H, typename... Elements>
-    inline constexpr
-    Tuple<H> dropTail(const Tuple<H, Elements...>& tuple)
-    {
-        return Tuple<H>(tuple.getHead());
-    }
-
     namespace Detail
     {
         template <typename TupleT, unsigned... Indices>
@@ -130,38 +116,53 @@ namespace IDragnev::TupleAlgorithms
         }
     }
 
-    template <unsigned... Indices,
-              typename TupleT,
-              typename = std::enable_if_t<isTuple<TupleT>>
-    > inline constexpr
-    auto select(TupleT&& tuple)
+    template <unsigned... Indices>
+    struct Select 
     {
-        using IndicesT = Meta::ValueList<unsigned, Indices...>;
-        return Detail::select(std::forward<TupleT>(tuple), IndicesT{});
-    }
+        template <typename TupleT,
+                  typename = std::enable_if_t<isTuple<TupleT>>
+        > inline constexpr
+        auto operator()(TupleT&& tuple) const
+        {
+            using IndicesT = Meta::ValueList<unsigned, Indices...>;
+            return Detail::select(std::forward<TupleT>(tuple), IndicesT{});
+        }
+    };
 
-    template <typename TupleT,
-              unsigned Size = tupleSize<TupleT>
-    > inline constexpr
-    auto reverse(TupleT&& tuple)
+    template <unsigned... Indices>
+    inline constexpr auto select = Select<Indices...>{};
+
+    struct Reverse
     {
-        using Meta::Reverse;
-        using Meta::MakeIndexList;
-        using Indices = Reverse<MakeIndexList<Size>>;
+        template <typename TupleT,
+                  unsigned Size = tupleSize<TupleT>
+        > inline constexpr
+        auto operator()(TupleT&& tuple) const
+        {
+            using Meta::MakeIndexList;
+            using Indices = Meta::Reverse<MakeIndexList<Size>>;
 
-        return Detail::select(std::forward<TupleT>(tuple), Indices{});
-    }
+            return Detail::select(std::forward<TupleT>(tuple), Indices{});
+        }
+    };
 
-    template <unsigned Index,
-              unsigned Count,
-              typename Head,
-              typename... Tail
-    > inline constexpr
-    auto replicate(const Tuple<Head, Tail...>& t)
+    inline constexpr auto reverse = Reverse{};
+
+    template <unsigned Index, unsigned Count>
+    struct Replicate
     {
-        using Indices = Meta::ReplicateValue<Index, Count>;
-        return Detail::select(t, Indices{});
-    }
+        template <typename Head,
+                  typename... Tail
+        > inline constexpr
+        auto operator()(const Tuple<Head, Tail...>& t) const
+        {
+            using Indices = Meta::ReplicateValue<Index, Count>;
+            return Detail::select(t, Indices{});
+        }
+    };
+
+    template <unsigned Index, unsigned Count>
+    inline constexpr auto replicate = Replicate<Index, Count>{};
 
     template <unsigned N>
     struct Take
@@ -179,34 +180,49 @@ namespace IDragnev::TupleAlgorithms
     template <unsigned N>
     inline constexpr auto take = Take<N>{};
 
-    template <unsigned N,
-              typename TupleT,
-              unsigned Size = tupleSize<TupleT>
-    > inline constexpr
-    auto drop(TupleT&& t)
+    inline constexpr auto dropTail = take<1>;
+
+    template <unsigned N>
+    struct Drop
     {
-        using Meta::Drop;
-        using Meta::MakeIndexList;
-        using Indices = Drop<N, MakeIndexList<Size>>;
+        template <typename TupleT,
+                  unsigned Size = tupleSize<TupleT>
+        > inline constexpr
+        auto operator()(TupleT&& t) const
+        {
+            using Meta::MakeIndexList;
+            using Indices = Meta::Drop<N, MakeIndexList<Size>>;
 
-        return Detail::select(std::forward<TupleT>(t), Indices{});
-    }
+            return Detail::select(std::forward<TupleT>(t), Indices{});
+        }
+    };
 
-    template <template <typename U, typename V> typename CompareFn,
-              typename TupleT,
-              unsigned Size = tupleSize<TupleT>
-    > inline constexpr
-    auto sortByType(TupleT&& t)
+    template <unsigned N>
+    inline constexpr auto drop = Drop<N>{};
+
+    inline constexpr auto dropHead = drop<1>;
+
+    template <template <typename U, typename V> typename CompareFn>
+    struct SortByType
     {
-        using Meta::InsertionSort;
-        using Meta::MakeIndexedCompareT;
-        using TypeList = std::decay_t<TupleT>;
-        using InitialIndices = Meta::MakeIndexList<Size>;
-        using SortedIndices = InsertionSort<InitialIndices,
-                                            MakeIndexedCompareT<TypeList, CompareFn>::template invoke>;
+        template <typename TupleT,
+                  unsigned Size = tupleSize<TupleT>
+        > constexpr 
+        auto operator()(TupleT&& t) const
+        {
+            using Meta::InsertionSort;
+            using Meta::MakeIndexedCompareT;
+            using TypeList = std::decay_t<TupleT>;
+            using InitialIndices = Meta::MakeIndexList<Size>;
+            using SortedIndices = InsertionSort<InitialIndices,
+                                                MakeIndexedCompareT<TypeList, CompareFn>::template invoke>;
 
-        return Detail::select(std::forward<TupleT>(t), SortedIndices{});
-    }
+            return Detail::select(std::forward<TupleT>(t), SortedIndices{});
+        }
+    };
+
+    template <template <typename U, typename V> typename CompareFn>
+    inline constexpr auto sortByType = SortByType<CompareFn>{};
 
     namespace Detail
     {

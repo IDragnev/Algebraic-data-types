@@ -576,11 +576,6 @@ TEST_CASE("pipe")
 
     SUBCASE("the pipe uses perfect forwarding")
     {
-        const auto reverse = [](Tuple<int, int, int>&& t) 
-        { 
-            return alg::reverse(std::move(t)); 
-        };
-        
         const auto tuple = makeTuple(1, 2, 3, 4) 
                            | take<3>
                            | reverse;
