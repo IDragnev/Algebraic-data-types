@@ -15,7 +15,7 @@ namespace IDragnev
         struct TupleSize { };
 
         template <typename... Types>
-        struct TupleSize<Tuple<Types...>> : Meta::CTValue<unsigned, sizeof...(Types)> { };
+        struct TupleSize<Tuple<Types...>> : Meta::CTValue<std::size_t, sizeof...(Types)> { };
 
         template <typename T, typename = std::void_t<>>
         struct IsTuple : std::false_type { };
@@ -26,14 +26,14 @@ namespace IDragnev
     }
     
     template <typename T>
-    inline constexpr unsigned tupleSize = Detail::TupleSize<std::decay_t<T>>::value;
+    inline constexpr auto tupleSize = Detail::TupleSize<std::decay_t<T>>::value;
     
     template <typename T>
     inline constexpr bool isTuple = Detail::IsTuple<T>::value;
 
-    template <unsigned Index,
+    template <std::size_t Index,
               typename TupleT,
-              unsigned Size = tupleSize<TupleT>
+              std::size_t Size = tupleSize<TupleT>
     > inline constexpr
     decltype(auto) get(TupleT&& tuple) noexcept
     {
@@ -97,7 +97,7 @@ namespace IDragnev
         constexpr TailTuple&& getTail() && noexcept;
         constexpr const TailTuple& getTail() const& noexcept;
 
-        template <unsigned Index, typename TupleT, unsigned Size>
+        template <std::size_t Index, typename TupleT, std::size_t Size>
         friend constexpr decltype(auto) get(TupleT&& tuple) noexcept;
     };
 }

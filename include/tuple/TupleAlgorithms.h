@@ -55,10 +55,10 @@ namespace IDragnev::TupleAlgorithms
         template <InsertionPolicy policy,
                   typename TupleT,
                   typename... Ts,
-                  unsigned... Indices
+                  std::size_t... Indices
         > inline constexpr
         auto insertAt(TupleT&& tuple,
-                      Meta::ValueList<unsigned, Indices...>,
+                      Meta::ValueList<std::size_t, Indices...>,
                       Ts&&... values)
         {
             if constexpr (policy == InsertionPolicy::back)
@@ -77,7 +77,7 @@ namespace IDragnev::TupleAlgorithms
     template <typename TupleT,
               typename T,
               typename... Rest,
-              unsigned Size = tupleSize<TupleT>
+              std::size_t Size = tupleSize<TupleT>
     > inline constexpr
     auto insertFront(TupleT&& tuple, T&& value, Rest&&... rest)
     {
@@ -93,7 +93,7 @@ namespace IDragnev::TupleAlgorithms
     template <typename TupleT,
               typename T,
               typename... Rest,
-              unsigned Size = tupleSize<TupleT>
+              std::size_t Size = tupleSize<TupleT>
     > inline constexpr
     auto insertBack(TupleT&& tuple, T&& value, Rest&&... rest)
     {
@@ -108,15 +108,15 @@ namespace IDragnev::TupleAlgorithms
 
     namespace Detail
     {
-        template <typename TupleT, unsigned... Indices>
+        template <typename TupleT, std::size_t... Indices>
         inline constexpr
-        auto select(TupleT&& tuple, Meta::ValueList<unsigned, Indices...>)
+        auto select(TupleT&& tuple, Meta::ValueList<std::size_t, Indices...>)
         {
             return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...);
         }
     }
 
-    template <unsigned... Indices>
+    template <std::size_t... Indices>
     struct Select 
     {
         template <typename TupleT,
@@ -124,18 +124,18 @@ namespace IDragnev::TupleAlgorithms
         > inline constexpr
         auto operator()(TupleT&& tuple) const
         {
-            using IndicesT = Meta::ValueList<unsigned, Indices...>;
+            using IndicesT = Meta::ValueList<std::size_t, Indices...>;
             return Detail::select(std::forward<TupleT>(tuple), IndicesT{});
         }
     };
 
-    template <unsigned... Indices>
+    template <std::size_t... Indices>
     inline constexpr auto select = Select<Indices...>{};
 
     struct Reverse
     {
         template <typename TupleT,
-                  unsigned Size = tupleSize<TupleT>
+                  std::size_t Size = tupleSize<TupleT>
         > inline constexpr
         auto operator()(TupleT&& tuple) const
         {
@@ -148,7 +148,7 @@ namespace IDragnev::TupleAlgorithms
 
     inline constexpr auto reverse = Reverse{};
 
-    template <unsigned Index, unsigned Count>
+    template <std::size_t Index, std::size_t Count>
     struct Replicate
     {
         template <typename Head,
@@ -161,10 +161,10 @@ namespace IDragnev::TupleAlgorithms
         }
     };
 
-    template <unsigned Index, unsigned Count>
+    template <std::size_t Index, std::size_t Count>
     inline constexpr auto replicate = Replicate<Index, Count>{};
 
-    template <unsigned N>
+    template <std::size_t N>
     struct Take
     {
         template <typename TupleT,
@@ -177,16 +177,16 @@ namespace IDragnev::TupleAlgorithms
         }
     };
 
-    template <unsigned N>
+    template <std::size_t N>
     inline constexpr auto take = Take<N>{};
 
     inline constexpr auto dropTail = take<1>;
 
-    template <unsigned N>
+    template <std::size_t N>
     struct Drop
     {
         template <typename TupleT,
-                  unsigned Size = tupleSize<TupleT>
+                  std::size_t Size = tupleSize<TupleT>
         > inline constexpr
         auto operator()(TupleT&& t) const
         {
@@ -197,7 +197,7 @@ namespace IDragnev::TupleAlgorithms
         }
     };
 
-    template <unsigned N>
+    template <std::size_t N>
     inline constexpr auto drop = Drop<N>{};
 
     inline constexpr auto dropHead = drop<1>;
@@ -206,7 +206,7 @@ namespace IDragnev::TupleAlgorithms
     struct SortByType
     {
         template <typename TupleT,
-                  unsigned Size = tupleSize<TupleT>
+                  std::size_t Size = tupleSize<TupleT>
         > constexpr 
         auto operator()(TupleT&& t) const
         {
@@ -234,9 +234,9 @@ namespace IDragnev::TupleAlgorithms
 
         template <typename Callable,
                   typename TupleT,
-                  unsigned... Indices
+                  std::size_t... Indices
         > inline constexpr
-        void forEach(TupleT&& tuple, Callable f, Meta::ValueList<unsigned, Indices...>)
+        void forEach(TupleT&& tuple, Callable f, Meta::ValueList<std::size_t, Indices...>)
         {
             forEachArg(f, get<Indices>(std::forward<TupleT>(tuple))...);
         }
@@ -244,7 +244,7 @@ namespace IDragnev::TupleAlgorithms
 
     template <typename Callable,
               typename TupleT,
-              unsigned Size = tupleSize<TupleT>
+              std::size_t Size = tupleSize<TupleT>
     > inline constexpr
     void forEach(TupleT&& tuple, Callable f)
     {
@@ -256,9 +256,9 @@ namespace IDragnev::TupleAlgorithms
     {
         template <typename Callable,
                   typename TupleT,
-                  unsigned... Indices
+                  std::size_t... Indices
         > inline constexpr
-        decltype(auto) apply(Callable f, TupleT&& tuple, Meta::ValueList<unsigned, Indices...>)
+        decltype(auto) apply(Callable f, TupleT&& tuple, Meta::ValueList<std::size_t, Indices...>)
         {
             return f(get<Indices>(std::forward<TupleT>(tuple))...);
         }
@@ -266,7 +266,7 @@ namespace IDragnev::TupleAlgorithms
 
     template <typename Callable,
               typename TupleT,
-              unsigned Size = tupleSize<TupleT>
+              std::size_t Size = tupleSize<TupleT>
     > inline constexpr
     decltype(auto) apply(Callable f, TupleT&& tuple)
     {
@@ -302,9 +302,9 @@ namespace IDragnev::TupleAlgorithms
     {
         template <typename TupleT,
                   typename UnaryFunction,
-                  unsigned... Indices
+                  std::size_t... Indices
         > inline constexpr
-        auto transform(TupleT&& tuple, UnaryFunction f, Meta::ValueList<unsigned, Indices...>)
+        auto transform(TupleT&& tuple, UnaryFunction f, Meta::ValueList<std::size_t, Indices...>)
         {
             return makeTuple(f(get<Indices>(std::forward<TupleT>(tuple)))...);
         }
@@ -312,7 +312,7 @@ namespace IDragnev::TupleAlgorithms
 
     template <typename TupleT,
               typename UnaryFunction,
-              unsigned Size = tupleSize<TupleT>
+              std::size_t Size = tupleSize<TupleT>
     > inline constexpr
     auto transform(TupleT&& tuple, UnaryFunction f)
     {
@@ -324,11 +324,11 @@ namespace IDragnev::TupleAlgorithms
     {
         template <typename UTuple,
                   typename VTuple,
-                  unsigned... UIndices,
-                  unsigned... VIndices
+                  std::size_t... UIndices,
+                  std::size_t... VIndices
         > constexpr auto concatenate(UTuple&& u, VTuple&& v,
-                                     Meta::ValueList<unsigned, UIndices...>,
-                                     Meta::ValueList<unsigned, VIndices...>)
+                                     Meta::ValueList<std::size_t, UIndices...>,
+                                     Meta::ValueList<std::size_t, VIndices...>)
         {
             return makeTuple(get<UIndices>(std::forward<UTuple>(u))...,
                              get<VIndices>(std::forward<VTuple>(v))...);
@@ -341,8 +341,8 @@ namespace IDragnev::TupleAlgorithms
 
     template <typename UTuple,
               typename VTuple,
-              unsigned USize = tupleSize<UTuple>,
-              unsigned VSize = tupleSize<VTuple>
+              std::size_t USize = tupleSize<UTuple>,
+              std::size_t VSize = tupleSize<VTuple>
     > constexpr auto concatenate(UTuple&& u, VTuple&& v)
     {
         using UIndices = Meta::MakeIndexList<USize>;

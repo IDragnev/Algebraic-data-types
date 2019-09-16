@@ -18,23 +18,23 @@ namespace IDragnev::Meta
 
     template <typename T,
               typename List,
-              unsigned Result = 0,
+              std::size_t Result = 0,
               bool = isEmpty<List>
     > struct IndexOfT;
 
     template <typename T,
               typename List, 
-              unsigned Result
+              std::size_t Result
     > struct IndexOfT<T, List, Result, false> :
         std::conditional_t<std::is_same_v<Head<List>, T>,
-                           std::integral_constant<unsigned, Result>,
+                           std::integral_constant<std::size_t, Result>,
                            IndexOfT<T, Tail<List>, Result + 1>>
     {
     };
 
     template <typename T,
               typename List,
-              unsigned Result
+              std::size_t Result
     > struct IndexOfT<T, List, Result, true> { };
     
     template <typename T, typename List>
@@ -193,7 +193,7 @@ namespace IDragnev::Meta
               typename List
     > using FFilter = FoldLeft<MakeConditionalInsertBack<Predicate>::template invoke, EmptyList<List>, List>;
 
-    template <unsigned N, typename List>
+    template <std::size_t N, typename List>
     struct DropT : DropT<N - 1, Tail<List>> { };
 
     template <typename List>
@@ -202,16 +202,16 @@ namespace IDragnev::Meta
         using type = List;
     };
 
-    template <unsigned N, typename List>
+    template <std::size_t N, typename List>
     using Drop = typename DropT<N, List>::type;
 
-    template <unsigned N, typename List>
+    template <std::size_t N, typename List>
     struct TakeT;
 
-    template <unsigned N, typename List>
+    template <std::size_t N, typename List>
     using Take = typename TakeT<N, List>::type;
 
-    template <unsigned N, typename List>
+    template <std::size_t N, typename List>
     struct TakeT :
         InsertFrontT<Take<N - 1, Tail<List>>,
                      Head<List>>
@@ -220,16 +220,16 @@ namespace IDragnev::Meta
     template <typename List>
     struct TakeT<0, List> : EmptyListT<List> { };
 
-    template <unsigned I, typename List>
+    template <std::size_t I, typename List>
     struct SplitAtT : MakePairT<Take<I, List>, Drop<I, List>> { };
 
-    template <unsigned I, typename List>
+    template <std::size_t I, typename List>
     using SplitAt = typename SplitAtT<I, List>::type;
 
-    template <unsigned Size, typename Result = ValueList<unsigned>>
+    template <std::size_t Size, typename Result = ValueList<std::size_t>>
     struct MakeIndexListT :
         MakeIndexListT<Size - 1,
-                       InsertFront<Result, CTValue<unsigned, Size - 1>>>
+                       InsertFront<Result, CTValue<std::size_t, Size - 1>>>
     { };
 
     template <typename Result>
@@ -238,11 +238,11 @@ namespace IDragnev::Meta
         using type = Result;
     };
 
-    template <unsigned N>
+    template <std::size_t N>
     using MakeIndexList = typename MakeIndexListT<N>::type;
 
     template <auto Value,
-              unsigned Count,
+              std::size_t Count,
               typename Result = ValueList<decltype(Value)>
     > struct ReplicateValueT :
         ReplicateValueT<Value,
@@ -256,7 +256,7 @@ namespace IDragnev::Meta
         using type = Result;
     };
 
-    template <auto V, unsigned Count>
+    template <auto V, std::size_t Count>
     using ReplicateValue = typename ReplicateValueT<V, Count>::type;
 
     template <typename T,
@@ -319,8 +319,8 @@ namespace IDragnev::Meta
     {
         template <typename T, typename F> struct invoke;
 
-        template <unsigned I, unsigned J>
-        struct invoke<CTValue<unsigned, I>, CTValue<unsigned, J>> :
+        template <std::size_t I, std::size_t J>
+        struct invoke<CTValue<std::size_t, I>, CTValue<std::size_t, J>> :
             CompareFn<ListRef<List, I>, ListRef<List, J>> { };
     };
 
@@ -445,16 +445,16 @@ namespace IDragnev::Meta
     {
     private:
         template <typename Acc, typename Current>
-        struct Lambda;
+        struct invoke;
 
-        template <unsigned Acc, typename Current>
-        struct Lambda<CTValue<unsigned, Acc>, Current>
+        template <std::size_t Acc, typename Current>
+        struct invoke<CTValue<std::size_t, Acc>, Current>
         {
-            using type = CTValue<unsigned, Acc + (Predicate<Current>::value ? 1 : 0)>;
+            using type = CTValue<std::size_t, Acc + (Predicate<Current>::value ? 1 : 0)>;
         };
 
     public:
-        using type = FoldLeft<Lambda, CTValue<unsigned, 0>, List>;
+        using type = FoldLeft<invoke, CTValue<std::size_t, 0>, List>;
     };
 
     template <template <typename...> typename Predicate,
@@ -463,5 +463,5 @@ namespace IDragnev::Meta
 
     template <template <typename...> typename Predicate,
               typename List
-    > inline constexpr unsigned countIf = CountIf<Predicate, List>::value;
+    > inline constexpr auto countIf = CountIf<Predicate, List>::value;
 }

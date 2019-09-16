@@ -152,9 +152,9 @@ namespace IDragnev::Meta
     static_assert(std::is_same_v<Second<SplitAt<1, TypeList<int, float, double>>>,
                                  TypeList<float, double>>);
 
-    static_assert(std::is_same_v<MakeIndexList<0>, ValueList<unsigned>>);
+    static_assert(std::is_same_v<MakeIndexList<0>, ValueList<std::size_t>>);
 
-    static_assert(std::is_same_v<MakeIndexList<4>, ValueList<unsigned, 0, 1, 2, 3>>);
+    static_assert(std::is_same_v<MakeIndexList<4>, ValueList<std::size_t, 0, 1, 2, 3>>);
 
     static_assert(std::is_same_v<ReplicateValue<10, 0>, ValueList<int>>);
 
@@ -172,9 +172,9 @@ namespace IDragnev::Meta
     static_assert(std::is_same_v<InsertionSort<TypeList<std::int32_t, std::int16_t, std::int8_t>, IsSmallerT>,
                                  TypeList<std::int8_t, std::int16_t, std::int32_t>>);
 
-    static_assert(std::is_same_v<InsertionSort<ValueList<unsigned, 0, 1, 2>,
+    static_assert(std::is_same_v<InsertionSort<ValueList<std::size_t, 0, 1, 2>,
                                  MakeIndexedCompareT<TypeList<double, char, int>, IsSmallerT>::template invoke>,
-                                 ValueList<unsigned, 1, 2, 0>>);
+                                 ValueList<std::size_t, 1, 2, 0>>);
 
     static_assert(allOf<std::is_const, TypeList<>>);
 

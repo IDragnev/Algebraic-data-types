@@ -8,12 +8,12 @@ namespace IDragnev::Detail
     template <typename T>
     inline constexpr auto canBeInherited = std::is_class_v<T> && !std::is_final_v<T>;
 
-    template <unsigned Height,
+    template <std::size_t Height,
               typename T,
               bool = canBeInherited<T>
     > class TupleElement;
 
-    template <unsigned Height, typename T>
+    template <std::size_t Height, typename T>
     class TupleElement<Height, T, false>
     {
     public:
@@ -30,7 +30,7 @@ namespace IDragnev::Detail
         T value;
     };
 
-    template <unsigned Height, typename T>
+    template <std::size_t Height, typename T>
     class TupleElement<Height, T, true> : private T
     {
     public:
@@ -44,28 +44,28 @@ namespace IDragnev::Detail
         constexpr const T& get() const & noexcept { return *this; }
     };
 
-    template <unsigned Height, typename T>
+    template <std::size_t Height, typename T>
     inline constexpr
     const T& getValue(const TupleElement<Height, T>& e) noexcept
     {
         return e.get();
     }
 
-    template <unsigned Height, typename T>
+    template <std::size_t Height, typename T>
     inline constexpr
     T& getValue(TupleElement<Height, T>& e) noexcept
     {
         return const_cast<T&>(getValue(std::as_const(e)));
     }
 
-    template <unsigned Height, typename T>
+    template <std::size_t Height, typename T>
     inline constexpr
     const T&& getValue(const TupleElement<Height, T>&& e) noexcept
     {
         return std::move(getValue(e));
     }
 
-    template <unsigned Height, typename T>
+    template <std::size_t Height, typename T>
     inline constexpr
     T&& getValue(TupleElement<Height, T>&& e) noexcept
     {

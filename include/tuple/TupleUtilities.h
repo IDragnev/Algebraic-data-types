@@ -31,7 +31,7 @@ namespace IDragnev
         compareWith(CompareFn compare, const Tuple<UHead, UTail...>& u, const Tuple<VHead, VTail...>& v)
         {
             return compare(u.getHead(), v.getHead()) &&
-                           compareWith(compare, u.getTail(), v.getTail());
+                   compareWith(compare, u.getTail(), v.getTail());
         }
     }
 
