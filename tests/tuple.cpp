@@ -4,7 +4,6 @@
 #include "Tuple.h"
 #include "TupleIO.h"
 #include "TupleAlgorithms.h"
-#include "Meta/Tests.h"
 #include <vector>
 
 using namespace IDragnev;

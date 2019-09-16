@@ -1,9 +1,8 @@
-#pragma once
-
-#include "ListAlgorithms.h"
-#include "TypeList.h"
-#include "ValueList.h"
+#include "Meta/ListAlgorithms.h"
+#include "Meta/TypeList.h"
+#include "Meta/ValueList.h"
 #include <cstdint>
+#include <iostream>
 
 namespace IDragnev::Meta
 {
@@ -215,4 +214,9 @@ namespace IDragnev::Meta
     static_assert(countIf<std::is_const, TypeList<int, const int, double>> == 1);
 
     static_assert(indexOf<int, TypeList<int, float, int>> == 0);
+}
+
+int main() 
+{
+    std::cout << "All Meta tests passed!\n";
 }
