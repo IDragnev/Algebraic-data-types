@@ -270,7 +270,7 @@ TEST_CASE("select")
     {
         constexpr auto source = makeTuple(2, 5, 4, 7, 8, 9);
 
-        constexpr auto odds = select<1, 3, 5>(source);
+        constexpr auto odds = alg::select<1, 3, 5>(source);
 
         static_assert(odds == makeTuple(5, 7, 9));
     }
@@ -279,7 +279,7 @@ TEST_CASE("select")
     {
         auto source = makeTuple(2, "a"s, "b"s);
 
-        auto destination = select<1, 2>(std::move(source));
+        auto destination = alg::select<1, 2>(std::move(source));
 
         CHECK(source == makeTuple(2, "", ""));
         CHECK(destination == makeTuple("a", "b"));

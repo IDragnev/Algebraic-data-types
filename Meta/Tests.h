@@ -3,6 +3,7 @@
 #include "ListAlgorithms.h"
 #include "TypeList.h"
 #include "ValueList.h"
+#include <cstdint>
 
 namespace IDragnev::Meta
 {
@@ -163,14 +164,14 @@ namespace IDragnev::Meta
     static_assert(std::is_same_v<InsertInSorted<int, TypeList<>, IsSmallerT>,
                                  TypeList<int>>);
 
-    static_assert(std::is_same_v<InsertInSorted<int, TypeList<char, double>, IsSmallerT>,
-                                 TypeList<char, int, double>>);
+    static_assert(std::is_same_v<InsertInSorted<std::int32_t, TypeList<std::int8_t, std::int64_t>, IsSmallerT>,
+                                 TypeList<std::int8_t, std::int32_t, std::int64_t>>);
 
     static_assert(std::is_same_v<InsertionSort<TypeList<>, IsSmallerT>,
                                  TypeList<>>);
 
-    static_assert(std::is_same_v<InsertionSort<TypeList<long, short, char, double>, IsSmallerT>,
-                                 TypeList<char, short, long, double>>);
+    static_assert(std::is_same_v<InsertionSort<TypeList<std::int32_t, std::int16_t, std::int8_t>, IsSmallerT>,
+                                 TypeList<std::int8_t, std::int16_t, std::int32_t>>);
 
     static_assert(std::is_same_v<InsertionSort<ValueList<unsigned, 0, 1, 2>,
                                  MakeIndexedCompareT<TypeList<double, char, int>, IsSmallerT>::template invoke>,
