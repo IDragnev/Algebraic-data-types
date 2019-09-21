@@ -1,9 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "Tuple.h"
-#include "TupleIO.h"
-#include "TupleAlgorithms.h"
+#include "Tuple.hpp"
+#include "TupleIO.hpp"
+#include "TupleAlgorithms.hpp"
 #include <vector>
 
 using namespace IDragnev;

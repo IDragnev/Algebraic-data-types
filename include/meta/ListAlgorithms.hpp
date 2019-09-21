@@ -1,9 +1,9 @@
 #pragma once
 
-#include "TypeFunctionsAndPredicates.h"
-#include "TypeList.h"
-#include "ValueList.h"
-#include "Pair.h"
+#include "TypeFunctionsAndPredicates.hpp"
+#include "TypeList.hpp"
+#include "ValueList.hpp"
+#include "Pair.hpp"
 
 namespace IDragnev::Meta
 {

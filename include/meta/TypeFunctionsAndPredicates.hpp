@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Pair.h"
+#include "Pair.hpp"
 #include <type_traits>
 
 namespace IDragnev::Meta

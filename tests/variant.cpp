@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
-#include "Variant.h"
+#include "Variant.hpp"
 #include <string>
 
 using IDragnev::Variant;

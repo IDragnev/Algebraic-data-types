@@ -1,9 +1,9 @@
 #pragma once
 
-#include "VariantChoice.h"
-#include "VariantStorage.h"
-#include "Meta/ListAlgorithms.h"
-#include "VisitResult.h"
+#include "VariantChoice.hpp"
+#include "VariantStorage.hpp"
+#include "Meta/ListAlgorithms.hpp"
+#include "VisitResult.hpp"
 
 #include <stdexcept>
 

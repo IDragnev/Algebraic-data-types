@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TupleAlgorithms.h"
+#include "TupleAlgorithms.hpp"
 #include <iostream>
 
 namespace IDragnev
