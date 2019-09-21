@@ -23,6 +23,6 @@ Tuples also support the pipe syntax:
                  | sum;
   //s == 6
 ```
-Examples and details can be found in the [tests of tuple](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Tuple/test/tupleTests.cpp) and [tests of variant](https://github.com/IDragnev/Tuple-and-Variant/blob/master/Variant/variantTests.cpp).    
+Examples and details can be found in the [tests of tuple](https://github.com/IDragnev/Tuple-and-Variant/blob/master/tests/tuple.cpp) and [tests of variant](https://github.com/IDragnev/Tuple-and-Variant/blob/master/tests/variant.cpp).    
 Structured bindings are not supported due to some ambiguity in the get function.
 
