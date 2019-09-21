@@ -164,6 +164,14 @@ namespace IDragnev::TupleAlgorithms
     template <std::size_t Index, std::size_t Count>
     inline constexpr auto replicate = Replicate<Index, Count>{};
 
+    template <std::size_t Count,
+              typename T
+    > inline constexpr 
+    auto replicated(const T& value)
+    {
+        return makeTuple(value) | replicate<0, Count>;
+    }
+
     template <std::size_t N>
     struct Take
     {

@@ -314,6 +314,13 @@ TEST_CASE("replicate")
     static_assert(result == makeTuple(1, 1, 1, 1));
 }
 
+TEST_CASE("replicated")
+{
+    constexpr auto tuple = replicated<3>(10);
+
+    static_assert(tuple == makeTuple(10, 10, 10));
+}
+
 TEST_CASE("take")
 {
     SUBCASE("basics")
