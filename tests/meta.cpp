@@ -1,6 +1,6 @@
-#include "Meta/ListAlgorithms.hpp"
-#include "Meta/TypeList.hpp"
-#include "Meta/ValueList.hpp"
+#include "meta/ListAlgorithms.hpp"
+#include "meta/TypeList.hpp"
+#include "meta/ValueList.hpp"
 #include <cstdint>
 #include <iostream>
 

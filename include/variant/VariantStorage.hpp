@@ -1,7 +1,7 @@
 #pragma once
 
 #include <new>
-#include "Meta/ListAlgorithms.hpp"
+#include "meta/ListAlgorithms.hpp"
 
 namespace IDragnev::Detail
 {

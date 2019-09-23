@@ -104,7 +104,7 @@ namespace IDragnev
 
     template <typename... Types>
     template <typename VariantT>
-    auto Variant<Types...>::assignFrom(VariantT&& source) -> Variant&&
+    auto Variant<Types...>::assignFrom(VariantT&& source) -> Variant&
     {
         if (!source.isEmpty())
         {

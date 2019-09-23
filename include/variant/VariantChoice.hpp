@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Meta/ListAlgorithms.hpp"
+#include "meta/ListAlgorithms.hpp"
 #include <utility>
 
 namespace IDragnev

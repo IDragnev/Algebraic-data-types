@@ -2,7 +2,7 @@
 
 #include "VariantChoice.hpp"
 #include "VariantStorage.hpp"
-#include "Meta/ListAlgorithms.hpp"
+#include "meta/ListAlgorithms.hpp"
 #include "VisitResult.hpp"
 
 #include <stdexcept>
@@ -70,7 +70,7 @@ namespace IDragnev
         template <typename VariantT>
         void copyFrom(VariantT&& source);
         template <typename VariantT>
-        Variant&& assignFrom(VariantT&& source);
+        Variant& assignFrom(VariantT&& source);
         void destroyValue() noexcept;
     };
 
