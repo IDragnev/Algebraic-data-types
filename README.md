@@ -1,5 +1,5 @@
 # Tuple and Variant
-## Implementation of fully-featured C++17 variant and tuple with additional [algorithms](https://github.com/IDragnev/Tuple/blob/master/Tuple/TupleAlgorithms.h) for tuple, such as:  
+## Implementation of fully-featured C++17 variant and tuple with additional [algorithms](https://github.com/IDragnev/Tuple-and-Variant/blob/master/include/tuple/TupleAlgorithms.hpp) for tuple, such as:  
  - insertBack  
  - insertFront 
  - select
