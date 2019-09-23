@@ -70,7 +70,7 @@ namespace IDragnev
         template <typename VariantT>
         void copyFrom(VariantT&& source);
         template <typename VariantT>
-        void assignFrom(VariantT&& source);
+        Variant&& assignFrom(VariantT&& source);
         void destroyValue() noexcept;
     };
 

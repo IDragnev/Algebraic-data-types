@@ -1,4 +1,3 @@
-
 #include <assert.h>
 #include <functional>
 
@@ -80,36 +79,32 @@ namespace IDragnev
     template <typename... Types>
     inline auto Variant<Types...>::operator=(Variant&& source) -> Variant&
     {
-        assignFrom(std::move(source));
-        return *this;
+        return assignFrom(std::move(source));
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
     inline auto Variant<Types...>::operator=(Variant<SourceTypes...>&& source) -> Variant&
     {
-        assignFrom(std::move(source));
-        return *this;
+        return assignFrom(std::move(source));
     }
 
     template <typename... Types>
     inline auto Variant<Types...>::operator=(const Variant& source) -> Variant&
     {
-        assignFrom(source);
-        return *this;
+        return assignFrom(source);
     }
 
     template <typename... Types>
     template <typename... SourceTypes>
     inline auto Variant<Types...>::operator=(const Variant<SourceTypes...>& source) -> Variant&
     {
-        assignFrom(source);
-        return *this;
+        return assignFrom(source);
     }
 
     template <typename... Types>
     template <typename VariantT>
-    void Variant<Types...>::assignFrom(VariantT&& source)
+    auto Variant<Types...>::assignFrom(VariantT&& source) -> Variant&&
     {
         if (!source.isEmpty())
         {
@@ -119,6 +114,8 @@ namespace IDragnev
         {
             destroyValue();
         }
+
+        return *this;
     }
 
     template <typename... Types>
