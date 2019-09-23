@@ -43,7 +43,7 @@ TEST_CASE("variadic constructor and makeTuple")
     }
 }
 
-TEST_CASE("get")
+TEST_CASE("get with index")
 {
     SUBCASE("basics")
     {
@@ -53,11 +53,39 @@ TEST_CASE("get")
         static_assert(get<1>(tuple) == 2);
     }
 
-    SUBCASE("get takes value category into account")
+    SUBCASE("value category is taken into account")
     {
         auto tuple = makeTuple("a"s);
 
-        auto str = get<0>(std::move(tuple));
+        const auto str = get<0>(std::move(tuple));
+
+        CHECK(str == "a");
+        CHECK(get<0>(tuple) == "");
+    }
+}
+
+TEST_CASE("get with type")
+{
+    SUBCASE("basics")
+    {
+        constexpr auto tuple = makeTuple(1, 2.0);
+
+        static_assert(get<int>(tuple) == 1);
+        static_assert(get<double>(tuple) == 2.0);
+    }
+
+    SUBCASE("the first component of this type is returned")
+    {
+        constexpr auto tuple = makeTuple(2.5, 1, 2);
+        
+        static_assert(get<int>(tuple) == 1);
+    }
+
+    SUBCASE("value category is taken into account")
+    {
+        auto tuple = makeTuple("a"s);
+
+        const auto str = get<std::string>(std::move(tuple));
 
         CHECK(str == "a");
         CHECK(get<0>(tuple) == "");

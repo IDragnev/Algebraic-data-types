@@ -1,8 +1,9 @@
 #pragma once
 
 #include "TupleElement.hpp"
-#include "Meta/ValueList.hpp"
-#include "Meta/TypeList.hpp"
+#include "meta/ValueList.hpp"
+#include "meta/TypeList.hpp"
+#include "meta/ListAlgorithms.hpp"
 
 namespace IDragnev
 {
@@ -37,7 +38,19 @@ namespace IDragnev
     > inline constexpr
     decltype(auto) get(TupleT&& tuple) noexcept
     {
+        static_assert(Index < Size, "Tuple index out of range");
         return Detail::getValue<Size - Index - 1>(std::forward<TupleT>(tuple));
+    }
+    
+    template <typename T,
+              typename TupleT,
+              typename = std::enable_if_t<isTuple<TupleT>>
+    > constexpr decltype(auto) get(TupleT &&tuple) noexcept
+    {
+        using TypeList = std::decay_t<TupleT>;
+        static_assert(Meta::isMember<T, TypeList>, "Tuple has no component of type T");
+        constexpr auto index = Meta::indexOf<T, TypeList>;
+        return get<index>(std::forward<TupleT>(tuple));
     }
 
     template <>
