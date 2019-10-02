@@ -1,6 +1,7 @@
 #include "meta/ListAlgorithms.hpp"
 #include "meta/TypeList.hpp"
 #include "meta/ValueList.hpp"
+#include "meta/Folds.hpp"
 #include <cstdint>
 #include <iostream>
 
@@ -179,6 +180,10 @@ namespace IDragnev::Meta
     static_assert(allOf<std::is_const, TypeList<>>);
 
     static_assert(allOf<std::is_const, TypeList<const int, const double>>);
+    
+    static_assert(Folds::allOf<std::is_const>);
+
+    static_assert(Folds::allOf<std::is_const, const int, const double>);
 
     static_assert(Inverse<std::is_const>::template invoke<int>::value);
 
@@ -189,6 +194,10 @@ namespace IDragnev::Meta
     static_assert(!anyOf<std::is_const, TypeList<>>);
 
     static_assert(anyOf<std::is_const, TypeList<int, const double>>);
+    
+    static_assert(!Folds::anyOf<std::is_const>);
+
+    static_assert(Folds::anyOf<std::is_const, int, const double>);
 
     static_assert(isMember<int, TypeList<double, int>>);
 

@@ -2,6 +2,7 @@
 
 #include "meta/ListInterface.hpp"
 #include "meta/ListAlgorithms.hpp"
+#include "meta/Folds.hpp"
 #include "Tuple.hpp"
 
 namespace IDragnev
@@ -343,8 +344,7 @@ namespace IDragnev::TupleAlgorithms
         }
 
         template <typename... Types>
-        inline constexpr bool areAllTuples = Meta::allOf<IDragnev::Detail::IsTuple, 
-                                                         Meta::TypeList<std::decay_t<Types>... >> ;
+        inline constexpr bool areAllTuples = Meta::Folds::allOf<IDragnev::Detail::IsTuple, std::decay_t<Types>...> ;
     }
 
     template <typename UTuple,
