@@ -22,9 +22,8 @@ namespace IDragnev
         struct IsTuple : std::false_type { };
 
         template <typename T>
-        struct IsTuple<T, std::void_t<decltype(TupleSize<std::decay_t<T>>::value)>> :
-            std::true_type { };
-    }
+        struct IsTuple<T, std::void_t<decltype(TupleSize<std::decay_t<T>>::value)>> : std::true_type { };
+    } //namespace Detail
     
     template <typename T>
     inline constexpr auto tupleSize = Detail::TupleSize<std::decay_t<T>>::value;
@@ -113,7 +112,7 @@ namespace IDragnev
         template <std::size_t Index, typename TupleT, std::size_t Size>
         friend constexpr decltype(auto) get(TupleT&& tuple) noexcept;
     };
-}
+} //namespace IDragnev
 
 #include "TupleImpl.hpp"
 #include "TupleUtilities.hpp"

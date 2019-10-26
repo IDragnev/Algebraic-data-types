@@ -71,4 +71,4 @@ namespace IDragnev::Detail
     {
         return std::move(e).get();
     }
-}
+} //namespace IDragnev::Detail

@@ -45,7 +45,7 @@ namespace IDragnev
     {
         using type = Tuple<>;
     };
-}
+} //namespace IDragnev
 
 namespace IDragnev::TupleAlgorithms
 {
@@ -62,18 +62,16 @@ namespace IDragnev::TupleAlgorithms
                       Meta::ValueList<std::size_t, Indices...>,
                       Ts&&... values)
         {
-            if constexpr (policy == InsertionPolicy::back)
-            {
+            if constexpr (policy == InsertionPolicy::back) {
                 return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...,
                                  std::forward<Ts>(values)...);
             }
-            else
-            {
+            else {
                 return makeTuple(std::forward<Ts>(values)...,
                                  get<Indices>(std::forward<TupleT>(tuple))...);
             }
         }
-    }
+    } //namespace Detail
 
     template <typename TupleT,
               typename T,
@@ -115,7 +113,7 @@ namespace IDragnev::TupleAlgorithms
         {
             return makeTuple(get<Indices>(std::forward<TupleT>(tuple))...);
         }
-    }
+    } //namespace Detail
 
     template <std::size_t... Indices>
     struct Select 
@@ -249,7 +247,7 @@ namespace IDragnev::TupleAlgorithms
         {
             forEachArg(f, get<Indices>(std::forward<TupleT>(tuple))...);
         }
-    }
+    } //namespace Detail
 
     template <typename Callable,
               typename TupleT,
@@ -271,7 +269,7 @@ namespace IDragnev::TupleAlgorithms
         {
             return f(get<Indices>(std::forward<TupleT>(tuple))...);
         }
-    }
+    } //namespace Detail
 
     template <typename Callable,
               typename TupleT,
@@ -317,7 +315,7 @@ namespace IDragnev::TupleAlgorithms
         {
             return makeTuple(f(get<Indices>(std::forward<TupleT>(tuple)))...);
         }
-    }
+    } //namespace Detail
 
     template <typename TupleT,
               typename UnaryFunction,
@@ -345,7 +343,7 @@ namespace IDragnev::TupleAlgorithms
 
         template <typename... Types>
         inline constexpr bool areAllTuples = Meta::Folds::allOf<IDragnev::Detail::IsTuple, std::decay_t<Types>...> ;
-    }
+    } //namespace Detail
 
     template <typename UTuple,
               typename VTuple,
@@ -372,4 +370,4 @@ namespace IDragnev::TupleAlgorithms
                            std::forward<VTuple>(v)),
                            std::forward<Tuples>(rest)...);
     }
-}
+} //namespace IDragnev

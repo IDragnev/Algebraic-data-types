@@ -33,7 +33,7 @@ namespace IDragnev
             return compare(u.getHead(), v.getHead()) &&
                    compareWith(compare, u.getTail(), v.getTail());
         }
-    }
+    } //namespace Detail
 
     template <typename... Types>
     inline constexpr
@@ -126,4 +126,4 @@ namespace IDragnev
     {
         return Tuple<Types&...>(args...);
     }
-}
+} //namespace IDragnev

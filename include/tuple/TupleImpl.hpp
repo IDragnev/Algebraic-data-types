@@ -3,24 +3,24 @@ namespace IDragnev
 {
     template <typename Head, typename... Tail>
     template <typename VHead, typename... VTail, typename>
-    constexpr Tuple<Head, Tail...>::Tuple(VHead&& head, VTail&&... tail) :
-        HeadElement(std::forward<VHead>(head)),
+    constexpr Tuple<Head, Tail...>::Tuple(VHead&& head, VTail&&... tail) 
+        : HeadElement(std::forward<VHead>(head)),
         TailTuple(std::forward<VTail>(tail)...)
     {
     }
 
     template <typename Head, typename... Tail>
     template <typename VHead, typename... VTail, typename>
-    constexpr Tuple<Head, Tail...>::Tuple(const Tuple<VHead, VTail...>& source) :
-        HeadElement(source.getHead()),
+    constexpr Tuple<Head, Tail...>::Tuple(const Tuple<VHead, VTail...>& source) 
+        : HeadElement(source.getHead()),
         TailTuple(source.getTail())
     {
     }
 
     template <typename Head, typename... Tail>
     template <typename VHead, typename... VTail, typename>
-    constexpr Tuple<Head, Tail...>::Tuple(Tuple<VHead, VTail...>&& source) :
-        HeadElement(std::move(source.getHead())),
+    constexpr Tuple<Head, Tail...>::Tuple(Tuple<VHead, VTail...>&& source) 
+        : HeadElement(std::move(source.getHead())),
         TailTuple(std::move(source.getTail()))
     {
     }
@@ -86,4 +86,4 @@ namespace IDragnev
     {
         return *this;
     }
-}
+} //namespace IDragnev
