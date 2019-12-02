@@ -507,6 +507,29 @@ TEST_CASE("foldl")
     }
 }
 
+TEST_CASE("foldr")
+{
+    SUBCASE("basics (and compile time computation)")
+    {
+        constexpr auto tuple = makeTuple(1, 2, 3);
+
+        constexpr auto result = foldr(tuple, 0, std::plus{});
+
+        static_assert(result == 6);
+    }
+
+    SUBCASE("foldr takes the tuple's value category into account")
+    {
+        auto tuple = makeTuple("a"s, "b"s, "c"s);
+        const auto append = [](auto x, auto tuple) { return insertBack(std::move(tuple), std::move(x)); };
+
+        const auto result = foldr(std::move(tuple), Tuple{}, append);
+
+        CHECK(result == makeTuple("c", "b", "a"));
+        CHECK(tuple == makeTuple("", "", ""));
+    }
+}
+
 TEST_CASE("transform")
 {
     SUBCASE("basics and compile time usage")

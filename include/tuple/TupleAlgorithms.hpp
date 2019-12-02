@@ -304,6 +304,32 @@ namespace IDragnev::TupleAlgorithms
                      op(std::forward<T>(acc), std::forward<TupleT>(tuple).getHead()),
                      op);
     }
+    
+    template <typename TupleT,
+              typename T,
+              typename BinaryOp,
+              typename = std::enable_if_t<isTuple<TupleT> && 
+                                          Meta::isEmpty<std::decay_t<TupleT>>>
+    > inline constexpr
+    T foldr(TupleT&&, T&& acc, BinaryOp)
+    {
+        return std::forward<T>(acc);
+    }
+
+    template <typename TupleT,
+              typename T,
+              typename BinaryOp,
+              typename = std::enable_if_t<isTuple<TupleT> && 
+                                          !Meta::isEmpty<std::decay_t<TupleT>>>
+    > constexpr
+    decltype(auto) foldr(TupleT&& tuple, T&& acc, BinaryOp op)
+    {
+        return op(std::forward<TupleT>(tuple).getHead(),
+                  foldr(std::forward<TupleT>(tuple).getTail(),
+                        std::forward<T>(acc),
+                        op)
+                 );
+    }
 
     namespace Detail 
     {
@@ -370,4 +396,4 @@ namespace IDragnev::TupleAlgorithms
                            std::forward<VTuple>(v)),
                            std::forward<Tuples>(rest)...);
     }
-} //namespace IDragnev
+} //namespace IDragnev::TupleAlgorithms
